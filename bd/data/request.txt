@@ -1,0 +1,11 @@
+Vehiculos 2010
+
+https://api.edmunds.com/api/vehicle/v2/makes?state=used&year=2010&view=basic&fmt=json&api_key=7b2c2ymje3mz2h8q8r9t4cp8
+
+Mantencion Toyota Yaris 2010
+
+https://api.edmunds.com/v1/api/maintenance/actionrepository/findbymodelyearid?modelyearid=100529009&fmt=json&api_key=7b2c2ymje3mz2h8q8r9t4cp8
+
+Estilos del Toyota Yaris 2010
+
+https://api.edmunds.com/api/vehicle/v2/toyota/yaris/2010/styles?fmt=json&api_key=7b2c2ymje3mz2h8q8r9t4cp8&view=full

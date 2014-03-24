@@ -1,0 +1,6 @@
+scp dsoft/java/Car/bd/scripts/create.sql lfhernandez@centauro:car/bd/scripts/create.sql
+
+sh dsoft/java/MyORM/scripts/run.sh > dsoft/java/Car/doc/clases.txt
+
+sh dsoft/java/Car/scripts/data_load.sh
+
