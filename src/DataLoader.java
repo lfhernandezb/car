@@ -105,9 +105,20 @@ public class DataLoader {
         	// leo archivo de datos
         	
         	// data = Util.getFileContent(System.getProperty("data_directory") + "/vehicle_2010.json");
-        	for (int anios = 2010; anios < 2013; anios++) {
+        	for (int anios = 2011; anios < 2013; anios++) {
+        		
+        		data = "";
+        		
+        		Thread.sleep(400);
         	
-	        	data = Util.sendGet("https://api.edmunds.com/api/vehicle/v2/makes?state=used&year=" + String.valueOf(anios) + "&view=basic&fmt=json&api_key=7b2c2ymje3mz2h8q8r9t4cp8");
+	        	try {
+					data = Util.sendGet("https://api.edmunds.com/api/vehicle/v2/makes?state=used&year=" + String.valueOf(anios) + "&view=basic&fmt=json&api_key=7b2c2ymje3mz2h8q8r9t4cp8");
+				} catch (Exception e3) {
+					// TODO Auto-generated catch block
+					e3.printStackTrace();
+					
+					continue;
+				}
 	        	
 	        	//System.out.println("Response:" + data);
 	        	
@@ -197,9 +208,16 @@ public class DataLoader {
 				        	
 				        	// data = Util.getFileContent(System.getProperty("data_directory") + "/toyota_yaris_2010_maintenance.json");
 							
-							Thread.sleep(100);
+							Thread.sleep(400);
 							
-							data = Util.sendGet("https://api.edmunds.com/v1/api/maintenance/actionrepository/findbymodelyearid?modelyearid=" + id_modelo_anio.toString() + "&fmt=json&api_key=7b2c2ymje3mz2h8q8r9t4cp8");
+							try {
+								data = Util.sendGet("https://api.edmunds.com/v1/api/maintenance/actionrepository/findbymodelyearid?modelyearid=" + id_modelo_anio.toString() + "&fmt=json&api_key=7b2c2ymje3mz2h8q8r9t4cp8");
+							} catch (Exception e3) {
+								// TODO Auto-generated catch block
+								e3.printStackTrace();
+								
+								continue;
+							}
 							
 							//System.out.println("Response:" + data);
 				        	
@@ -232,7 +250,12 @@ public class DataLoader {
 									}
 					        		mb.set_accion(ja_mantencion.getJSONObject(l).getString("action"));
 					        		mb.set_item(ja_mantencion.getJSONObject(l).getString("item"));
-					        		mb.set_descripcion_item(ja_mantencion.getJSONObject(l).getString("itemDescription"));
+					        		try {
+										mb.set_descripcion_item(ja_mantencion.getJSONObject(l).getString("itemDescription"));
+									} catch (Exception e) {
+										// TODO Auto-generated catch block
+										//e.printStackTrace();
+									}
 					        		mb.set_tipo_traccion(ja_mantencion.getJSONObject(l).getString("driveType"));
 					        		mb.set_tipo_transmision(ja_mantencion.getJSONObject(l).getString("transmissionCode"));
 					        		mb.set_codigo_motor(ja_mantencion.getJSONObject(l).getString("engineCode"));
@@ -248,13 +271,20 @@ public class DataLoader {
 				        	
 				        	// data = Util.getFileContent(System.getProperty("data_directory") + "/toyota_yaris_2010_maintenance.json");
 							
-							Thread.sleep(100);
+							Thread.sleep(400);
 							
-							System.out.println("Consultando estilos");
+							//System.out.println("Consultando estilos");
 							
-							data = Util.sendGet("https://api.edmunds.com/api/vehicle/v2/" + ja_marcas.getJSONObject(i).getString("niceName") + "/" + ja_modelos.getJSONObject(j).getString("niceName") + "/" + String.valueOf(anios) + "/styles?fmt=json&api_key=7b2c2ymje3mz2h8q8r9t4cp8&view=full");
+							try {
+								data = Util.sendGet("https://api.edmunds.com/api/vehicle/v2/" + ja_marcas.getJSONObject(i).getString("niceName") + "/" + ja_modelos.getJSONObject(j).getString("niceName") + "/" + String.valueOf(anios) + "/styles?fmt=json&api_key=7b2c2ymje3mz2h8q8r9t4cp8&view=full");
+							} catch (Exception e3) {
+								// TODO Auto-generated catch block
+								e3.printStackTrace();
+								
+								continue;
+							}
 							
-							System.out.println("Leidos " + data.length() + " bytes");
+							//System.out.println("Leidos " + data.length() + " bytes");
 				        	
 				        	jo_data = new JSONObject(data);
 				        	
@@ -307,28 +337,78 @@ public class DataLoader {
 					        		
 					        		motor.set_id(Long.decode(jo_motor.getString("id")));
 					        		motor.set_codigo(jo_motor.getString("code"));
-					        		motor.set_razon_compresion(String.valueOf(jo_motor.getDouble("compressionRatio")));
-					        		motor.set_cilindros((byte) jo_motor.getInt("cylinder"));
-					        		motor.set_tamanio(String.valueOf(jo_motor.getDouble("size")));
+					        		try {
+										motor.set_razon_compresion(String.valueOf(jo_motor.getDouble("compressionRatio")));
+									} catch (Exception e3) {
+										// TODO Auto-generated catch block
+										//e3.printStackTrace();
+									}
+					        		try {
+										motor.set_cilindros((byte) jo_motor.getInt("cylinder"));
+									} catch (Exception e2) {
+										// TODO Auto-generated catch block
+										//e2.printStackTrace();
+									}
+					        		try {
+										motor.set_tamanio(String.valueOf(jo_motor.getDouble("size")));
+									} catch (Exception e3) {
+										// TODO Auto-generated catch block
+										//e3.printStackTrace();
+									}
 					        		try {
 										motor.set_desplazamiento(jo_motor.getInt("displacement"));
 									} catch (Exception e1) {
 										// TODO Auto-generated catch block
 										//e1.printStackTrace();
 									}
-					        		motor.set_configuracion(jo_motor.getString("configuration"));
-					        		motor.set_tipo_combustible(jo_motor.getString("fuelType"));
-					        		motor.set_potencia(jo_motor.getInt("horsepower"));
-					        		motor.set_torque(jo_motor.getInt("torque"));
-					        		motor.set_valvulas((byte) jo_motor.getInt("totalValves"));
+					        		try {
+										motor.set_configuracion(jo_motor.getString("configuration"));
+									} catch (Exception e2) {
+										// TODO Auto-generated catch block
+										//e2.printStackTrace();
+									}
+					        		try {
+										motor.set_tipo_combustible(jo_motor.getString("fuelType"));
+									} catch (Exception e3) {
+										// TODO Auto-generated catch block
+										//e3.printStackTrace();
+									}
+					        		try {
+										motor.set_potencia(jo_motor.getInt("horsepower"));
+									} catch (Exception e2) {
+										// TODO Auto-generated catch block
+										//e2.printStackTrace();
+									}
+					        		try {
+										motor.set_torque(jo_motor.getInt("torque"));
+									} catch (Exception e2) {
+										// TODO Auto-generated catch block
+										//e2.printStackTrace();
+									}
+					        		try {
+										motor.set_valvulas((byte) jo_motor.getInt("totalValves"));
+									} catch (Exception e1) {
+										// TODO Auto-generated catch block
+										//e1.printStackTrace();
+									}
 					        		try {
 										motor.set_codigo_fabricante(jo_motor.getString("manufacturerEngineCode"));
 									} catch (Exception e) {
 										// TODO Auto-generated catch block
 										//e.printStackTrace();
 									}
-					        		motor.set_tipo(jo_motor.getString("type"));
-					        		motor.set_tipo_compresor(jo_motor.getString("compressorType"));
+					        		try {
+										motor.set_tipo(jo_motor.getString("type"));
+									} catch (Exception e1) {
+										// TODO Auto-generated catch block
+										//e1.printStackTrace();
+									}
+					        		try {
+										motor.set_tipo_compresor(jo_motor.getString("compressorType"));
+									} catch (Exception e) {
+										// TODO Auto-generated catch block
+										//e.printStackTrace();
+									}
 					        		motor.set_id_modelo_anio(id_modelo_anio);
 					        		
 					        		motor.insert(conn);

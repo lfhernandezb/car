@@ -405,7 +405,7 @@ public class Modelo {
 
             rs.close();
             rs = null;
-            System.out.println("Key returned from getGeneratedKeys():" + _id.toString());
+            //System.out.println("Key returned from getGeneratedKeys():" + _id.toString());
                         
         }
         catch (SQLException ex){

@@ -23,7 +23,7 @@ log4j: Setting property [conversionPattern] to [%d{yyyy-MM-dd HH:mm:ss} [%t] %-5
 log4j: setFile called: /var/log/myorm.log, true
 log4j: setFile ended
 log4j: Adding appender named [R] to category [root].
-DEBUG [main] (MyORM.java:72) - conn: com.mysql.jdbc.JDBC4Connection@1db05b2
+DEBUG [main] (MyORM.java:72) - conn: com.mysql.jdbc.JDBC4Connection@530cf2
 DEBUG [main] (MyORM.java:97) - table: autenticacion
 DEBUG [main] (MyORM.java:107) - columns:
 /**
@@ -483,466 +483,6 @@ public class Autenticacion {
         if (p_id_autenticacion != null) {
             str_sql +=
                 "  WHERE id_autenticacion = " + p_id_autenticacion.toString();
-        }
-        
-        try {
-            stmt = p_conn.createStatement();
-            
-            ret = stmt.executeUpdate(str_sql);
-            /*
-            if (stmt.executeUpdate(str_sql) < 1) {
-                throw new Exception("No hubo filas afectadas");
-            }
-            */
-        }
-        catch (SQLException ex){
-            // handle any errors
-            System.out.println("SQLException: " + ex.getMessage() + " sentencia: " + str_sql);
-            System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
-            
-            throw new Exception("Error al borrar registros");
-        }
-        finally {
-            // it is a good idea to release
-            // resources in a finally{} block
-            // in reverse-order of their creation
-            // if they are no-longer needed
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException sqlEx) {
-                    
-                } // ignore
-                stmt = null;
-            }
-        }
-        
-        return ret;
-    }
-}
-
-DEBUG [main] (MyORM.java:97) - table: ciudad
-DEBUG [main] (MyORM.java:107) - columns:
-/**
- * 
- */
-package bd;
-
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-
-/**
- * @author petete-ntbk
- *
- */
-public class Ciudad {
-    private Long _id;
-    private Long _id_region;
-    private String _ciudad;
-
-    private final static String _str_sql = 
-        "    SELECT " +
-        "    id_ciudad AS id, " +
-        "    id_region, " +
-        "    ciudad " +
-        "    FROM ciudad ci ";
-
-    public Ciudad() {
-        _id = null;
-        _id_region = null;
-        _ciudad = null;
-
-    }
-
-    /**
-     * @return the _id
-     */
-    public Long get_id() {
-        return _id;
-    }
-    /**
-     * @return the _id_region
-     */
-    public Long get_id_region() {
-        return _id_region;
-    }
-    /**
-     * @return the _ciudad
-     */
-    public String get_ciudad() {
-        return _ciudad;
-    }
-
-    /**
-     * @param _id the _id to set
-     */
-    public void set_id(Long _id) {
-        this._id = _id;
-    }
-    /**
-     * @param _id_region the _id_region to set
-     */
-    public void set_id_region(Long _id_region) {
-        this._id_region = _id_region;
-    }
-    /**
-     * @param _ciudad the _ciudad to set
-     */
-    public void set_ciudad(String _ciudad) {
-        this._ciudad = _ciudad;
-    }
-
-    public static Ciudad fromRS(ResultSet p_rs) throws SQLException {
-        Ciudad ret = new Ciudad();
-
-        try {
-            ret.set_id_ciudad(p_rs.getLong("id_ciudad"));
-            ret.set_id_region(p_rs.getLong("id_region"));
-            ret.set_ciudad(p_rs.getString("ciudad"));
-        }
-        catch (SQLException ex){
-            // handle any errors
-            System.out.println("SQLException: " + ex.getMessage());
-            System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
-
-            throw ex;
-        }
-
-        return ret;
-    }
-
-    public static Ciudad getByParameter(Connection p_conn, String p_key, String p_value) throws Exception {
-        Ciudad ret = null;
-        
-        String str_sql = _str_sql +
-            "  WHERE ci." + p_key + " = " + p_value +
-            "  LIMIT 0, 1";
-        
-        //System.out.println(str_sql);
-        
-        // assume that conn is an already created JDBC connection (see previous examples)
-        Statement stmt = null;
-        ResultSet rs = null;
-        
-        try {
-            stmt = p_conn.createStatement();
-            //System.out.println("stmt = p_conn.createStatement() ok");
-            rs = stmt.executeQuery(str_sql);
-            //System.out.println("rs = stmt.executeQuery(str_sql) ok");
-
-            // Now do something with the ResultSet ....
-            
-            if (rs.next()) {
-                //System.out.println("rs.next() ok");
-                ret = fromRS(rs);
-                //System.out.println("fromRS(rs) ok");
-            }
-        }
-        catch (SQLException ex){
-            // handle any errors
-            System.out.println("SQLException: " + ex.getMessage() + " sentencia: " + str_sql);
-            System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
-            
-            throw new Exception("Error al obtener registro");
-        }
-        catch (Exception e){
-            // handle any errors
-            throw new Exception("Excepcion del tipo " + e.getClass() + " Info: " + e.getMessage());
-        }
-        finally {
-            // it is a good idea to release
-            // resources in a finally{} block
-            // in reverse-order of their creation
-            // if they are no-longer needed
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException sqlEx) { 
-                    
-                } // ignore
-                rs = null;
-            }
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException sqlEx) {
-                    
-                } // ignore
-                stmt = null;
-            }
-        }        
-        
-        return ret;        
-    }
-
-    public static Ciudad getById(Connection p_conn, String p_id) throws Exception {
-        return getByParameter(p_conn, "id_ciudad", p_id);
-    }
-    
-    public static ArrayList<Ciudad> seek(Connection p_conn, ArrayList<AbstractMap.SimpleEntry<String, String>> p_parameters, String p_order, String p_direction, int p_offset, int p_limit) throws Exception {
-        Statement stmt = null;
-        ResultSet rs = null;
-        String str_sql;
-        ArrayList<Ciudad> ret;
-        
-        str_sql = "";
-        
-        try {
-            ArrayList<String> array_clauses = new ArrayList<String>();
-            
-            ret = new ArrayList<Ciudad>();
-            
-            str_sql = _str_sql;
-            
-            for (AbstractMap.SimpleEntry<String, String> p : p_parameters) {
-                if (p.getKey().equals("id_comunidad")) {
-                    array_clauses.add("ci.id_comunidad = " + p.getValue());
-                }
-                else if (p.getKey().equals("id_comuna")) {
-                    array_clauses.add("ci.id_comuna = " + p.getValue());
-                }
-                else if (p.getKey().equals("latitud_mayor")) {
-                    array_clauses.add("ci.latitud > " + p.getValue());
-                }
-                else if (p.getKey().equals("latitud_menor")) {
-                    array_clauses.add("ci.latitud < " + p.getValue());
-                }
-                else if (p.getKey().equals("longitud_mayor")) {
-                    array_clauses.add("ci.longitud > " + p.getValue());
-                }
-                else if (p.getKey().equals("longitud_menor")) {
-                    array_clauses.add("ci.longitud < " + p.getValue());
-                }
-                else if (p.getKey().equals("posicion_reciente")) {
-                    array_clauses.add("ci.fecha > DATE_ADD(now(), INTERVAL -" + p.getValue() + " MINUTE)");
-                }
-                else if (p.getKey().equals("id_distinto")) {
-                    array_clauses.add("ci.id_usuario <> " + p.getValue());
-                }
-                else {
-                	throw new Exception("Parametro no soportado: " + p.getKey());
-                }
-            }
-                                
-            boolean bFirstTime = false;
-            
-            for(String clause : array_clauses) {
-                if (!bFirstTime) {
-                     bFirstTime = true;
-                     str_sql += " WHERE ";
-                }
-                else {
-                     str_sql += " AND ";
-                }
-                str_sql += clause;
-            }
-            
-            if (p_order != null && p_direction != null) {
-                str_sql += " ORDER BY " + p_order + " " + p_direction;
-            }
-            
-            if (p_offset != -1 && p_limit != -1) {
-                str_sql += "  LIMIT " +  Integer.toString(p_offset) + ", " + Integer.toString(p_limit);
-            }
-            
-            //echo "<br>" . str_sql . "<br>";
-        
-            stmt = p_conn.createStatement();
-            
-            rs = stmt.executeQuery(str_sql);
-            
-            while (rs.next()) {
-                ret.add(fromRS(rs));
-            }
-            /*
-            if (ret.size() == 0) {
-                ret = null;
-            }
-            */
-        }
-        catch (SQLException ex){
-            // handle any errors
-            System.out.println("SQLException: " + ex.getMessage() + " sentencia: " + str_sql);
-            System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
-            
-            throw ex;
-        }
-        catch (Exception ex) {
-        	throw ex;
-        }
-        finally {
-            // it is a good idea to release
-            // resources in a finally{} block
-            // in reverse-order of their creation
-            // if they are no-longer needed
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException sqlEx) { 
-                    
-                } // ignore
-                rs = null;
-            }
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException sqlEx) {
-                    
-                } // ignore
-                stmt = null;
-            }
-        }        
-
-        return ret;
-    }
-
-    public int update(Connection p_conn) throws Exception {
-
-        int ret = -1;
-        Statement stmt = null;
-
-        String str_sql =
-            "    UPDATE ciudad" +
-            "    SET " +
-            "    id_ciudad AS id, " +
-            "    id_region, " +
-            "    ciudad " +
-            "    WHERE id_ciudad = " + Integer.toString(this._id);
-        
-        try {
-            stmt = p_conn.createStatement();
-            
-            ret = stmt.executeUpdate(str_sql);
-            /*
-            if (stmt.executeUpdate(str_sql) < 1) {
-                throw new Exception("No hubo filas afectadas");
-            }
-            */
-            
-        }
-        catch (SQLException ex){
-            // handle any errors
-            System.out.println("SQLException: " + ex.getMessage() + " sentencia: " + str_sql);
-            System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
-            
-            throw new Exception("Error al obtener registros");
-        }
-        finally {
-            // it is a good idea to release
-            // resources in a finally{} block
-            // in reverse-order of their creation
-            // if they are no-longer needed
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException sqlEx) {
-                    
-                } // ignore
-                stmt = null;
-            }
-        }
-        
-        return ret;
-    }
-    
-    public int insert(Connection p_conn) throws Exception {
-        
-        int ret = -1;
-        Statement stmt = null;
-        ResultSet rs = null;
-
-        String str_sql =
-            "    INSERT INTO ciudad" +
-            "    (" +
-            "    id_ciudad, " +
-            "    id_region, " +
-            "    ciudad " +
-            "    )" +
-            "    VALUES" +
-            "    (" +
-            "    " + (_id_ciudad != null ? _id_ciudad.toString() : "null") + "," +
-            "    " + (_id_region != null ? _id_region.toString() : "null") + "," +
-            "    " + (_ciudad != null ? "'" + _ciudad + "'" : "null") +
-            "    )";
-        
-        try {
-            stmt = p_conn.createStatement();
-            
-            ret = stmt.executeUpdate(str_sql, Statement.RETURN_GENERATED_KEYS);
-            /*
-            if (stmt.executeUpdate(str_sql) < 1) {
-                throw new Exception("No hubo filas afectadas");
-            }
-            */
-            
-            rs = stmt.getGeneratedKeys();
-
-            if (rs.next()) {
-                _id = rs.getInt(1);
-            } else {
-                // throw an exception from here
-                throw new Exception("Error al obtener id");
-            }
-
-            rs.close();
-            rs = null;
-            System.out.println("Key returned from getGeneratedKeys():" + _id.toString());
-                        
-        }
-        catch (SQLException ex){
-            // handle any errors
-            System.out.println("SQLException: " + ex.getMessage() + " sentencia: " + str_sql);
-            System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
-            
-            throw new Exception("Error al obtener registros");
-        }
-        finally {
-            // it is a good idea to release
-            // resources in a finally{} block
-            // in reverse-order of their creation
-            // if they are no-longer needed
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException sqlEx) { 
-                    
-                } // ignore
-                rs = null;
-            }
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException sqlEx) {
-                    
-                } // ignore
-                stmt = null;
-            }
-        }
-        
-        return ret;
-    }
-    
-    public static int delete(Connection p_conn, Integer p_id_ciudad) throws Exception {
-
-        int ret = -1;
-        Statement stmt = null;
-
-        String str_sql =
-            "  DELETE FROM ciudad";
-        
-        if (p_id_ciudad != null) {
-            str_sql +=
-                "  WHERE id_ciudad = " + p_id_ciudad.toString();
         }
         
         try {
@@ -1462,19 +1002,19 @@ import java.util.ArrayList;
  */
 public class Comuna {
     private Long _id;
-    private Long _id_ciudad;
+    private Long _id_region;
     private String _comuna;
 
     private final static String _str_sql = 
         "    SELECT " +
         "    id_comuna AS id, " +
-        "    id_ciudad, " +
+        "    id_region, " +
         "    comuna " +
         "    FROM comuna co ";
 
     public Comuna() {
         _id = null;
-        _id_ciudad = null;
+        _id_region = null;
         _comuna = null;
 
     }
@@ -1486,10 +1026,10 @@ public class Comuna {
         return _id;
     }
     /**
-     * @return the _id_ciudad
+     * @return the _id_region
      */
-    public Long get_id_ciudad() {
-        return _id_ciudad;
+    public Long get_id_region() {
+        return _id_region;
     }
     /**
      * @return the _comuna
@@ -1505,10 +1045,10 @@ public class Comuna {
         this._id = _id;
     }
     /**
-     * @param _id_ciudad the _id_ciudad to set
+     * @param _id_region the _id_region to set
      */
-    public void set_id_ciudad(Long _id_ciudad) {
-        this._id_ciudad = _id_ciudad;
+    public void set_id_region(Long _id_region) {
+        this._id_region = _id_region;
     }
     /**
      * @param _comuna the _comuna to set
@@ -1522,7 +1062,7 @@ public class Comuna {
 
         try {
             ret.set_id_comuna(p_rs.getLong("id_comuna"));
-            ret.set_id_ciudad(p_rs.getLong("id_ciudad"));
+            ret.set_id_region(p_rs.getLong("id_region"));
             ret.set_comuna(p_rs.getString("comuna"));
         }
         catch (SQLException ex){
@@ -1733,7 +1273,7 @@ public class Comuna {
             "    UPDATE comuna" +
             "    SET " +
             "    id_comuna AS id, " +
-            "    id_ciudad, " +
+            "    id_region, " +
             "    comuna " +
             "    WHERE id_comuna = " + Integer.toString(this._id);
         
@@ -1784,13 +1324,13 @@ public class Comuna {
             "    INSERT INTO comuna" +
             "    (" +
             "    id_comuna, " +
-            "    id_ciudad, " +
+            "    id_region, " +
             "    comuna " +
             "    )" +
             "    VALUES" +
             "    (" +
             "    " + (_id_comuna != null ? _id_comuna.toString() : "null") + "," +
-            "    " + (_id_ciudad != null ? _id_ciudad.toString() : "null") + "," +
+            "    " + (_id_region != null ? _id_region.toString() : "null") + "," +
             "    " + (_comuna != null ? "'" + _comuna + "'" : "null") +
             "    )";
         
@@ -9558,7 +9098,8 @@ import java.util.ArrayList;
  *
  */
 public class Rendimiento {
-    private Long _id;
+    private Long _id_rendimiento;
+    private Long _id_usuario;
     private Long _id_vehiculo;
     private Integer _km;
     private Integer _litros;
@@ -9570,7 +9111,8 @@ public class Rendimiento {
 
     private final static String _str_sql = 
         "    SELECT " +
-        "    id_rendimiento AS id, " +
+        "    id_rendimiento, " +
+        "    id_usuario, " +
         "    id_vehiculo, " +
         "    km, " +
         "    litros, " +
@@ -9582,7 +9124,8 @@ public class Rendimiento {
         "    FROM rendimiento re ";
 
     public Rendimiento() {
-        _id = null;
+        _id_rendimiento = null;
+        _id_usuario = null;
         _id_vehiculo = null;
         _km = null;
         _litros = null;
@@ -9595,10 +9138,16 @@ public class Rendimiento {
     }
 
     /**
-     * @return the _id
+     * @return the _id_rendimiento
      */
-    public Long get_id() {
-        return _id;
+    public Long get_id_rendimiento() {
+        return _id_rendimiento;
+    }
+    /**
+     * @return the _id_usuario
+     */
+    public Long get_id_usuario() {
+        return _id_usuario;
     }
     /**
      * @return the _id_vehiculo
@@ -9650,10 +9199,16 @@ public class Rendimiento {
     }
 
     /**
-     * @param _id the _id to set
+     * @param _id_rendimiento the _id_rendimiento to set
      */
-    public void set_id(Long _id) {
-        this._id = _id;
+    public void set_id_rendimiento(Long _id_rendimiento) {
+        this._id_rendimiento = _id_rendimiento;
+    }
+    /**
+     * @param _id_usuario the _id_usuario to set
+     */
+    public void set_id_usuario(Long _id_usuario) {
+        this._id_usuario = _id_usuario;
     }
     /**
      * @param _id_vehiculo the _id_vehiculo to set
@@ -9709,6 +9264,7 @@ public class Rendimiento {
 
         try {
             ret.set_id_rendimiento(p_rs.getLong("id_rendimiento"));
+            ret.set_id_usuario(p_rs.getLong("id_usuario"));
             ret.set_id_vehiculo(p_rs.getLong("id_vehiculo"));
             ret.set_km(p_rs.getInt("km"));
             ret.set_litros(p_rs.getInt("litros"));
@@ -9925,7 +9481,8 @@ public class Rendimiento {
         String str_sql =
             "    UPDATE rendimiento" +
             "    SET " +
-            "    id_rendimiento AS id, " +
+            "    id_rendimiento, " +
+            "    id_usuario, " +
             "    id_vehiculo, " +
             "    km, " +
             "    litros, " +
@@ -9983,6 +9540,7 @@ public class Rendimiento {
             "    INSERT INTO rendimiento" +
             "    (" +
             "    id_rendimiento, " +
+            "    id_usuario, " +
             "    id_vehiculo, " +
             "    km, " +
             "    litros, " +
@@ -9995,6 +9553,7 @@ public class Rendimiento {
             "    VALUES" +
             "    (" +
             "    " + (_id_rendimiento != null ? _id_rendimiento.toString() : "null") + "," +
+            "    " + (_id_usuario != null ? _id_usuario.toString() : "null") + "," +
             "    " + (_id_vehiculo != null ? _id_vehiculo.toString() : "null") + "," +
             "    " + (_km != null ? _km.toString() : "null") + "," +
             "    " + (_litros != null ? _litros.toString() : "null") + "," +

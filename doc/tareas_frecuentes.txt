@@ -1,6 +1,16 @@
 scp dsoft/java/Car/bd/scripts/create.sql lfhernandez@centauro:car/bd/scripts/create.sql
 
+scp dsoft/java/Car/bd/data/geografico.sql lfhernandez@centauro:car/bd/data/geografico.sql
+
 sh dsoft/java/MyORM/scripts/run.sh > dsoft/java/Car/doc/clases.txt
 
 sh dsoft/java/Car/scripts/data_load.sh
+
+mysqldump -u root --opt car > car_20140325.sql
+
+mysqldump -u root -t car > car_20140327_data.sql
+
+mysql -u root -f car < car_20140325_data.sql
+
+mysql -u root -f car < car/bd/data/geografico.sql
 
