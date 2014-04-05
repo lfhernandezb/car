@@ -15,29 +15,28 @@ import java.util.ArrayList;
  *
  */
 public class Combustible {
-    private Byte _id;
-    private String _descripcion;
-    private String _fecha_modificacion;
+private String _fecha_modificacion;
+private String _descripcion;
+private Byte _id;
 
     private final static String _str_sql = 
-        "    SELECT " +
-        "    id_combustible AS id, " +
-        "    descripcion, " +
-        "    DATE_FORMAT(co.fecha_modificacion, '%d-%m-%Y %H:%i:%s') AS fecha_modificacion " +
-        "    FROM combustible co ";
+        "    SELECT" +
+        "    DATE_FORMAT(co.fecha_modificacion, '%d-%m-%Y %H:%i:%s') AS fecha_modificacion," +
+        "    co.descripcion AS descripcion," +
+        "    co.id_combustible AS id" +
+        "    FROM combustible co";
 
     public Combustible() {
-        _id = null;
-        _descripcion = null;
         _fecha_modificacion = null;
+        _descripcion = null;
+        _id = null;
 
     }
-
     /**
-     * @return the _id
+     * @return the _fecha_modificacion
      */
-    public Byte get_id() {
-        return _id;
+    public String get_fecha_modificacion() {
+        return _fecha_modificacion;
     }
     /**
      * @return the _descripcion
@@ -46,17 +45,16 @@ public class Combustible {
         return _descripcion;
     }
     /**
-     * @return the _fecha_modificacion
+     * @return the _id
      */
-    public String get_fecha_modificacion() {
-        return _fecha_modificacion;
+    public Byte get_id() {
+        return _id;
     }
-
     /**
-     * @param _id the _id to set
+     * @param _fecha_modificacion the _fecha_modificacion to set
      */
-    public void set_id(Byte _id) {
-        this._id = _id;
+    public void set_fecha_modificacion(String _fecha_modificacion) {
+        this._fecha_modificacion = _fecha_modificacion;
     }
     /**
      * @param _descripcion the _descripcion to set
@@ -65,33 +63,23 @@ public class Combustible {
         this._descripcion = _descripcion;
     }
     /**
-     * @param _fecha_modificacion the _fecha_modificacion to set
+     * @param _id the _id to set
      */
-    public void set_fecha_modificacion(String _fecha_modificacion) {
-        this._fecha_modificacion = _fecha_modificacion;
+    public void set_id(Byte _id) {
+        this._id = _id;
     }
 
     public static Combustible fromRS(ResultSet p_rs) throws SQLException {
         Combustible ret = new Combustible();
 
-        try {
-            ret.set_id(p_rs.getByte("id"));
-            ret.set_descripcion(p_rs.getString("descripcion"));
-            ret.set_fecha_modificacion(p_rs.getString("fecha_modificacion"));
-        }
-        catch (SQLException ex){
-            // handle any errors
-            System.out.println("SQLException: " + ex.getMessage());
-            System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
-
-            throw ex;
-        }
+        ret.set_fecha_modificacion(p_rs.getString("fecha_modificacion"));
+        ret.set_descripcion(p_rs.getString("descripcion"));
+        ret.set_id(p_rs.getByte("id"));
 
         return ret;
     }
 
-    public static Combustible getByParameter(Connection p_conn, String p_key, String p_value) throws Exception {
+    public static Combustible getByParameter(Connection p_conn, String p_key, String p_value) throws SQLException {
         Combustible ret = null;
         
         String str_sql = _str_sql +
@@ -124,11 +112,7 @@ public class Combustible {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registro");
-        }
-        catch (Exception e){
-            // handle any errors
-            throw new Exception("Excepcion del tipo " + e.getClass() + " Info: " + e.getMessage());
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -176,32 +160,14 @@ public class Combustible {
             str_sql = _str_sql;
             
             for (AbstractMap.SimpleEntry<String, String> p : p_parameters) {
-                if (p.getKey().equals("id_comunidad")) {
-                    array_clauses.add("co.id_comunidad = " + p.getValue());
+                if (p.getKey().equals("id_combustible")) {
+                    array_clauses.add("co.id_combustible = " + p.getValue());
                 }
-                else if (p.getKey().equals("id_comuna")) {
-                    array_clauses.add("co.id_comuna = " + p.getValue());
-                }
-                else if (p.getKey().equals("latitud_mayor")) {
-                    array_clauses.add("co.latitud > " + p.getValue());
-                }
-                else if (p.getKey().equals("latitud_menor")) {
-                    array_clauses.add("co.latitud < " + p.getValue());
-                }
-                else if (p.getKey().equals("longitud_mayor")) {
-                    array_clauses.add("co.longitud > " + p.getValue());
-                }
-                else if (p.getKey().equals("longitud_menor")) {
-                    array_clauses.add("co.longitud < " + p.getValue());
-                }
-                else if (p.getKey().equals("posicion_reciente")) {
-                    array_clauses.add("co.fecha > DATE_ADD(now(), INTERVAL -" + p.getValue() + " MINUTE)");
-                }
-                else if (p.getKey().equals("id_distinto")) {
-                    array_clauses.add("co.id_usuario <> " + p.getValue());
+                else if (p.getKey().equals("mas reciente")) {
+                    array_clauses.add("co.fecha_modificacion > STR_TO_DATE('" + p.getValue() + "', '%d-%m-%Y %H:%i:%s')");
                 }
                 else {
-                	throw new Exception("Parametro no soportado: " + p.getKey());
+                    throw new Exception("Parametro no soportado: " + p.getKey());
                 }
             }
                                 
@@ -250,7 +216,7 @@ public class Combustible {
             throw ex;
         }
         catch (Exception ex) {
-        	throw ex;
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -278,19 +244,19 @@ public class Combustible {
         return ret;
     }
 
-    public int update(Connection p_conn) throws Exception {
+    public int update(Connection p_conn) throws SQLException {
 
         int ret = -1;
         Statement stmt = null;
 
         String str_sql =
             "    UPDATE combustible" +
-            "    SET " +
-            "    id_combustible, " +
-            "    descripcion, " +
-            "    DATE_FORMAT(co.fecha_modificacion, '%d-%m-%Y %H:%i:%s') AS fecha_modificacion " +
-            "    WHERE id_combustible = " + Integer.toString(this._id);
-        
+            "    SET" +
+            "    fecha_modificacion = " + (_fecha_modificacion != null ? "STR_TO_DATE(" + _fecha_modificacion + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") +
+            "    WHERE" +
+            "    id_combustible = Byte.toString(this._id)";
+
         try {
             stmt = p_conn.createStatement();
             
@@ -308,7 +274,7 @@ public class Combustible {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -328,7 +294,7 @@ public class Combustible {
         return ret;
     }
     
-    public int insert(Connection p_conn) throws Exception {
+    public int insert(Connection p_conn) throws SQLException {
         
         int ret = -1;
         Statement stmt = null;
@@ -337,40 +303,19 @@ public class Combustible {
         String str_sql =
             "    INSERT INTO combustible" +
             "    (" +
-            "    id_combustible, " +
             "    descripcion, " +
-            "    fecha_modificacion " +
-            "    )" +
+            "    id_combustible)" +
             "    VALUES" +
             "    (" +
-            "    " + (_id != null ? _id.toString() : "null") + "," +
             "    " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
-            "    " + (_fecha_modificacion != null ? "STR_TO_DATE(" + _fecha_modificacion + ", '%d-%m-%Y %H:%i:%s')" : "null") +
+            "    " + (_id != null ? "'" + _id + "'" : "null") +
             "    )";
         
         try {
             stmt = p_conn.createStatement();
             
-            ret = stmt.executeUpdate(str_sql, Statement.RETURN_GENERATED_KEYS);
-            /*
-            if (stmt.executeUpdate(str_sql) < 1) {
-                throw new Exception("No hubo filas afectadas");
-            }
-            */
-            
-            rs = stmt.getGeneratedKeys();
+            ret = stmt.executeUpdate(str_sql);
 
-            if (rs.next()) {
-                _id = rs.getByte(1);
-            } else {
-                // throw an exception from here
-                throw new Exception("Error al obtener id");
-            }
-
-            rs.close();
-            rs = null;
-            System.out.println("Key returned from getGeneratedKeys():" + _id.toString());
-                        
         }
         catch (SQLException ex){
             // handle any errors
@@ -378,7 +323,7 @@ public class Combustible {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -405,29 +350,21 @@ public class Combustible {
         
         return ret;
     }
-    
-    public static int delete(Connection p_conn, Integer p_id_combustible) throws Exception {
+
+    public int delete(Connection p_conn) throws SQLException {
 
         int ret = -1;
         Statement stmt = null;
 
         String str_sql =
-            "  DELETE FROM combustible";
-        
-        if (p_id_combustible != null) {
-            str_sql +=
-                "  WHERE id_combustible = " + p_id_combustible.toString();
-        }
-        
+            "    DELETE FROM combustible" +
+            "    WHERE" +
+            "    id_combustible = Byte.toString(this._id)";
+
         try {
             stmt = p_conn.createStatement();
             
             ret = stmt.executeUpdate(str_sql);
-            /*
-            if (stmt.executeUpdate(str_sql) < 1) {
-                throw new Exception("No hubo filas afectadas");
-            }
-            */
         }
         catch (SQLException ex){
             // handle any errors
@@ -435,7 +372,7 @@ public class Combustible {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al borrar registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release

@@ -1,5 +1,5 @@
-dsoft/java/MyORM/scripts/../lib/mysql-connector-java-5.1.22-bin.jar:dsoft/java/MyORM/scripts/../lib/log4j-1.2.17.jar:dsoft/java/MyORM/scripts/../lib/ini4j-0.5.2-SNAPSHOT.jar:dsoft/java/MyORM/scripts/../bin/MyORM.jar
-log4j: Using URL [file:dsoft/java/MyORM/scripts/../etc/log4j.xml] for automatic log4j configuration.
+dsoft/java/SQLiteORM/scripts/../lib/sqlite-jdbc4-3.8.2-SNAPSHOT.jar:dsoft/java/SQLiteORM/scripts/../lib/sqlite-jdbc-3.7.15-SNAPSHOT.jar:dsoft/java/SQLiteORM/scripts/../lib/mysql-connector-java-5.1.22-bin.jar:dsoft/java/SQLiteORM/scripts/../lib/log4j-1.2.17.jar:dsoft/java/SQLiteORM/scripts/../lib/ini4j-0.5.2-SNAPSHOT.jar:dsoft/java/SQLiteORM/scripts/../bin/SQLiteORM.jar
+log4j: Using URL [file:dsoft/java/SQLiteORM/scripts/../etc/log4j.xml] for automatic log4j configuration.
 log4j: Preferred configurator class: org.apache.log4j.xml.DOMConfigurator
 log4j: System property is :null
 log4j: Standard DocumentBuilderFactory search succeded.
@@ -23,9 +23,9 @@ log4j: Setting property [conversionPattern] to [%d{yyyy-MM-dd HH:mm:ss} [%t] %-5
 log4j: setFile called: /var/log/myorm.log, true
 log4j: setFile ended
 log4j: Adding appender named [R] to category [root].
-DEBUG [main] (MyORM.java:83) - conn: com.mysql.jdbc.JDBC4Connection@530cf2
-DEBUG [main] (MyORM.java:140) - table: autenticacion
-DEBUG [main] (MyORM.java:151) - columns:
+DEBUG [main] (SQLiteORM.java:82) - conn: org.sqlite.SQLiteConnection@8e32e7
+DEBUG [main] (SQLiteORM.java:139) - table: autenticacion
+DEBUG [main] (SQLiteORM.java:150) - columns:
 /**
  * 
  */
@@ -44,14 +44,14 @@ import java.util.ArrayList;
  */
 public class Autenticacion {
 private String _fecha;
-private Long _id_red_social;
+private Integer _id_red_social;
 private String _token;
-private Long _id_usuario;
-private Long _id;
+private Integer _id_usuario;
+private Integer _id;
 
     private final static String _str_sql = 
         "    SELECT" +
-        "    DATE_FORMAT(au.fecha, '%d-%m-%Y %H:%i:%s') AS fecha," +
+        "    au.fecha AS fecha," +
         "    au.id_red_social AS id_red_social," +
         "    au.token AS token," +
         "    au.id_usuario AS id_usuario," +
@@ -75,7 +75,7 @@ private Long _id;
     /**
      * @return the _id_red_social
      */
-    public Long get_id_red_social() {
+    public Integer get_id_red_social() {
         return _id_red_social;
     }
     /**
@@ -87,13 +87,13 @@ private Long _id;
     /**
      * @return the _id_usuario
      */
-    public Long get_id_usuario() {
+    public Integer get_id_usuario() {
         return _id_usuario;
     }
     /**
      * @return the _id
      */
-    public Long get_id() {
+    public Integer get_id() {
         return _id;
     }
     /**
@@ -105,7 +105,7 @@ private Long _id;
     /**
      * @param _id_red_social the _id_red_social to set
      */
-    public void set_id_red_social(Long _id_red_social) {
+    public void set_id_red_social(Integer _id_red_social) {
         this._id_red_social = _id_red_social;
     }
     /**
@@ -117,13 +117,13 @@ private Long _id;
     /**
      * @param _id_usuario the _id_usuario to set
      */
-    public void set_id_usuario(Long _id_usuario) {
+    public void set_id_usuario(Integer _id_usuario) {
         this._id_usuario = _id_usuario;
     }
     /**
      * @param _id the _id to set
      */
-    public void set_id(Long _id) {
+    public void set_id(Integer _id) {
         this._id = _id;
     }
 
@@ -131,10 +131,10 @@ private Long _id;
         Autenticacion ret = new Autenticacion();
 
         ret.set_fecha(p_rs.getString("fecha"));
-        ret.set_id_red_social(p_rs.getLong("id_red_social"));
+        ret.set_id_red_social(p_rs.getInt("id_red_social"));
         ret.set_token(p_rs.getString("token"));
-        ret.set_id_usuario(p_rs.getLong("id_usuario"));
-        ret.set_id(p_rs.getLong("id"));
+        ret.set_id_usuario(p_rs.getInt("id_usuario"));
+        ret.set_id(p_rs.getInt("id"));
 
         return ret;
     }
@@ -315,10 +315,10 @@ private Long _id;
         String str_sql =
             "    UPDATE autenticacion" +
             "    SET" +
-            "    fecha = " + (_fecha != null ? "STR_TO_DATE(" + _fecha + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    fecha = " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
             "    token = " + (_token != null ? "'" + _token + "'" : "null") +
             "    WHERE" +
-            "    id_autenticacion = Long.toString(this._id)";
+            "    id_autenticacion = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -373,7 +373,7 @@ private Long _id;
             "    id_autenticacion)" +
             "    VALUES" +
             "    (" +
-            "    " + (_fecha != null ? "STR_TO_DATE(" + _fecha + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
             "    " + (_id_red_social != null ? "'" + _id_red_social + "'" : "null") + "," +
             "    " + (_token != null ? "'" + _token + "'" : "null") + "," +
             "    " + (_id_usuario != null ? "'" + _id_usuario + "'" : "null") + "," +
@@ -428,7 +428,7 @@ private Long _id;
         String str_sql =
             "    DELETE FROM autenticacion" +
             "    WHERE" +
-            "    id_autenticacion = Long.toString(this._id)";
+            "    id_autenticacion = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -462,8 +462,8 @@ private Long _id;
     }
 }
 
-DEBUG [main] (MyORM.java:140) - table: combustible
-DEBUG [main] (MyORM.java:151) - columns:
+DEBUG [main] (SQLiteORM.java:139) - table: combustible
+DEBUG [main] (SQLiteORM.java:150) - columns:
 /**
  * 
  */
@@ -483,11 +483,11 @@ import java.util.ArrayList;
 public class Combustible {
 private String _fecha_modificacion;
 private String _descripcion;
-private Byte _id;
+private Integer _id;
 
     private final static String _str_sql = 
         "    SELECT" +
-        "    DATE_FORMAT(co.fecha_modificacion, '%d-%m-%Y %H:%i:%s') AS fecha_modificacion," +
+        "    co.fecha_modificacion AS fecha_modificacion," +
         "    co.descripcion AS descripcion," +
         "    co.id_combustible AS id" +
         "    FROM combustible co";
@@ -513,7 +513,7 @@ private Byte _id;
     /**
      * @return the _id
      */
-    public Byte get_id() {
+    public Integer get_id() {
         return _id;
     }
     /**
@@ -531,7 +531,7 @@ private Byte _id;
     /**
      * @param _id the _id to set
      */
-    public void set_id(Byte _id) {
+    public void set_id(Integer _id) {
         this._id = _id;
     }
 
@@ -540,7 +540,7 @@ private Byte _id;
 
         ret.set_fecha_modificacion(p_rs.getString("fecha_modificacion"));
         ret.set_descripcion(p_rs.getString("descripcion"));
-        ret.set_id(p_rs.getByte("id"));
+        ret.set_id(p_rs.getInt("id"));
 
         return ret;
     }
@@ -718,10 +718,10 @@ private Byte _id;
         String str_sql =
             "    UPDATE combustible" +
             "    SET" +
-            "    fecha_modificacion = " + (_fecha_modificacion != null ? "STR_TO_DATE(" + _fecha_modificacion + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    fecha_modificacion = " + (_fecha_modificacion != null ? "'" + _fecha_modificacion + "'" : "null") + "," +
             "    descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") +
             "    WHERE" +
-            "    id_combustible = Byte.toString(this._id)";
+            "    id_combustible = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -825,7 +825,7 @@ private Byte _id;
         String str_sql =
             "    DELETE FROM combustible" +
             "    WHERE" +
-            "    id_combustible = Byte.toString(this._id)";
+            "    id_combustible = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -859,8 +859,8 @@ private Byte _id;
     }
 }
 
-DEBUG [main] (MyORM.java:140) - table: comuna
-DEBUG [main] (MyORM.java:151) - columns:
+DEBUG [main] (SQLiteORM.java:139) - table: comuna
+DEBUG [main] (SQLiteORM.java:150) - columns:
 /**
  * 
  */
@@ -878,9 +878,9 @@ import java.util.ArrayList;
  *
  */
 public class Comuna {
-private Long _id_region;
+private Integer _id_region;
 private String _comuna;
-private Long _id;
+private Integer _id;
 
     private final static String _str_sql = 
         "    SELECT" +
@@ -898,7 +898,7 @@ private Long _id;
     /**
      * @return the _id_region
      */
-    public Long get_id_region() {
+    public Integer get_id_region() {
         return _id_region;
     }
     /**
@@ -910,13 +910,13 @@ private Long _id;
     /**
      * @return the _id
      */
-    public Long get_id() {
+    public Integer get_id() {
         return _id;
     }
     /**
      * @param _id_region the _id_region to set
      */
-    public void set_id_region(Long _id_region) {
+    public void set_id_region(Integer _id_region) {
         this._id_region = _id_region;
     }
     /**
@@ -928,16 +928,16 @@ private Long _id;
     /**
      * @param _id the _id to set
      */
-    public void set_id(Long _id) {
+    public void set_id(Integer _id) {
         this._id = _id;
     }
 
     public static Comuna fromRS(ResultSet p_rs) throws SQLException {
         Comuna ret = new Comuna();
 
-        ret.set_id_region(p_rs.getLong("id_region"));
+        ret.set_id_region(p_rs.getInt("id_region"));
         ret.set_comuna(p_rs.getString("comuna"));
-        ret.set_id(p_rs.getLong("id"));
+        ret.set_id(p_rs.getInt("id"));
 
         return ret;
     }
@@ -1117,7 +1117,7 @@ private Long _id;
             "    SET" +
             "    comuna = " + (_comuna != null ? "'" + _comuna + "'" : "null") +
             "    WHERE" +
-            "    id_comuna = Long.toString(this._id)";
+            "    id_comuna = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -1223,7 +1223,7 @@ private Long _id;
         String str_sql =
             "    DELETE FROM comuna" +
             "    WHERE" +
-            "    id_comuna = Long.toString(this._id)";
+            "    id_comuna = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -1257,8 +1257,8 @@ private Long _id;
     }
 }
 
-DEBUG [main] (MyORM.java:140) - table: estilo
-DEBUG [main] (MyORM.java:151) - columns:
+DEBUG [main] (SQLiteORM.java:139) - table: estilo
+DEBUG [main] (SQLiteORM.java:150) - columns:
 /**
  * 
  */
@@ -1277,12 +1277,12 @@ import java.util.ArrayList;
  */
 public class Estilo {
 private String _nombre;
-private Byte _puertas;
+private Integer _puertas;
 private String _traccion;
-private Long _id_modelo_anio;
-private Short _rendimiento_carretera;
-private Short _rendimiento_ciudad;
-private Long _id;
+private Integer _id_modelo_anio;
+private Integer _rendimiento_carretera;
+private Integer _rendimiento_ciudad;
+private Integer _id;
 
     private final static String _str_sql = 
         "    SELECT" +
@@ -1314,7 +1314,7 @@ private Long _id;
     /**
      * @return the _puertas
      */
-    public Byte get_puertas() {
+    public Integer get_puertas() {
         return _puertas;
     }
     /**
@@ -1326,25 +1326,25 @@ private Long _id;
     /**
      * @return the _id_modelo_anio
      */
-    public Long get_id_modelo_anio() {
+    public Integer get_id_modelo_anio() {
         return _id_modelo_anio;
     }
     /**
      * @return the _rendimiento_carretera
      */
-    public Short get_rendimiento_carretera() {
+    public Integer get_rendimiento_carretera() {
         return _rendimiento_carretera;
     }
     /**
      * @return the _rendimiento_ciudad
      */
-    public Short get_rendimiento_ciudad() {
+    public Integer get_rendimiento_ciudad() {
         return _rendimiento_ciudad;
     }
     /**
      * @return the _id
      */
-    public Long get_id() {
+    public Integer get_id() {
         return _id;
     }
     /**
@@ -1356,7 +1356,7 @@ private Long _id;
     /**
      * @param _puertas the _puertas to set
      */
-    public void set_puertas(Byte _puertas) {
+    public void set_puertas(Integer _puertas) {
         this._puertas = _puertas;
     }
     /**
@@ -1368,25 +1368,25 @@ private Long _id;
     /**
      * @param _id_modelo_anio the _id_modelo_anio to set
      */
-    public void set_id_modelo_anio(Long _id_modelo_anio) {
+    public void set_id_modelo_anio(Integer _id_modelo_anio) {
         this._id_modelo_anio = _id_modelo_anio;
     }
     /**
      * @param _rendimiento_carretera the _rendimiento_carretera to set
      */
-    public void set_rendimiento_carretera(Short _rendimiento_carretera) {
+    public void set_rendimiento_carretera(Integer _rendimiento_carretera) {
         this._rendimiento_carretera = _rendimiento_carretera;
     }
     /**
      * @param _rendimiento_ciudad the _rendimiento_ciudad to set
      */
-    public void set_rendimiento_ciudad(Short _rendimiento_ciudad) {
+    public void set_rendimiento_ciudad(Integer _rendimiento_ciudad) {
         this._rendimiento_ciudad = _rendimiento_ciudad;
     }
     /**
      * @param _id the _id to set
      */
-    public void set_id(Long _id) {
+    public void set_id(Integer _id) {
         this._id = _id;
     }
 
@@ -1394,12 +1394,12 @@ private Long _id;
         Estilo ret = new Estilo();
 
         ret.set_nombre(p_rs.getString("nombre"));
-        ret.set_puertas(p_rs.getByte("puertas"));
+        ret.set_puertas(p_rs.getInt("puertas"));
         ret.set_traccion(p_rs.getString("traccion"));
-        ret.set_id_modelo_anio(p_rs.getLong("id_modelo_anio"));
-        ret.set_rendimiento_carretera(p_rs.getShort("rendimiento_carretera"));
-        ret.set_rendimiento_ciudad(p_rs.getShort("rendimiento_ciudad"));
-        ret.set_id(p_rs.getLong("id"));
+        ret.set_id_modelo_anio(p_rs.getInt("id_modelo_anio"));
+        ret.set_rendimiento_carretera(p_rs.getInt("rendimiento_carretera"));
+        ret.set_rendimiento_ciudad(p_rs.getInt("rendimiento_ciudad"));
+        ret.set_id(p_rs.getInt("id"));
 
         return ret;
     }
@@ -1583,7 +1583,7 @@ private Long _id;
             "    rendimiento_carretera = " + (_rendimiento_carretera != null ? _rendimiento_carretera : "null") + "," +
             "    rendimiento_ciudad = " + (_rendimiento_ciudad != null ? _rendimiento_ciudad : "null") +
             "    WHERE" +
-            "    id_estilo = Long.toString(this._id)";
+            "    id_estilo = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -1697,7 +1697,7 @@ private Long _id;
         String str_sql =
             "    DELETE FROM estilo" +
             "    WHERE" +
-            "    id_estilo = Long.toString(this._id)";
+            "    id_estilo = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -1731,8 +1731,8 @@ private Long _id;
     }
 }
 
-DEBUG [main] (MyORM.java:140) - table: info_sincro
-DEBUG [main] (MyORM.java:151) - columns:
+DEBUG [main] (SQLiteORM.java:139) - table: info_sincro
+DEBUG [main] (SQLiteORM.java:150) - columns:
 /**
  * 
  */
@@ -1753,19 +1753,19 @@ public class Info_sincro {
 private Integer _id;
 private String _fecha;
 private String _fecha_fin_procesamiento;
-private Byte _sentido;
+private Integer _sentido;
 private String _fecha_lectura;
 private String _archivo_nombre;
 private String _archivo_md5;
-private Long _archivo_tamano;
+private Integer _archivo_tamano;
 
     private final static String _str_sql = 
         "    SELECT" +
         "    in.id_info_sincro AS id," +
-        "    DATE_FORMAT(in.fecha, '%d-%m-%Y %H:%i:%s') AS fecha," +
-        "    DATE_FORMAT(in.fecha_fin_procesamiento, '%d-%m-%Y %H:%i:%s') AS fecha_fin_procesamiento," +
+        "    in.fecha AS fecha," +
+        "    in.fecha_fin_procesamiento AS fecha_fin_procesamiento," +
         "    in.sentido AS sentido," +
-        "    DATE_FORMAT(in.fecha_lectura, '%d-%m-%Y %H:%i:%s') AS fecha_lectura," +
+        "    in.fecha_lectura AS fecha_lectura," +
         "    in.archivo_nombre AS archivo_nombre," +
         "    in.archivo_md5 AS archivo_md5," +
         "    in.archivo_tamano AS archivo_tamano" +
@@ -1803,7 +1803,7 @@ private Long _archivo_tamano;
     /**
      * @return the _sentido
      */
-    public Byte get_sentido() {
+    public Integer get_sentido() {
         return _sentido;
     }
     /**
@@ -1827,7 +1827,7 @@ private Long _archivo_tamano;
     /**
      * @return the _archivo_tamano
      */
-    public Long get_archivo_tamano() {
+    public Integer get_archivo_tamano() {
         return _archivo_tamano;
     }
     /**
@@ -1851,7 +1851,7 @@ private Long _archivo_tamano;
     /**
      * @param _sentido the _sentido to set
      */
-    public void set_sentido(Byte _sentido) {
+    public void set_sentido(Integer _sentido) {
         this._sentido = _sentido;
     }
     /**
@@ -1875,7 +1875,7 @@ private Long _archivo_tamano;
     /**
      * @param _archivo_tamano the _archivo_tamano to set
      */
-    public void set_archivo_tamano(Long _archivo_tamano) {
+    public void set_archivo_tamano(Integer _archivo_tamano) {
         this._archivo_tamano = _archivo_tamano;
     }
 
@@ -1885,11 +1885,11 @@ private Long _archivo_tamano;
         ret.set_id(p_rs.getInt("id"));
         ret.set_fecha(p_rs.getString("fecha"));
         ret.set_fecha_fin_procesamiento(p_rs.getString("fecha_fin_procesamiento"));
-        ret.set_sentido(p_rs.getByte("sentido"));
+        ret.set_sentido(p_rs.getInt("sentido"));
         ret.set_fecha_lectura(p_rs.getString("fecha_lectura"));
         ret.set_archivo_nombre(p_rs.getString("archivo_nombre"));
         ret.set_archivo_md5(p_rs.getString("archivo_md5"));
-        ret.set_archivo_tamano(p_rs.getLong("archivo_tamano"));
+        ret.set_archivo_tamano(p_rs.getInt("archivo_tamano"));
 
         return ret;
     }
@@ -2064,10 +2064,10 @@ private Long _archivo_tamano;
         String str_sql =
             "    UPDATE info_sincro" +
             "    SET" +
-            "    fecha = " + (_fecha != null ? "STR_TO_DATE(" + _fecha + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
-            "    fecha_fin_procesamiento = " + (_fecha_fin_procesamiento != null ? "STR_TO_DATE(" + _fecha_fin_procesamiento + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    fecha = " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
+            "    fecha_fin_procesamiento = " + (_fecha_fin_procesamiento != null ? "'" + _fecha_fin_procesamiento + "'" : "null") + "," +
             "    sentido = " + (_sentido != null ? _sentido : "null") + "," +
-            "    fecha_lectura = " + (_fecha_lectura != null ? "STR_TO_DATE(" + _fecha_lectura + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    fecha_lectura = " + (_fecha_lectura != null ? "'" + _fecha_lectura + "'" : "null") + "," +
             "    archivo_nombre = " + (_archivo_nombre != null ? "'" + _archivo_nombre + "'" : "null") + "," +
             "    archivo_md5 = " + (_archivo_md5 != null ? "'" + _archivo_md5 + "'" : "null") + "," +
             "    archivo_tamano = " + (_archivo_tamano != null ? _archivo_tamano : "null") +
@@ -2131,10 +2131,10 @@ private Long _archivo_tamano;
             "    VALUES" +
             "    (" +
             "    " + (_id_info_sincro != null ? "'" + _id_info_sincro + "'" : "null") + "," +
-            "    " + (_fecha != null ? "STR_TO_DATE(" + _fecha + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
-            "    " + (_fecha_fin_procesamiento != null ? "STR_TO_DATE(" + _fecha_fin_procesamiento + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
+            "    " + (_fecha_fin_procesamiento != null ? "'" + _fecha_fin_procesamiento + "'" : "null") + "," +
             "    " + (_sentido != null ? "'" + _sentido + "'" : "null") + "," +
-            "    " + (_fecha_lectura != null ? "STR_TO_DATE(" + _fecha_lectura + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    " + (_fecha_lectura != null ? "'" + _fecha_lectura + "'" : "null") + "," +
             "    " + (_archivo_nombre != null ? "'" + _archivo_nombre + "'" : "null") + "," +
             "    " + (_archivo_md5 != null ? "'" + _archivo_md5 + "'" : "null") + "," +
             "    " + (_archivo_tamano != null ? "'" + _archivo_tamano + "'" : "null") +
@@ -2222,8 +2222,8 @@ private Long _archivo_tamano;
     }
 }
 
-DEBUG [main] (MyORM.java:140) - table: log
-DEBUG [main] (MyORM.java:151) - columns:
+DEBUG [main] (SQLiteORM.java:139) - table: log
+DEBUG [main] (SQLiteORM.java:150) - columns:
 /**
  * 
  */
@@ -2241,26 +2241,26 @@ import java.util.ArrayList;
  *
  */
 public class Log {
-private Long _id_tipo_vehiculo;
+private Integer _id_tipo_vehiculo;
 private String _fecha;
-private Long _id_usuario;
-private Long _id_vehiculo;
-private Double _latitud;
-private Long _id;
-private Long _id_modelo;
-private Double _longitud;
+private Integer _id_usuario;
+private Integer _id_vehiculo;
+private Float _latitud;
+private Integer _id_log;
+private Integer _id_modelo;
+private Float _longitud;
 private String _accion;
 private Integer _km;
-private Long _id_marca;
+private Integer _id_marca;
 
     private final static String _str_sql = 
         "    SELECT" +
         "    lo.id_tipo_vehiculo AS id_tipo_vehiculo," +
-        "    DATE_FORMAT(lo.fecha, '%d-%m-%Y %H:%i:%s') AS fecha," +
+        "    lo.fecha AS fecha," +
         "    lo.id_usuario AS id_usuario," +
         "    lo.id_vehiculo AS id_vehiculo," +
         "    lo.latitud AS latitud," +
-        "    lo.id_log AS id," +
+        "    lo.id_log AS id_log," +
         "    lo.id_modelo AS id_modelo," +
         "    lo.longitud AS longitud," +
         "    lo.accion AS accion," +
@@ -2274,7 +2274,7 @@ private Long _id_marca;
         _id_usuario = null;
         _id_vehiculo = null;
         _latitud = null;
-        _id = null;
+        _id_log = null;
         _id_modelo = null;
         _longitud = null;
         _accion = null;
@@ -2285,7 +2285,7 @@ private Long _id_marca;
     /**
      * @return the _id_tipo_vehiculo
      */
-    public Long get_id_tipo_vehiculo() {
+    public Integer get_id_tipo_vehiculo() {
         return _id_tipo_vehiculo;
     }
     /**
@@ -2297,37 +2297,37 @@ private Long _id_marca;
     /**
      * @return the _id_usuario
      */
-    public Long get_id_usuario() {
+    public Integer get_id_usuario() {
         return _id_usuario;
     }
     /**
      * @return the _id_vehiculo
      */
-    public Long get_id_vehiculo() {
+    public Integer get_id_vehiculo() {
         return _id_vehiculo;
     }
     /**
      * @return the _latitud
      */
-    public Double get_latitud() {
+    public Float get_latitud() {
         return _latitud;
     }
     /**
-     * @return the _id
+     * @return the _id_log
      */
-    public Long get_id() {
-        return _id;
+    public Integer get_id_log() {
+        return _id_log;
     }
     /**
      * @return the _id_modelo
      */
-    public Long get_id_modelo() {
+    public Integer get_id_modelo() {
         return _id_modelo;
     }
     /**
      * @return the _longitud
      */
-    public Double get_longitud() {
+    public Float get_longitud() {
         return _longitud;
     }
     /**
@@ -2345,13 +2345,13 @@ private Long _id_marca;
     /**
      * @return the _id_marca
      */
-    public Long get_id_marca() {
+    public Integer get_id_marca() {
         return _id_marca;
     }
     /**
      * @param _id_tipo_vehiculo the _id_tipo_vehiculo to set
      */
-    public void set_id_tipo_vehiculo(Long _id_tipo_vehiculo) {
+    public void set_id_tipo_vehiculo(Integer _id_tipo_vehiculo) {
         this._id_tipo_vehiculo = _id_tipo_vehiculo;
     }
     /**
@@ -2363,37 +2363,37 @@ private Long _id_marca;
     /**
      * @param _id_usuario the _id_usuario to set
      */
-    public void set_id_usuario(Long _id_usuario) {
+    public void set_id_usuario(Integer _id_usuario) {
         this._id_usuario = _id_usuario;
     }
     /**
      * @param _id_vehiculo the _id_vehiculo to set
      */
-    public void set_id_vehiculo(Long _id_vehiculo) {
+    public void set_id_vehiculo(Integer _id_vehiculo) {
         this._id_vehiculo = _id_vehiculo;
     }
     /**
      * @param _latitud the _latitud to set
      */
-    public void set_latitud(Double _latitud) {
+    public void set_latitud(Float _latitud) {
         this._latitud = _latitud;
     }
     /**
-     * @param _id the _id to set
+     * @param _id_log the _id_log to set
      */
-    public void set_id(Long _id) {
-        this._id = _id;
+    public void set_id_log(Integer _id_log) {
+        this._id_log = _id_log;
     }
     /**
      * @param _id_modelo the _id_modelo to set
      */
-    public void set_id_modelo(Long _id_modelo) {
+    public void set_id_modelo(Integer _id_modelo) {
         this._id_modelo = _id_modelo;
     }
     /**
      * @param _longitud the _longitud to set
      */
-    public void set_longitud(Double _longitud) {
+    public void set_longitud(Float _longitud) {
         this._longitud = _longitud;
     }
     /**
@@ -2411,24 +2411,24 @@ private Long _id_marca;
     /**
      * @param _id_marca the _id_marca to set
      */
-    public void set_id_marca(Long _id_marca) {
+    public void set_id_marca(Integer _id_marca) {
         this._id_marca = _id_marca;
     }
 
     public static Log fromRS(ResultSet p_rs) throws SQLException {
         Log ret = new Log();
 
-        ret.set_id_tipo_vehiculo(p_rs.getLong("id_tipo_vehiculo"));
+        ret.set_id_tipo_vehiculo(p_rs.getInt("id_tipo_vehiculo"));
         ret.set_fecha(p_rs.getString("fecha"));
-        ret.set_id_usuario(p_rs.getLong("id_usuario"));
-        ret.set_id_vehiculo(p_rs.getLong("id_vehiculo"));
-        ret.set_latitud(p_rs.getDouble("latitud"));
-        ret.set_id(p_rs.getLong("id"));
-        ret.set_id_modelo(p_rs.getLong("id_modelo"));
-        ret.set_longitud(p_rs.getDouble("longitud"));
+        ret.set_id_usuario(p_rs.getInt("id_usuario"));
+        ret.set_id_vehiculo(p_rs.getInt("id_vehiculo"));
+        ret.set_latitud(p_rs.getFloat("latitud"));
+        ret.set_id_log(p_rs.getInt("id_log"));
+        ret.set_id_modelo(p_rs.getInt("id_modelo"));
+        ret.set_longitud(p_rs.getFloat("longitud"));
         ret.set_accion(p_rs.getString("accion"));
         ret.set_km(p_rs.getInt("km"));
-        ret.set_id_marca(p_rs.getLong("id_marca"));
+        ret.set_id_marca(p_rs.getInt("id_marca"));
 
         return ret;
     }
@@ -2494,9 +2494,6 @@ private Long _id_marca;
         return ret;        
     }
 
-    public static Log getById(Connection p_conn, String p_id) throws Exception {
-        return getByParameter(p_conn, "id_log", p_id);
-    }
     
     public static ArrayList<Log> seek(Connection p_conn, ArrayList<AbstractMap.SimpleEntry<String, String>> p_parameters, String p_order, String p_direction, int p_offset, int p_limit) throws Exception {
         Statement stmt = null;
@@ -2514,7 +2511,10 @@ private Long _id_marca;
             str_sql = _str_sql;
             
             for (AbstractMap.SimpleEntry<String, String> p : p_parameters) {
-                if (p.getKey().equals("id_log")) {
+                if (p.getKey().equals("id_usuario")) {
+                    array_clauses.add("lo.id_usuario = " + p.getValue());
+                }
+                else if (p.getKey().equals("id_log")) {
                     array_clauses.add("lo.id_log = " + p.getValue());
                 }
                 else {
@@ -2604,8 +2604,7 @@ private Long _id_marca;
             "    UPDATE log" +
             "    SET" +
             "    id_tipo_vehiculo = " + (_id_tipo_vehiculo != null ? _id_tipo_vehiculo : "null") + "," +
-            "    fecha = " + (_fecha != null ? "STR_TO_DATE(" + _fecha + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
-            "    id_usuario = " + (_id_usuario != null ? _id_usuario : "null") + "," +
+            "    fecha = " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
             "    id_vehiculo = " + (_id_vehiculo != null ? _id_vehiculo : "null") + "," +
             "    latitud = " + (_latitud != null ? _latitud : "null") + "," +
             "    id_modelo = " + (_id_modelo != null ? _id_modelo : "null") + "," +
@@ -2614,7 +2613,8 @@ private Long _id_marca;
             "    km = " + (_km != null ? _km : "null") + "," +
             "    id_marca = " + (_id_marca != null ? _id_marca : "null") +
             "    WHERE" +
-            "    id_log = Long.toString(this._id)";
+            "    id_usuario = Integer.toString(this._id_usuario)" AND
+            "    id_log = Integer.toString(this._id_log)";
 
         try {
             stmt = p_conn.createStatement();
@@ -2734,7 +2734,8 @@ private Long _id_marca;
         String str_sql =
             "    DELETE FROM log" +
             "    WHERE" +
-            "    id_log = Long.toString(this._id)";
+            "    id_usuario = Integer.toString(this._id_usuario)" AND
+            "    id_log = Integer.toString(this._id_log)";
 
         try {
             stmt = p_conn.createStatement();
@@ -2768,8 +2769,8 @@ private Long _id_marca;
     }
 }
 
-DEBUG [main] (MyORM.java:140) - table: mantencion_base
-DEBUG [main] (MyORM.java:151) - columns:
+DEBUG [main] (SQLiteORM.java:139) - table: mantencion_base
+DEBUG [main] (SQLiteORM.java:150) - columns:
 /**
  * 
  */
@@ -2791,13 +2792,13 @@ private Integer _dias_entre_mantenciones;
 private String _tipo_transmision;
 private String _codigo_motor;
 private Integer _km_entre_mantenciones;
-private Boolean _depende_km;
+private String _depende_km;
 private String _accion;
 private String _url;
 private String _descripcion_item;
 private String _fecha_modificacion;
-private Long _id_modelo_anio;
-private Long _id;
+private Integer _id_modelo_anio;
+private Integer _id;
 private String _item;
 private String _tipo_traccion;
 private String _beneficios;
@@ -2808,11 +2809,11 @@ private String _beneficios;
         "    ma.tipo_transmision AS tipo_transmision," +
         "    ma.codigo_motor AS codigo_motor," +
         "    ma.km_entre_mantenciones AS km_entre_mantenciones," +
-        "    0+ma.depende_km AS depende_km," +
+        "    ma.depende_km AS depende_km," +
         "    ma.accion AS accion," +
         "    ma.url AS url," +
         "    ma.descripcion_item AS descripcion_item," +
-        "    DATE_FORMAT(ma.fecha_modificacion, '%d-%m-%Y %H:%i:%s') AS fecha_modificacion," +
+        "    ma.fecha_modificacion AS fecha_modificacion," +
         "    ma.id_modelo_anio AS id_modelo_anio," +
         "    ma.id_mantencion_base AS id," +
         "    ma.item AS item," +
@@ -2864,7 +2865,7 @@ private String _beneficios;
     /**
      * @return the _depende_km
      */
-    public Boolean get_depende_km() {
+    public String get_depende_km() {
         return _depende_km;
     }
     /**
@@ -2894,13 +2895,13 @@ private String _beneficios;
     /**
      * @return the _id_modelo_anio
      */
-    public Long get_id_modelo_anio() {
+    public Integer get_id_modelo_anio() {
         return _id_modelo_anio;
     }
     /**
      * @return the _id
      */
-    public Long get_id() {
+    public Integer get_id() {
         return _id;
     }
     /**
@@ -2948,7 +2949,7 @@ private String _beneficios;
     /**
      * @param _depende_km the _depende_km to set
      */
-    public void set_depende_km(Boolean _depende_km) {
+    public void set_depende_km(String _depende_km) {
         this._depende_km = _depende_km;
     }
     /**
@@ -2978,13 +2979,13 @@ private String _beneficios;
     /**
      * @param _id_modelo_anio the _id_modelo_anio to set
      */
-    public void set_id_modelo_anio(Long _id_modelo_anio) {
+    public void set_id_modelo_anio(Integer _id_modelo_anio) {
         this._id_modelo_anio = _id_modelo_anio;
     }
     /**
      * @param _id the _id to set
      */
-    public void set_id(Long _id) {
+    public void set_id(Integer _id) {
         this._id = _id;
     }
     /**
@@ -3013,13 +3014,13 @@ private String _beneficios;
         ret.set_tipo_transmision(p_rs.getString("tipo_transmision"));
         ret.set_codigo_motor(p_rs.getString("codigo_motor"));
         ret.set_km_entre_mantenciones(p_rs.getInt("km_entre_mantenciones"));
-        ret.set_depende_km(p_rs.getBoolean("depende_km"));
+        ret.set_depende_km(p_rs.getString("depende_km"));
         ret.set_accion(p_rs.getString("accion"));
         ret.set_url(p_rs.getString("url"));
         ret.set_descripcion_item(p_rs.getString("descripcion_item"));
         ret.set_fecha_modificacion(p_rs.getString("fecha_modificacion"));
-        ret.set_id_modelo_anio(p_rs.getLong("id_modelo_anio"));
-        ret.set_id(p_rs.getLong("id"));
+        ret.set_id_modelo_anio(p_rs.getInt("id_modelo_anio"));
+        ret.set_id(p_rs.getInt("id"));
         ret.set_item(p_rs.getString("item"));
         ret.set_tipo_traccion(p_rs.getString("tipo_traccion"));
         ret.set_beneficios(p_rs.getString("beneficios"));
@@ -3207,16 +3208,16 @@ private String _beneficios;
             "    tipo_transmision = " + (_tipo_transmision != null ? "'" + _tipo_transmision + "'" : "null") + "," +
             "    codigo_motor = " + (_codigo_motor != null ? "'" + _codigo_motor + "'" : "null") + "," +
             "    km_entre_mantenciones = " + (_km_entre_mantenciones != null ? _km_entre_mantenciones : "null") + "," +
-            "    depende_km = " + (_depende_km != null ? "b'" + _depende_km : "null") + "," +
+            "    depende_km = " + (_depende_km != null ? "'" + _depende_km + "'" : "null") + "," +
             "    accion = " + (_accion != null ? "'" + _accion + "'" : "null") + "," +
             "    url = " + (_url != null ? "'" + _url + "'" : "null") + "," +
             "    descripcion_item = " + (_descripcion_item != null ? "'" + _descripcion_item + "'" : "null") + "," +
-            "    fecha_modificacion = " + (_fecha_modificacion != null ? "STR_TO_DATE(" + _fecha_modificacion + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    fecha_modificacion = " + (_fecha_modificacion != null ? "'" + _fecha_modificacion + "'" : "null") + "," +
             "    item = " + (_item != null ? "'" + _item + "'" : "null") + "," +
             "    tipo_traccion = " + (_tipo_traccion != null ? "'" + _tipo_traccion + "'" : "null") + "," +
             "    beneficios = " + (_beneficios != null ? "'" + _beneficios + "'" : "null") +
             "    WHERE" +
-            "    id_mantencion_base = Long.toString(this._id)";
+            "    id_mantencion_base = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -3283,7 +3284,7 @@ private String _beneficios;
             "    " + (_tipo_transmision != null ? "'" + _tipo_transmision + "'" : "null") + "," +
             "    " + (_codigo_motor != null ? "'" + _codigo_motor + "'" : "null") + "," +
             "    " + (_km_entre_mantenciones != null ? "'" + _km_entre_mantenciones + "'" : "null") + "," +
-            "    " + (_depende_km != null ? "b'" + (_depende_km ? 1 : 0) + "'" : "null") + "," +
+            "    " + (_depende_km != null ? "'" + _depende_km + "'" : "null") + "," +
             "    " + (_accion != null ? "'" + _accion + "'" : "null") + "," +
             "    " + (_url != null ? "'" + _url + "'" : "null") + "," +
             "    " + (_descripcion_item != null ? "'" + _descripcion_item + "'" : "null") + "," +
@@ -3342,7 +3343,7 @@ private String _beneficios;
         String str_sql =
             "    DELETE FROM mantencion_base" +
             "    WHERE" +
-            "    id_mantencion_base = Long.toString(this._id)";
+            "    id_mantencion_base = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -3376,8 +3377,8 @@ private String _beneficios;
     }
 }
 
-DEBUG [main] (MyORM.java:140) - table: mantencion_usuario
-DEBUG [main] (MyORM.java:151) - columns:
+DEBUG [main] (SQLiteORM.java:139) - table: mantencion_usuario
+DEBUG [main] (SQLiteORM.java:150) - columns:
 /**
  * 
  */
@@ -3397,16 +3398,16 @@ import java.util.ArrayList;
 public class Mantencion_usuario {
 private Integer _KmEntreMantenciones;
 private String _descripcion;
-private Long _id_mantencion_usuario;
+private Integer _id_mantencion_usuario;
 private String _mantencion_usuariocol;
-private Boolean _DependeKm;
-private Boolean _mantecion_base;
+private String _DependeKm;
+private Integer _mantecion_base;
 private String _nombre;
 private String _MantencionUsuariocol;
 private String _fecha_modificacion;
-private Long _id_usuario;
-private Long _id_mantencion_base;
-private Long _id_vehiculo;
+private Integer _id_usuario;
+private Integer _id_mantencion_base;
+private Integer _id_vehiculo;
 private Integer _DiasEntreMantenciones;
 private String _URL;
 private String _beneficios;
@@ -3417,11 +3418,11 @@ private String _beneficios;
         "    ma.descripcion AS descripcion," +
         "    ma.id_mantencion_usuario AS id_mantencion_usuario," +
         "    ma.mantencion_usuariocol AS mantencion_usuariocol," +
-        "    0+ma.DependeKm AS DependeKm," +
-        "    0+ma.mantecion_base AS mantecion_base," +
+        "    ma.DependeKm AS DependeKm," +
+        "    ma.mantecion_base AS mantecion_base," +
         "    ma.nombre AS nombre," +
         "    ma.MantencionUsuariocol AS MantencionUsuariocol," +
-        "    DATE_FORMAT(ma.fecha_modificacion, '%d-%m-%Y %H:%i:%s') AS fecha_modificacion," +
+        "    ma.fecha_modificacion AS fecha_modificacion," +
         "    ma.id_usuario AS id_usuario," +
         "    ma.id_mantencion_base AS id_mantencion_base," +
         "    ma.id_vehiculo AS id_vehiculo," +
@@ -3463,7 +3464,7 @@ private String _beneficios;
     /**
      * @return the _id_mantencion_usuario
      */
-    public Long get_id_mantencion_usuario() {
+    public Integer get_id_mantencion_usuario() {
         return _id_mantencion_usuario;
     }
     /**
@@ -3475,13 +3476,13 @@ private String _beneficios;
     /**
      * @return the _DependeKm
      */
-    public Boolean get_DependeKm() {
+    public String get_DependeKm() {
         return _DependeKm;
     }
     /**
      * @return the _mantecion_base
      */
-    public Boolean get_mantecion_base() {
+    public Integer get_mantecion_base() {
         return _mantecion_base;
     }
     /**
@@ -3505,19 +3506,19 @@ private String _beneficios;
     /**
      * @return the _id_usuario
      */
-    public Long get_id_usuario() {
+    public Integer get_id_usuario() {
         return _id_usuario;
     }
     /**
      * @return the _id_mantencion_base
      */
-    public Long get_id_mantencion_base() {
+    public Integer get_id_mantencion_base() {
         return _id_mantencion_base;
     }
     /**
      * @return the _id_vehiculo
      */
-    public Long get_id_vehiculo() {
+    public Integer get_id_vehiculo() {
         return _id_vehiculo;
     }
     /**
@@ -3553,7 +3554,7 @@ private String _beneficios;
     /**
      * @param _id_mantencion_usuario the _id_mantencion_usuario to set
      */
-    public void set_id_mantencion_usuario(Long _id_mantencion_usuario) {
+    public void set_id_mantencion_usuario(Integer _id_mantencion_usuario) {
         this._id_mantencion_usuario = _id_mantencion_usuario;
     }
     /**
@@ -3565,13 +3566,13 @@ private String _beneficios;
     /**
      * @param _DependeKm the _DependeKm to set
      */
-    public void set_DependeKm(Boolean _DependeKm) {
+    public void set_DependeKm(String _DependeKm) {
         this._DependeKm = _DependeKm;
     }
     /**
      * @param _mantecion_base the _mantecion_base to set
      */
-    public void set_mantecion_base(Boolean _mantecion_base) {
+    public void set_mantecion_base(Integer _mantecion_base) {
         this._mantecion_base = _mantecion_base;
     }
     /**
@@ -3595,19 +3596,19 @@ private String _beneficios;
     /**
      * @param _id_usuario the _id_usuario to set
      */
-    public void set_id_usuario(Long _id_usuario) {
+    public void set_id_usuario(Integer _id_usuario) {
         this._id_usuario = _id_usuario;
     }
     /**
      * @param _id_mantencion_base the _id_mantencion_base to set
      */
-    public void set_id_mantencion_base(Long _id_mantencion_base) {
+    public void set_id_mantencion_base(Integer _id_mantencion_base) {
         this._id_mantencion_base = _id_mantencion_base;
     }
     /**
      * @param _id_vehiculo the _id_vehiculo to set
      */
-    public void set_id_vehiculo(Long _id_vehiculo) {
+    public void set_id_vehiculo(Integer _id_vehiculo) {
         this._id_vehiculo = _id_vehiculo;
     }
     /**
@@ -3634,16 +3635,16 @@ private String _beneficios;
 
         ret.set_KmEntreMantenciones(p_rs.getInt("KmEntreMantenciones"));
         ret.set_descripcion(p_rs.getString("descripcion"));
-        ret.set_id_mantencion_usuario(p_rs.getLong("id_mantencion_usuario"));
+        ret.set_id_mantencion_usuario(p_rs.getInt("id_mantencion_usuario"));
         ret.set_mantencion_usuariocol(p_rs.getString("mantencion_usuariocol"));
-        ret.set_DependeKm(p_rs.getBoolean("DependeKm"));
-        ret.set_mantecion_base(p_rs.getBoolean("mantecion_base"));
+        ret.set_DependeKm(p_rs.getString("DependeKm"));
+        ret.set_mantecion_base(p_rs.getInt("mantecion_base"));
         ret.set_nombre(p_rs.getString("nombre"));
         ret.set_MantencionUsuariocol(p_rs.getString("MantencionUsuariocol"));
         ret.set_fecha_modificacion(p_rs.getString("fecha_modificacion"));
-        ret.set_id_usuario(p_rs.getLong("id_usuario"));
-        ret.set_id_mantencion_base(p_rs.getLong("id_mantencion_base"));
-        ret.set_id_vehiculo(p_rs.getLong("id_vehiculo"));
+        ret.set_id_usuario(p_rs.getInt("id_usuario"));
+        ret.set_id_mantencion_base(p_rs.getInt("id_mantencion_base"));
+        ret.set_id_vehiculo(p_rs.getInt("id_vehiculo"));
         ret.set_DiasEntreMantenciones(p_rs.getInt("DiasEntreMantenciones"));
         ret.set_URL(p_rs.getString("URL"));
         ret.set_beneficios(p_rs.getString("beneficios"));
@@ -3833,18 +3834,18 @@ private String _beneficios;
             "    KmEntreMantenciones = " + (_KmEntreMantenciones != null ? _KmEntreMantenciones : "null") + "," +
             "    descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
             "    mantencion_usuariocol = " + (_mantencion_usuariocol != null ? "'" + _mantencion_usuariocol + "'" : "null") + "," +
-            "    DependeKm = " + (_DependeKm != null ? "b'" + _DependeKm : "null") + "," +
-            "    mantecion_base = " + (_mantecion_base != null ? "b'" + _mantecion_base : "null") + "," +
+            "    DependeKm = " + (_DependeKm != null ? "'" + _DependeKm + "'" : "null") + "," +
+            "    mantecion_base = " + (_mantecion_base != null ? _mantecion_base : "null") + "," +
             "    nombre = " + (_nombre != null ? "'" + _nombre + "'" : "null") + "," +
             "    MantencionUsuariocol = " + (_MantencionUsuariocol != null ? "'" + _MantencionUsuariocol + "'" : "null") + "," +
-            "    fecha_modificacion = " + (_fecha_modificacion != null ? "STR_TO_DATE(" + _fecha_modificacion + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    fecha_modificacion = " + (_fecha_modificacion != null ? "'" + _fecha_modificacion + "'" : "null") + "," +
             "    id_mantencion_base = " + (_id_mantencion_base != null ? _id_mantencion_base : "null") + "," +
             "    DiasEntreMantenciones = " + (_DiasEntreMantenciones != null ? _DiasEntreMantenciones : "null") + "," +
             "    URL = " + (_URL != null ? "'" + _URL + "'" : "null") + "," +
             "    beneficios = " + (_beneficios != null ? "'" + _beneficios + "'" : "null") +
             "    WHERE" +
-            "    id_usuario = Long.toString(this._id_usuario)" AND
-            "    id_mantencion_usuario = Long.toString(this._id_mantencion_usuario)";
+            "    id_usuario = Integer.toString(this._id_usuario)" AND
+            "    id_mantencion_usuario = Integer.toString(this._id_mantencion_usuario)";
 
         try {
             stmt = p_conn.createStatement();
@@ -3912,8 +3913,8 @@ private String _beneficios;
             "    " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
             "    " + (_id_mantencion_usuario != null ? "'" + _id_mantencion_usuario + "'" : "null") + "," +
             "    " + (_mantencion_usuariocol != null ? "'" + _mantencion_usuariocol + "'" : "null") + "," +
-            "    " + (_DependeKm != null ? "b'" + (_DependeKm ? 1 : 0) + "'" : "null") + "," +
-            "    " + (_mantecion_base != null ? "b'" + (_mantecion_base ? 1 : 0) + "'" : "null") + "," +
+            "    " + (_DependeKm != null ? "'" + _DependeKm + "'" : "null") + "," +
+            "    " + (_mantecion_base != null ? "'" + _mantecion_base + "'" : "null") + "," +
             "    " + (_nombre != null ? "'" + _nombre + "'" : "null") + "," +
             "    " + (_MantencionUsuariocol != null ? "'" + _MantencionUsuariocol + "'" : "null") + "," +
             "    " + (_id_usuario != null ? "'" + _id_usuario + "'" : "null") + "," +
@@ -3972,8 +3973,8 @@ private String _beneficios;
         String str_sql =
             "    DELETE FROM mantencion_usuario" +
             "    WHERE" +
-            "    id_usuario = Long.toString(this._id_usuario)" AND
-            "    id_mantencion_usuario = Long.toString(this._id_mantencion_usuario)";
+            "    id_usuario = Integer.toString(this._id_usuario)" AND
+            "    id_mantencion_usuario = Integer.toString(this._id_mantencion_usuario)";
 
         try {
             stmt = p_conn.createStatement();
@@ -4007,8 +4008,8 @@ private String _beneficios;
     }
 }
 
-DEBUG [main] (MyORM.java:140) - table: mantencion_usuario_hecha
-DEBUG [main] (MyORM.java:151) - columns:
+DEBUG [main] (SQLiteORM.java:139) - table: mantencion_usuario_hecha
+DEBUG [main] (SQLiteORM.java:150) - columns:
 /**
  * 
  */
@@ -4027,14 +4028,14 @@ import java.util.ArrayList;
  */
 public class Mantencion_usuario_hecha {
 private String _fecha;
-private Long _id;
-private Long _id_mantencion_usuario;
+private Integer _id;
+private Integer _id_mantencion_usuario;
 private Integer _costo;
 private Integer _km;
 
     private final static String _str_sql = 
         "    SELECT" +
-        "    DATE_FORMAT(ma.fecha, '%d-%m-%Y %H:%i:%s') AS fecha," +
+        "    ma.fecha AS fecha," +
         "    ma.id_mantencion_usuario_hecha AS id," +
         "    ma.id_mantencion_usuario AS id_mantencion_usuario," +
         "    ma.costo AS costo," +
@@ -4058,13 +4059,13 @@ private Integer _km;
     /**
      * @return the _id
      */
-    public Long get_id() {
+    public Integer get_id() {
         return _id;
     }
     /**
      * @return the _id_mantencion_usuario
      */
-    public Long get_id_mantencion_usuario() {
+    public Integer get_id_mantencion_usuario() {
         return _id_mantencion_usuario;
     }
     /**
@@ -4088,13 +4089,13 @@ private Integer _km;
     /**
      * @param _id the _id to set
      */
-    public void set_id(Long _id) {
+    public void set_id(Integer _id) {
         this._id = _id;
     }
     /**
      * @param _id_mantencion_usuario the _id_mantencion_usuario to set
      */
-    public void set_id_mantencion_usuario(Long _id_mantencion_usuario) {
+    public void set_id_mantencion_usuario(Integer _id_mantencion_usuario) {
         this._id_mantencion_usuario = _id_mantencion_usuario;
     }
     /**
@@ -4114,8 +4115,8 @@ private Integer _km;
         Mantencion_usuario_hecha ret = new Mantencion_usuario_hecha();
 
         ret.set_fecha(p_rs.getString("fecha"));
-        ret.set_id(p_rs.getLong("id"));
-        ret.set_id_mantencion_usuario(p_rs.getLong("id_mantencion_usuario"));
+        ret.set_id(p_rs.getInt("id"));
+        ret.set_id_mantencion_usuario(p_rs.getInt("id_mantencion_usuario"));
         ret.set_costo(p_rs.getInt("costo"));
         ret.set_km(p_rs.getInt("km"));
 
@@ -4295,11 +4296,11 @@ private Integer _km;
         String str_sql =
             "    UPDATE mantencion_usuario_hecha" +
             "    SET" +
-            "    fecha = " + (_fecha != null ? "STR_TO_DATE(" + _fecha + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    fecha = " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
             "    costo = " + (_costo != null ? _costo : "null") + "," +
             "    km = " + (_km != null ? _km : "null") +
             "    WHERE" +
-            "    id_mantencion_usuario_hecha = Long.toString(this._id)";
+            "    id_mantencion_usuario_hecha = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -4354,7 +4355,7 @@ private Integer _km;
             "    km)" +
             "    VALUES" +
             "    (" +
-            "    " + (_fecha != null ? "STR_TO_DATE(" + _fecha + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
             "    " + (_id_mantencion_usuario_hecha != null ? "'" + _id_mantencion_usuario_hecha + "'" : "null") + "," +
             "    " + (_id_mantencion_usuario != null ? "'" + _id_mantencion_usuario + "'" : "null") + "," +
             "    " + (_costo != null ? "'" + _costo + "'" : "null") + "," +
@@ -4409,7 +4410,7 @@ private Integer _km;
         String str_sql =
             "    DELETE FROM mantencion_usuario_hecha" +
             "    WHERE" +
-            "    id_mantencion_usuario_hecha = Long.toString(this._id)";
+            "    id_mantencion_usuario_hecha = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -4443,8 +4444,8 @@ private Integer _km;
     }
 }
 
-DEBUG [main] (MyORM.java:140) - table: marca
-DEBUG [main] (MyORM.java:151) - columns:
+DEBUG [main] (SQLiteORM.java:139) - table: marca
+DEBUG [main] (SQLiteORM.java:150) - columns:
 /**
  * 
  */
@@ -4464,12 +4465,12 @@ import java.util.ArrayList;
 public class Marca {
 private String _descripcion;
 private String _fecha_modificacion;
-private Short _id;
+private Integer _id;
 
     private final static String _str_sql = 
         "    SELECT" +
         "    ma.descripcion AS descripcion," +
-        "    DATE_FORMAT(ma.fecha_modificacion, '%d-%m-%Y %H:%i:%s') AS fecha_modificacion," +
+        "    ma.fecha_modificacion AS fecha_modificacion," +
         "    ma.id_marca AS id" +
         "    FROM marca ma";
 
@@ -4494,7 +4495,7 @@ private Short _id;
     /**
      * @return the _id
      */
-    public Short get_id() {
+    public Integer get_id() {
         return _id;
     }
     /**
@@ -4512,7 +4513,7 @@ private Short _id;
     /**
      * @param _id the _id to set
      */
-    public void set_id(Short _id) {
+    public void set_id(Integer _id) {
         this._id = _id;
     }
 
@@ -4521,7 +4522,7 @@ private Short _id;
 
         ret.set_descripcion(p_rs.getString("descripcion"));
         ret.set_fecha_modificacion(p_rs.getString("fecha_modificacion"));
-        ret.set_id(p_rs.getShort("id"));
+        ret.set_id(p_rs.getInt("id"));
 
         return ret;
     }
@@ -4700,9 +4701,9 @@ private Short _id;
             "    UPDATE marca" +
             "    SET" +
             "    descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
-            "    fecha_modificacion = " + (_fecha_modificacion != null ? "STR_TO_DATE(" + _fecha_modificacion + ", '%d-%m-%Y %H:%i:%s')" : "null") +
+            "    fecha_modificacion = " + (_fecha_modificacion != null ? "'" + _fecha_modificacion + "'" : "null") +
             "    WHERE" +
-            "    id_marca = Short.toString(this._id)";
+            "    id_marca = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -4806,7 +4807,7 @@ private Short _id;
         String str_sql =
             "    DELETE FROM marca" +
             "    WHERE" +
-            "    id_marca = Short.toString(this._id)";
+            "    id_marca = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -4840,8 +4841,8 @@ private Short _id;
     }
 }
 
-DEBUG [main] (MyORM.java:140) - table: modelo
-DEBUG [main] (MyORM.java:151) - columns:
+DEBUG [main] (SQLiteORM.java:139) - table: modelo
+DEBUG [main] (SQLiteORM.java:150) - columns:
 /**
  * 
  */
@@ -4860,16 +4861,16 @@ import java.util.ArrayList;
  */
 public class Modelo {
 private String _descripcion;
-private Byte _id_tipo_vehiculo;
+private Integer _id_tipo_vehiculo;
 private String _fecha_modificacion;
-private Long _id;
-private Short _id_marca;
+private Integer _id;
+private Integer _id_marca;
 
     private final static String _str_sql = 
         "    SELECT" +
         "    mo.descripcion AS descripcion," +
         "    mo.id_tipo_vehiculo AS id_tipo_vehiculo," +
-        "    DATE_FORMAT(mo.fecha_modificacion, '%d-%m-%Y %H:%i:%s') AS fecha_modificacion," +
+        "    mo.fecha_modificacion AS fecha_modificacion," +
         "    mo.id_modelo AS id," +
         "    mo.id_marca AS id_marca" +
         "    FROM modelo mo";
@@ -4891,7 +4892,7 @@ private Short _id_marca;
     /**
      * @return the _id_tipo_vehiculo
      */
-    public Byte get_id_tipo_vehiculo() {
+    public Integer get_id_tipo_vehiculo() {
         return _id_tipo_vehiculo;
     }
     /**
@@ -4903,13 +4904,13 @@ private Short _id_marca;
     /**
      * @return the _id
      */
-    public Long get_id() {
+    public Integer get_id() {
         return _id;
     }
     /**
      * @return the _id_marca
      */
-    public Short get_id_marca() {
+    public Integer get_id_marca() {
         return _id_marca;
     }
     /**
@@ -4921,7 +4922,7 @@ private Short _id_marca;
     /**
      * @param _id_tipo_vehiculo the _id_tipo_vehiculo to set
      */
-    public void set_id_tipo_vehiculo(Byte _id_tipo_vehiculo) {
+    public void set_id_tipo_vehiculo(Integer _id_tipo_vehiculo) {
         this._id_tipo_vehiculo = _id_tipo_vehiculo;
     }
     /**
@@ -4933,13 +4934,13 @@ private Short _id_marca;
     /**
      * @param _id the _id to set
      */
-    public void set_id(Long _id) {
+    public void set_id(Integer _id) {
         this._id = _id;
     }
     /**
      * @param _id_marca the _id_marca to set
      */
-    public void set_id_marca(Short _id_marca) {
+    public void set_id_marca(Integer _id_marca) {
         this._id_marca = _id_marca;
     }
 
@@ -4947,10 +4948,10 @@ private Short _id_marca;
         Modelo ret = new Modelo();
 
         ret.set_descripcion(p_rs.getString("descripcion"));
-        ret.set_id_tipo_vehiculo(p_rs.getByte("id_tipo_vehiculo"));
+        ret.set_id_tipo_vehiculo(p_rs.getInt("id_tipo_vehiculo"));
         ret.set_fecha_modificacion(p_rs.getString("fecha_modificacion"));
-        ret.set_id(p_rs.getLong("id"));
-        ret.set_id_marca(p_rs.getShort("id_marca"));
+        ret.set_id(p_rs.getInt("id"));
+        ret.set_id_marca(p_rs.getInt("id_marca"));
 
         return ret;
     }
@@ -5135,9 +5136,9 @@ private Short _id_marca;
             "    UPDATE modelo" +
             "    SET" +
             "    descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
-            "    fecha_modificacion = " + (_fecha_modificacion != null ? "STR_TO_DATE(" + _fecha_modificacion + ", '%d-%m-%Y %H:%i:%s')" : "null") +
+            "    fecha_modificacion = " + (_fecha_modificacion != null ? "'" + _fecha_modificacion + "'" : "null") +
             "    WHERE" +
-            "    id_modelo = Long.toString(this._id)";
+            "    id_modelo = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -5245,7 +5246,7 @@ private Short _id_marca;
         String str_sql =
             "    DELETE FROM modelo" +
             "    WHERE" +
-            "    id_modelo = Long.toString(this._id)";
+            "    id_modelo = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -5279,8 +5280,8 @@ private Short _id_marca;
     }
 }
 
-DEBUG [main] (MyORM.java:140) - table: modelo_anio
-DEBUG [main] (MyORM.java:151) - columns:
+DEBUG [main] (SQLiteORM.java:139) - table: modelo_anio
+DEBUG [main] (SQLiteORM.java:150) - columns:
 /**
  * 
  */
@@ -5299,8 +5300,8 @@ import java.util.ArrayList;
  */
 public class Modelo_anio {
 private Integer _anio;
-private Long _id;
-private Long _id_modelo;
+private Integer _id;
+private Integer _id_modelo;
 
     private final static String _str_sql = 
         "    SELECT" +
@@ -5324,13 +5325,13 @@ private Long _id_modelo;
     /**
      * @return the _id
      */
-    public Long get_id() {
+    public Integer get_id() {
         return _id;
     }
     /**
      * @return the _id_modelo
      */
-    public Long get_id_modelo() {
+    public Integer get_id_modelo() {
         return _id_modelo;
     }
     /**
@@ -5342,13 +5343,13 @@ private Long _id_modelo;
     /**
      * @param _id the _id to set
      */
-    public void set_id(Long _id) {
+    public void set_id(Integer _id) {
         this._id = _id;
     }
     /**
      * @param _id_modelo the _id_modelo to set
      */
-    public void set_id_modelo(Long _id_modelo) {
+    public void set_id_modelo(Integer _id_modelo) {
         this._id_modelo = _id_modelo;
     }
 
@@ -5356,8 +5357,8 @@ private Long _id_modelo;
         Modelo_anio ret = new Modelo_anio();
 
         ret.set_anio(p_rs.getInt("anio"));
-        ret.set_id(p_rs.getLong("id"));
-        ret.set_id_modelo(p_rs.getLong("id_modelo"));
+        ret.set_id(p_rs.getInt("id"));
+        ret.set_id_modelo(p_rs.getInt("id_modelo"));
 
         return ret;
     }
@@ -5537,7 +5538,7 @@ private Long _id_modelo;
             "    SET" +
             "    anio = " + (_anio != null ? _anio : "null") +
             "    WHERE" +
-            "    id_modelo_anio = Long.toString(this._id)";
+            "    id_modelo_anio = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -5643,7 +5644,7 @@ private Long _id_modelo;
         String str_sql =
             "    DELETE FROM modelo_anio" +
             "    WHERE" +
-            "    id_modelo_anio = Long.toString(this._id)";
+            "    id_modelo_anio = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -5677,8 +5678,8 @@ private Long _id_modelo;
     }
 }
 
-DEBUG [main] (MyORM.java:140) - table: motor
-DEBUG [main] (MyORM.java:151) - columns:
+DEBUG [main] (SQLiteORM.java:139) - table: motor
+DEBUG [main] (SQLiteORM.java:150) - columns:
 /**
  * 
  */
@@ -5697,17 +5698,17 @@ import java.util.ArrayList;
  */
 public class Motor {
 private String _configuracion;
-private Byte _valvulas;
+private Integer _valvulas;
 private Integer _torque;
-private Byte _cilindros;
+private Integer _cilindros;
 private String _razon_compresion;
 private String _codigo_fabricante;
 private String _codigo;
 private Integer _desplazamiento;
-private Long _id_modelo_anio;
+private Integer _id_modelo_anio;
 private String _tamanio;
 private String _tipo;
-private Long _id;
+private Integer _id;
 private Integer _potencia;
 private String _tipo_compresor;
 private String _tipo_combustible;
@@ -5758,7 +5759,7 @@ private String _tipo_combustible;
     /**
      * @return the _valvulas
      */
-    public Byte get_valvulas() {
+    public Integer get_valvulas() {
         return _valvulas;
     }
     /**
@@ -5770,7 +5771,7 @@ private String _tipo_combustible;
     /**
      * @return the _cilindros
      */
-    public Byte get_cilindros() {
+    public Integer get_cilindros() {
         return _cilindros;
     }
     /**
@@ -5800,7 +5801,7 @@ private String _tipo_combustible;
     /**
      * @return the _id_modelo_anio
      */
-    public Long get_id_modelo_anio() {
+    public Integer get_id_modelo_anio() {
         return _id_modelo_anio;
     }
     /**
@@ -5818,7 +5819,7 @@ private String _tipo_combustible;
     /**
      * @return the _id
      */
-    public Long get_id() {
+    public Integer get_id() {
         return _id;
     }
     /**
@@ -5848,7 +5849,7 @@ private String _tipo_combustible;
     /**
      * @param _valvulas the _valvulas to set
      */
-    public void set_valvulas(Byte _valvulas) {
+    public void set_valvulas(Integer _valvulas) {
         this._valvulas = _valvulas;
     }
     /**
@@ -5860,7 +5861,7 @@ private String _tipo_combustible;
     /**
      * @param _cilindros the _cilindros to set
      */
-    public void set_cilindros(Byte _cilindros) {
+    public void set_cilindros(Integer _cilindros) {
         this._cilindros = _cilindros;
     }
     /**
@@ -5890,7 +5891,7 @@ private String _tipo_combustible;
     /**
      * @param _id_modelo_anio the _id_modelo_anio to set
      */
-    public void set_id_modelo_anio(Long _id_modelo_anio) {
+    public void set_id_modelo_anio(Integer _id_modelo_anio) {
         this._id_modelo_anio = _id_modelo_anio;
     }
     /**
@@ -5908,7 +5909,7 @@ private String _tipo_combustible;
     /**
      * @param _id the _id to set
      */
-    public void set_id(Long _id) {
+    public void set_id(Integer _id) {
         this._id = _id;
     }
     /**
@@ -5934,17 +5935,17 @@ private String _tipo_combustible;
         Motor ret = new Motor();
 
         ret.set_configuracion(p_rs.getString("configuracion"));
-        ret.set_valvulas(p_rs.getByte("valvulas"));
+        ret.set_valvulas(p_rs.getInt("valvulas"));
         ret.set_torque(p_rs.getInt("torque"));
-        ret.set_cilindros(p_rs.getByte("cilindros"));
+        ret.set_cilindros(p_rs.getInt("cilindros"));
         ret.set_razon_compresion(p_rs.getString("razon_compresion"));
         ret.set_codigo_fabricante(p_rs.getString("codigo_fabricante"));
         ret.set_codigo(p_rs.getString("codigo"));
         ret.set_desplazamiento(p_rs.getInt("desplazamiento"));
-        ret.set_id_modelo_anio(p_rs.getLong("id_modelo_anio"));
+        ret.set_id_modelo_anio(p_rs.getInt("id_modelo_anio"));
         ret.set_tamanio(p_rs.getString("tamanio"));
         ret.set_tipo(p_rs.getString("tipo"));
-        ret.set_id(p_rs.getLong("id"));
+        ret.set_id(p_rs.getInt("id"));
         ret.set_potencia(p_rs.getInt("potencia"));
         ret.set_tipo_compresor(p_rs.getString("tipo_compresor"));
         ret.set_tipo_combustible(p_rs.getString("tipo_combustible"));
@@ -6139,7 +6140,7 @@ private String _tipo_combustible;
             "    tipo_compresor = " + (_tipo_compresor != null ? "'" + _tipo_compresor + "'" : "null") + "," +
             "    tipo_combustible = " + (_tipo_combustible != null ? "'" + _tipo_combustible + "'" : "null") +
             "    WHERE" +
-            "    id_motor = Long.toString(this._id)";
+            "    id_motor = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -6269,7 +6270,7 @@ private String _tipo_combustible;
         String str_sql =
             "    DELETE FROM motor" +
             "    WHERE" +
-            "    id_motor = Long.toString(this._id)";
+            "    id_motor = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -6303,8 +6304,8 @@ private String _tipo_combustible;
     }
 }
 
-DEBUG [main] (MyORM.java:140) - table: pais
-DEBUG [main] (MyORM.java:151) - columns:
+DEBUG [main] (SQLiteORM.java:139) - table: pais
+DEBUG [main] (SQLiteORM.java:150) - columns:
 /**
  * 
  */
@@ -6323,7 +6324,7 @@ import java.util.ArrayList;
  */
 public class Pais {
 private String _pais;
-private Long _id;
+private Integer _id;
 
     private final static String _str_sql = 
         "    SELECT" +
@@ -6345,7 +6346,7 @@ private Long _id;
     /**
      * @return the _id
      */
-    public Long get_id() {
+    public Integer get_id() {
         return _id;
     }
     /**
@@ -6357,7 +6358,7 @@ private Long _id;
     /**
      * @param _id the _id to set
      */
-    public void set_id(Long _id) {
+    public void set_id(Integer _id) {
         this._id = _id;
     }
 
@@ -6365,7 +6366,7 @@ private Long _id;
         Pais ret = new Pais();
 
         ret.set_pais(p_rs.getString("pais"));
-        ret.set_id(p_rs.getLong("id"));
+        ret.set_id(p_rs.getInt("id"));
 
         return ret;
     }
@@ -6542,7 +6543,7 @@ private Long _id;
             "    SET" +
             "    pais = " + (_pais != null ? "'" + _pais + "'" : "null") +
             "    WHERE" +
-            "    id_pais = Long.toString(this._id)";
+            "    id_pais = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -6646,7 +6647,7 @@ private Long _id;
         String str_sql =
             "    DELETE FROM pais" +
             "    WHERE" +
-            "    id_pais = Long.toString(this._id)";
+            "    id_pais = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -6680,8 +6681,8 @@ private Long _id;
     }
 }
 
-DEBUG [main] (MyORM.java:140) - table: recordatorio
-DEBUG [main] (MyORM.java:151) - columns:
+DEBUG [main] (SQLiteORM.java:139) - table: recordatorio
+DEBUG [main] (SQLiteORM.java:150) - columns:
 /**
  * 
  */
@@ -6701,28 +6702,28 @@ import java.util.ArrayList;
 public class Recordatorio {
 private String _fecha;
 private String _descripcion;
-private Boolean _recordar_km;
+private String _recordar_km;
 private Integer _km;
-private Boolean _recordar_fecha;
-private Boolean _descartado;
-private Long _id_recordatorio;
+private String _recordar_fecha;
+private String _descartado;
+private Integer _id_recordatorio;
 private String _titulo;
 private String _fecha_modificacion;
-private Long _id_usuario;
-private Long _id_vehiculo;
+private Integer _id_usuario;
+private Integer _id_vehiculo;
 private String _recordatoriocol;
 
     private final static String _str_sql = 
         "    SELECT" +
-        "    DATE_FORMAT(re.fecha, '%d-%m-%Y %H:%i:%s') AS fecha," +
+        "    re.fecha AS fecha," +
         "    re.descripcion AS descripcion," +
-        "    0+re.recordar_km AS recordar_km," +
+        "    re.recordar_km AS recordar_km," +
         "    re.km AS km," +
-        "    0+re.recordar_fecha AS recordar_fecha," +
-        "    0+re.descartado AS descartado," +
+        "    re.recordar_fecha AS recordar_fecha," +
+        "    re.descartado AS descartado," +
         "    re.id_recordatorio AS id_recordatorio," +
         "    re.titulo AS titulo," +
-        "    DATE_FORMAT(re.fecha_modificacion, '%d-%m-%Y %H:%i:%s') AS fecha_modificacion," +
+        "    re.fecha_modificacion AS fecha_modificacion," +
         "    re.id_usuario AS id_usuario," +
         "    re.id_vehiculo AS id_vehiculo," +
         "    re.recordatoriocol AS recordatoriocol" +
@@ -6758,7 +6759,7 @@ private String _recordatoriocol;
     /**
      * @return the _recordar_km
      */
-    public Boolean get_recordar_km() {
+    public String get_recordar_km() {
         return _recordar_km;
     }
     /**
@@ -6770,19 +6771,19 @@ private String _recordatoriocol;
     /**
      * @return the _recordar_fecha
      */
-    public Boolean get_recordar_fecha() {
+    public String get_recordar_fecha() {
         return _recordar_fecha;
     }
     /**
      * @return the _descartado
      */
-    public Boolean get_descartado() {
+    public String get_descartado() {
         return _descartado;
     }
     /**
      * @return the _id_recordatorio
      */
-    public Long get_id_recordatorio() {
+    public Integer get_id_recordatorio() {
         return _id_recordatorio;
     }
     /**
@@ -6800,13 +6801,13 @@ private String _recordatoriocol;
     /**
      * @return the _id_usuario
      */
-    public Long get_id_usuario() {
+    public Integer get_id_usuario() {
         return _id_usuario;
     }
     /**
      * @return the _id_vehiculo
      */
-    public Long get_id_vehiculo() {
+    public Integer get_id_vehiculo() {
         return _id_vehiculo;
     }
     /**
@@ -6830,7 +6831,7 @@ private String _recordatoriocol;
     /**
      * @param _recordar_km the _recordar_km to set
      */
-    public void set_recordar_km(Boolean _recordar_km) {
+    public void set_recordar_km(String _recordar_km) {
         this._recordar_km = _recordar_km;
     }
     /**
@@ -6842,19 +6843,19 @@ private String _recordatoriocol;
     /**
      * @param _recordar_fecha the _recordar_fecha to set
      */
-    public void set_recordar_fecha(Boolean _recordar_fecha) {
+    public void set_recordar_fecha(String _recordar_fecha) {
         this._recordar_fecha = _recordar_fecha;
     }
     /**
      * @param _descartado the _descartado to set
      */
-    public void set_descartado(Boolean _descartado) {
+    public void set_descartado(String _descartado) {
         this._descartado = _descartado;
     }
     /**
      * @param _id_recordatorio the _id_recordatorio to set
      */
-    public void set_id_recordatorio(Long _id_recordatorio) {
+    public void set_id_recordatorio(Integer _id_recordatorio) {
         this._id_recordatorio = _id_recordatorio;
     }
     /**
@@ -6872,13 +6873,13 @@ private String _recordatoriocol;
     /**
      * @param _id_usuario the _id_usuario to set
      */
-    public void set_id_usuario(Long _id_usuario) {
+    public void set_id_usuario(Integer _id_usuario) {
         this._id_usuario = _id_usuario;
     }
     /**
      * @param _id_vehiculo the _id_vehiculo to set
      */
-    public void set_id_vehiculo(Long _id_vehiculo) {
+    public void set_id_vehiculo(Integer _id_vehiculo) {
         this._id_vehiculo = _id_vehiculo;
     }
     /**
@@ -6893,15 +6894,15 @@ private String _recordatoriocol;
 
         ret.set_fecha(p_rs.getString("fecha"));
         ret.set_descripcion(p_rs.getString("descripcion"));
-        ret.set_recordar_km(p_rs.getBoolean("recordar_km"));
+        ret.set_recordar_km(p_rs.getString("recordar_km"));
         ret.set_km(p_rs.getInt("km"));
-        ret.set_recordar_fecha(p_rs.getBoolean("recordar_fecha"));
-        ret.set_descartado(p_rs.getBoolean("descartado"));
-        ret.set_id_recordatorio(p_rs.getLong("id_recordatorio"));
+        ret.set_recordar_fecha(p_rs.getString("recordar_fecha"));
+        ret.set_descartado(p_rs.getString("descartado"));
+        ret.set_id_recordatorio(p_rs.getInt("id_recordatorio"));
         ret.set_titulo(p_rs.getString("titulo"));
         ret.set_fecha_modificacion(p_rs.getString("fecha_modificacion"));
-        ret.set_id_usuario(p_rs.getLong("id_usuario"));
-        ret.set_id_vehiculo(p_rs.getLong("id_vehiculo"));
+        ret.set_id_usuario(p_rs.getInt("id_usuario"));
+        ret.set_id_vehiculo(p_rs.getInt("id_vehiculo"));
         ret.set_recordatoriocol(p_rs.getString("recordatoriocol"));
 
         return ret;
@@ -7086,18 +7087,18 @@ private String _recordatoriocol;
         String str_sql =
             "    UPDATE recordatorio" +
             "    SET" +
-            "    fecha = " + (_fecha != null ? "STR_TO_DATE(" + _fecha + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    fecha = " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
             "    descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
-            "    recordar_km = " + (_recordar_km != null ? "b'" + _recordar_km : "null") + "," +
+            "    recordar_km = " + (_recordar_km != null ? "'" + _recordar_km + "'" : "null") + "," +
             "    km = " + (_km != null ? _km : "null") + "," +
-            "    recordar_fecha = " + (_recordar_fecha != null ? "b'" + _recordar_fecha : "null") + "," +
-            "    descartado = " + (_descartado != null ? "b'" + _descartado : "null") + "," +
+            "    recordar_fecha = " + (_recordar_fecha != null ? "'" + _recordar_fecha + "'" : "null") + "," +
+            "    descartado = " + (_descartado != null ? "'" + _descartado + "'" : "null") + "," +
             "    titulo = " + (_titulo != null ? "'" + _titulo + "'" : "null") + "," +
-            "    fecha_modificacion = " + (_fecha_modificacion != null ? "STR_TO_DATE(" + _fecha_modificacion + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    fecha_modificacion = " + (_fecha_modificacion != null ? "'" + _fecha_modificacion + "'" : "null") + "," +
             "    recordatoriocol = " + (_recordatoriocol != null ? "'" + _recordatoriocol + "'" : "null") +
             "    WHERE" +
-            "    id_recordatorio = Long.toString(this._id_recordatorio)" AND
-            "    id_usuario = Long.toString(this._id_usuario)";
+            "    id_recordatorio = Integer.toString(this._id_recordatorio)" AND
+            "    id_usuario = Integer.toString(this._id_usuario)";
 
         try {
             stmt = p_conn.createStatement();
@@ -7157,11 +7158,11 @@ private String _recordatoriocol;
             "    recordatoriocol)" +
             "    VALUES" +
             "    (" +
-            "    " + (_fecha != null ? "STR_TO_DATE(" + _fecha + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
             "    " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
-            "    " + (_recordar_km != null ? "b'" + (_recordar_km ? 1 : 0) + "'" : "null") + "," +
+            "    " + (_recordar_km != null ? "'" + _recordar_km + "'" : "null") + "," +
             "    " + (_km != null ? "'" + _km + "'" : "null") + "," +
-            "    " + (_recordar_fecha != null ? "b'" + (_recordar_fecha ? 1 : 0) + "'" : "null") + "," +
+            "    " + (_recordar_fecha != null ? "'" + _recordar_fecha + "'" : "null") + "," +
             "    " + (_id_recordatorio != null ? "'" + _id_recordatorio + "'" : "null") + "," +
             "    " + (_titulo != null ? "'" + _titulo + "'" : "null") + "," +
             "    " + (_id_usuario != null ? "'" + _id_usuario + "'" : "null") + "," +
@@ -7217,8 +7218,8 @@ private String _recordatoriocol;
         String str_sql =
             "    DELETE FROM recordatorio" +
             "    WHERE" +
-            "    id_recordatorio = Long.toString(this._id_recordatorio)" AND
-            "    id_usuario = Long.toString(this._id_usuario)";
+            "    id_recordatorio = Integer.toString(this._id_recordatorio)" AND
+            "    id_usuario = Integer.toString(this._id_usuario)";
 
         try {
             stmt = p_conn.createStatement();
@@ -7252,8 +7253,8 @@ private String _recordatoriocol;
     }
 }
 
-DEBUG [main] (MyORM.java:140) - table: red_social
-DEBUG [main] (MyORM.java:151) - columns:
+DEBUG [main] (SQLiteORM.java:139) - table: red_social
+DEBUG [main] (SQLiteORM.java:150) - columns:
 /**
  * 
  */
@@ -7271,7 +7272,7 @@ import java.util.ArrayList;
  *
  */
 public class Red_social {
-private Long _id;
+private Integer _id;
 private String _red_social;
 
     private final static String _str_sql = 
@@ -7288,7 +7289,7 @@ private String _red_social;
     /**
      * @return the _id
      */
-    public Long get_id() {
+    public Integer get_id() {
         return _id;
     }
     /**
@@ -7300,7 +7301,7 @@ private String _red_social;
     /**
      * @param _id the _id to set
      */
-    public void set_id(Long _id) {
+    public void set_id(Integer _id) {
         this._id = _id;
     }
     /**
@@ -7313,7 +7314,7 @@ private String _red_social;
     public static Red_social fromRS(ResultSet p_rs) throws SQLException {
         Red_social ret = new Red_social();
 
-        ret.set_id(p_rs.getLong("id"));
+        ret.set_id(p_rs.getInt("id"));
         ret.set_red_social(p_rs.getString("red_social"));
 
         return ret;
@@ -7491,7 +7492,7 @@ private String _red_social;
             "    SET" +
             "    red_social = " + (_red_social != null ? "'" + _red_social + "'" : "null") +
             "    WHERE" +
-            "    id_red_social = Long.toString(this._id)";
+            "    id_red_social = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -7595,7 +7596,7 @@ private String _red_social;
         String str_sql =
             "    DELETE FROM red_social" +
             "    WHERE" +
-            "    id_red_social = Long.toString(this._id)";
+            "    id_red_social = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -7629,8 +7630,8 @@ private String _red_social;
     }
 }
 
-DEBUG [main] (MyORM.java:140) - table: region
-DEBUG [main] (MyORM.java:151) - columns:
+DEBUG [main] (SQLiteORM.java:139) - table: region
+DEBUG [main] (SQLiteORM.java:150) - columns:
 /**
  * 
  */
@@ -7649,8 +7650,8 @@ import java.util.ArrayList;
  */
 public class Region {
 private String _region;
-private Long _id;
-private Long _id_pais;
+private Integer _id;
+private Integer _id_pais;
 
     private final static String _str_sql = 
         "    SELECT" +
@@ -7674,13 +7675,13 @@ private Long _id_pais;
     /**
      * @return the _id
      */
-    public Long get_id() {
+    public Integer get_id() {
         return _id;
     }
     /**
      * @return the _id_pais
      */
-    public Long get_id_pais() {
+    public Integer get_id_pais() {
         return _id_pais;
     }
     /**
@@ -7692,13 +7693,13 @@ private Long _id_pais;
     /**
      * @param _id the _id to set
      */
-    public void set_id(Long _id) {
+    public void set_id(Integer _id) {
         this._id = _id;
     }
     /**
      * @param _id_pais the _id_pais to set
      */
-    public void set_id_pais(Long _id_pais) {
+    public void set_id_pais(Integer _id_pais) {
         this._id_pais = _id_pais;
     }
 
@@ -7706,8 +7707,8 @@ private Long _id_pais;
         Region ret = new Region();
 
         ret.set_region(p_rs.getString("region"));
-        ret.set_id(p_rs.getLong("id"));
-        ret.set_id_pais(p_rs.getLong("id_pais"));
+        ret.set_id(p_rs.getInt("id"));
+        ret.set_id_pais(p_rs.getInt("id_pais"));
 
         return ret;
     }
@@ -7887,7 +7888,7 @@ private Long _id_pais;
             "    SET" +
             "    region = " + (_region != null ? "'" + _region + "'" : "null") +
             "    WHERE" +
-            "    id_region = Long.toString(this._id)";
+            "    id_region = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -7993,7 +7994,7 @@ private Long _id_pais;
         String str_sql =
             "    DELETE FROM region" +
             "    WHERE" +
-            "    id_region = Long.toString(this._id)";
+            "    id_region = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -8027,8 +8028,8 @@ private Long _id_pais;
     }
 }
 
-DEBUG [main] (MyORM.java:140) - table: rendimiento
-DEBUG [main] (MyORM.java:151) - columns:
+DEBUG [main] (SQLiteORM.java:139) - table: rendimiento
+DEBUG [main] (SQLiteORM.java:150) - columns:
 /**
  * 
  */
@@ -8047,20 +8048,20 @@ import java.util.ArrayList;
  */
 public class Rendimiento {
 private String _fecha;
-private Boolean _estanque_lleno;
-private Long _id_rendimiento;
+private String _estanque_lleno;
+private Integer _id_rendimiento;
 private Integer _costo;
 private Integer _km;
 private Integer _litros;
-private Long _id_usuario;
-private Long _id_vehiculo;
+private Integer _id_usuario;
+private Integer _id_vehiculo;
 private Integer _latitud;
 private Integer _longitud;
 
     private final static String _str_sql = 
         "    SELECT" +
-        "    DATE_FORMAT(re.fecha, '%d-%m-%Y %H:%i:%s') AS fecha," +
-        "    0+re.estanque_lleno AS estanque_lleno," +
+        "    re.fecha AS fecha," +
+        "    re.estanque_lleno AS estanque_lleno," +
         "    re.id_rendimiento AS id_rendimiento," +
         "    re.costo AS costo," +
         "    re.km AS km," +
@@ -8093,13 +8094,13 @@ private Integer _longitud;
     /**
      * @return the _estanque_lleno
      */
-    public Boolean get_estanque_lleno() {
+    public String get_estanque_lleno() {
         return _estanque_lleno;
     }
     /**
      * @return the _id_rendimiento
      */
-    public Long get_id_rendimiento() {
+    public Integer get_id_rendimiento() {
         return _id_rendimiento;
     }
     /**
@@ -8123,13 +8124,13 @@ private Integer _longitud;
     /**
      * @return the _id_usuario
      */
-    public Long get_id_usuario() {
+    public Integer get_id_usuario() {
         return _id_usuario;
     }
     /**
      * @return the _id_vehiculo
      */
-    public Long get_id_vehiculo() {
+    public Integer get_id_vehiculo() {
         return _id_vehiculo;
     }
     /**
@@ -8153,13 +8154,13 @@ private Integer _longitud;
     /**
      * @param _estanque_lleno the _estanque_lleno to set
      */
-    public void set_estanque_lleno(Boolean _estanque_lleno) {
+    public void set_estanque_lleno(String _estanque_lleno) {
         this._estanque_lleno = _estanque_lleno;
     }
     /**
      * @param _id_rendimiento the _id_rendimiento to set
      */
-    public void set_id_rendimiento(Long _id_rendimiento) {
+    public void set_id_rendimiento(Integer _id_rendimiento) {
         this._id_rendimiento = _id_rendimiento;
     }
     /**
@@ -8183,13 +8184,13 @@ private Integer _longitud;
     /**
      * @param _id_usuario the _id_usuario to set
      */
-    public void set_id_usuario(Long _id_usuario) {
+    public void set_id_usuario(Integer _id_usuario) {
         this._id_usuario = _id_usuario;
     }
     /**
      * @param _id_vehiculo the _id_vehiculo to set
      */
-    public void set_id_vehiculo(Long _id_vehiculo) {
+    public void set_id_vehiculo(Integer _id_vehiculo) {
         this._id_vehiculo = _id_vehiculo;
     }
     /**
@@ -8209,13 +8210,13 @@ private Integer _longitud;
         Rendimiento ret = new Rendimiento();
 
         ret.set_fecha(p_rs.getString("fecha"));
-        ret.set_estanque_lleno(p_rs.getBoolean("estanque_lleno"));
-        ret.set_id_rendimiento(p_rs.getLong("id_rendimiento"));
+        ret.set_estanque_lleno(p_rs.getString("estanque_lleno"));
+        ret.set_id_rendimiento(p_rs.getInt("id_rendimiento"));
         ret.set_costo(p_rs.getInt("costo"));
         ret.set_km(p_rs.getInt("km"));
         ret.set_litros(p_rs.getInt("litros"));
-        ret.set_id_usuario(p_rs.getLong("id_usuario"));
-        ret.set_id_vehiculo(p_rs.getLong("id_vehiculo"));
+        ret.set_id_usuario(p_rs.getInt("id_usuario"));
+        ret.set_id_vehiculo(p_rs.getInt("id_vehiculo"));
         ret.set_latitud(p_rs.getInt("latitud"));
         ret.set_longitud(p_rs.getInt("longitud"));
 
@@ -8398,16 +8399,16 @@ private Integer _longitud;
         String str_sql =
             "    UPDATE rendimiento" +
             "    SET" +
-            "    fecha = " + (_fecha != null ? "STR_TO_DATE(" + _fecha + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
-            "    estanque_lleno = " + (_estanque_lleno != null ? "b'" + _estanque_lleno : "null") + "," +
+            "    fecha = " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
+            "    estanque_lleno = " + (_estanque_lleno != null ? "'" + _estanque_lleno + "'" : "null") + "," +
             "    costo = " + (_costo != null ? _costo : "null") + "," +
             "    km = " + (_km != null ? _km : "null") + "," +
             "    litros = " + (_litros != null ? _litros : "null") + "," +
             "    latitud = " + (_latitud != null ? _latitud : "null") + "," +
             "    longitud = " + (_longitud != null ? _longitud : "null") +
             "    WHERE" +
-            "    id_usuario = Long.toString(this._id_usuario)" AND
-            "    id_rendimiento = Long.toString(this._id_rendimiento)";
+            "    id_usuario = Integer.toString(this._id_usuario)" AND
+            "    id_rendimiento = Integer.toString(this._id_rendimiento)";
 
         try {
             stmt = p_conn.createStatement();
@@ -8467,8 +8468,8 @@ private Integer _longitud;
             "    longitud)" +
             "    VALUES" +
             "    (" +
-            "    " + (_fecha != null ? "STR_TO_DATE(" + _fecha + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
-            "    " + (_estanque_lleno != null ? "b'" + (_estanque_lleno ? 1 : 0) + "'" : "null") + "," +
+            "    " + (_fecha != null ? "'" + _fecha + "'" : "null") + "," +
+            "    " + (_estanque_lleno != null ? "'" + _estanque_lleno + "'" : "null") + "," +
             "    " + (_id_rendimiento != null ? "'" + _id_rendimiento + "'" : "null") + "," +
             "    " + (_costo != null ? "'" + _costo + "'" : "null") + "," +
             "    " + (_km != null ? "'" + _km + "'" : "null") + "," +
@@ -8527,8 +8528,8 @@ private Integer _longitud;
         String str_sql =
             "    DELETE FROM rendimiento" +
             "    WHERE" +
-            "    id_usuario = Long.toString(this._id_usuario)" AND
-            "    id_rendimiento = Long.toString(this._id_rendimiento)";
+            "    id_usuario = Integer.toString(this._id_usuario)" AND
+            "    id_rendimiento = Integer.toString(this._id_rendimiento)";
 
         try {
             stmt = p_conn.createStatement();
@@ -8562,8 +8563,8 @@ private Integer _longitud;
     }
 }
 
-DEBUG [main] (MyORM.java:140) - table: reparacion
-DEBUG [main] (MyORM.java:151) - columns:
+DEBUG [main] (SQLiteORM.java:139) - table: reparacion
+DEBUG [main] (SQLiteORM.java:150) - columns:
 /**
  * 
  */
@@ -8585,16 +8586,16 @@ private String _descripcion;
 private Integer _costo;
 private String _titulo;
 private String _fecha_modificacion;
-private Long _id_usuario;
-private Long _id_vehiculo;
-private Long _id_reparacion;
+private Integer _id_usuario;
+private Integer _id_vehiculo;
+private Integer _id_reparacion;
 
     private final static String _str_sql = 
         "    SELECT" +
         "    re.descripcion AS descripcion," +
         "    re.costo AS costo," +
         "    re.titulo AS titulo," +
-        "    DATE_FORMAT(re.fecha_modificacion, '%d-%m-%Y %H:%i:%s') AS fecha_modificacion," +
+        "    re.fecha_modificacion AS fecha_modificacion," +
         "    re.id_usuario AS id_usuario," +
         "    re.id_vehiculo AS id_vehiculo," +
         "    re.id_reparacion AS id_reparacion" +
@@ -8637,19 +8638,19 @@ private Long _id_reparacion;
     /**
      * @return the _id_usuario
      */
-    public Long get_id_usuario() {
+    public Integer get_id_usuario() {
         return _id_usuario;
     }
     /**
      * @return the _id_vehiculo
      */
-    public Long get_id_vehiculo() {
+    public Integer get_id_vehiculo() {
         return _id_vehiculo;
     }
     /**
      * @return the _id_reparacion
      */
-    public Long get_id_reparacion() {
+    public Integer get_id_reparacion() {
         return _id_reparacion;
     }
     /**
@@ -8679,19 +8680,19 @@ private Long _id_reparacion;
     /**
      * @param _id_usuario the _id_usuario to set
      */
-    public void set_id_usuario(Long _id_usuario) {
+    public void set_id_usuario(Integer _id_usuario) {
         this._id_usuario = _id_usuario;
     }
     /**
      * @param _id_vehiculo the _id_vehiculo to set
      */
-    public void set_id_vehiculo(Long _id_vehiculo) {
+    public void set_id_vehiculo(Integer _id_vehiculo) {
         this._id_vehiculo = _id_vehiculo;
     }
     /**
      * @param _id_reparacion the _id_reparacion to set
      */
-    public void set_id_reparacion(Long _id_reparacion) {
+    public void set_id_reparacion(Integer _id_reparacion) {
         this._id_reparacion = _id_reparacion;
     }
 
@@ -8702,9 +8703,9 @@ private Long _id_reparacion;
         ret.set_costo(p_rs.getInt("costo"));
         ret.set_titulo(p_rs.getString("titulo"));
         ret.set_fecha_modificacion(p_rs.getString("fecha_modificacion"));
-        ret.set_id_usuario(p_rs.getLong("id_usuario"));
-        ret.set_id_vehiculo(p_rs.getLong("id_vehiculo"));
-        ret.set_id_reparacion(p_rs.getLong("id_reparacion"));
+        ret.set_id_usuario(p_rs.getInt("id_usuario"));
+        ret.set_id_vehiculo(p_rs.getInt("id_vehiculo"));
+        ret.set_id_reparacion(p_rs.getInt("id_reparacion"));
 
         return ret;
     }
@@ -8891,10 +8892,10 @@ private Long _id_reparacion;
             "    descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
             "    costo = " + (_costo != null ? _costo : "null") + "," +
             "    titulo = " + (_titulo != null ? "'" + _titulo + "'" : "null") + "," +
-            "    fecha_modificacion = " + (_fecha_modificacion != null ? "STR_TO_DATE(" + _fecha_modificacion + ", '%d-%m-%Y %H:%i:%s')" : "null") +
+            "    fecha_modificacion = " + (_fecha_modificacion != null ? "'" + _fecha_modificacion + "'" : "null") +
             "    WHERE" +
-            "    id_usuario = Long.toString(this._id_usuario)" AND
-            "    id_reparacion = Long.toString(this._id_reparacion)";
+            "    id_usuario = Integer.toString(this._id_usuario)" AND
+            "    id_reparacion = Integer.toString(this._id_reparacion)";
 
         try {
             stmt = p_conn.createStatement();
@@ -9006,8 +9007,8 @@ private Long _id_reparacion;
         String str_sql =
             "    DELETE FROM reparacion" +
             "    WHERE" +
-            "    id_usuario = Long.toString(this._id_usuario)" AND
-            "    id_reparacion = Long.toString(this._id_reparacion)";
+            "    id_usuario = Integer.toString(this._id_usuario)" AND
+            "    id_reparacion = Integer.toString(this._id_reparacion)";
 
         try {
             stmt = p_conn.createStatement();
@@ -9041,8 +9042,8 @@ private Long _id_reparacion;
     }
 }
 
-DEBUG [main] (MyORM.java:140) - table: tipo_transmision
-DEBUG [main] (MyORM.java:151) - columns:
+DEBUG [main] (SQLiteORM.java:139) - table: tipo_transmision
+DEBUG [main] (SQLiteORM.java:150) - columns:
 /**
  * 
  */
@@ -9062,12 +9063,12 @@ import java.util.ArrayList;
 public class Tipo_transmision {
 private String _descripcion;
 private String _fecha_modificacion;
-private Byte _id;
+private Integer _id;
 
     private final static String _str_sql = 
         "    SELECT" +
         "    ti.descripcion AS descripcion," +
-        "    DATE_FORMAT(ti.fecha_modificacion, '%d-%m-%Y %H:%i:%s') AS fecha_modificacion," +
+        "    ti.fecha_modificacion AS fecha_modificacion," +
         "    ti.id_tipo_transmision AS id" +
         "    FROM tipo_transmision ti";
 
@@ -9092,7 +9093,7 @@ private Byte _id;
     /**
      * @return the _id
      */
-    public Byte get_id() {
+    public Integer get_id() {
         return _id;
     }
     /**
@@ -9110,7 +9111,7 @@ private Byte _id;
     /**
      * @param _id the _id to set
      */
-    public void set_id(Byte _id) {
+    public void set_id(Integer _id) {
         this._id = _id;
     }
 
@@ -9119,7 +9120,7 @@ private Byte _id;
 
         ret.set_descripcion(p_rs.getString("descripcion"));
         ret.set_fecha_modificacion(p_rs.getString("fecha_modificacion"));
-        ret.set_id(p_rs.getByte("id"));
+        ret.set_id(p_rs.getInt("id"));
 
         return ret;
     }
@@ -9298,9 +9299,9 @@ private Byte _id;
             "    UPDATE tipo_transmision" +
             "    SET" +
             "    descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
-            "    fecha_modificacion = " + (_fecha_modificacion != null ? "STR_TO_DATE(" + _fecha_modificacion + ", '%d-%m-%Y %H:%i:%s')" : "null") +
+            "    fecha_modificacion = " + (_fecha_modificacion != null ? "'" + _fecha_modificacion + "'" : "null") +
             "    WHERE" +
-            "    id_tipo_transmision = Byte.toString(this._id)";
+            "    id_tipo_transmision = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -9404,7 +9405,7 @@ private Byte _id;
         String str_sql =
             "    DELETE FROM tipo_transmision" +
             "    WHERE" +
-            "    id_tipo_transmision = Byte.toString(this._id)";
+            "    id_tipo_transmision = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -9438,8 +9439,8 @@ private Byte _id;
     }
 }
 
-DEBUG [main] (MyORM.java:140) - table: tipo_vehiculo
-DEBUG [main] (MyORM.java:151) - columns:
+DEBUG [main] (SQLiteORM.java:139) - table: tipo_vehiculo
+DEBUG [main] (SQLiteORM.java:150) - columns:
 /**
  * 
  */
@@ -9458,14 +9459,14 @@ import java.util.ArrayList;
  */
 public class Tipo_vehiculo {
 private String _descripcion;
-private Byte _id;
+private Integer _id;
 private String _fecha_modificacion;
 
     private final static String _str_sql = 
         "    SELECT" +
         "    ti.descripcion AS descripcion," +
         "    ti.id_tipo_vehiculo AS id," +
-        "    DATE_FORMAT(ti.fecha_modificacion, '%d-%m-%Y %H:%i:%s') AS fecha_modificacion" +
+        "    ti.fecha_modificacion AS fecha_modificacion" +
         "    FROM tipo_vehiculo ti";
 
     public Tipo_vehiculo() {
@@ -9483,7 +9484,7 @@ private String _fecha_modificacion;
     /**
      * @return the _id
      */
-    public Byte get_id() {
+    public Integer get_id() {
         return _id;
     }
     /**
@@ -9501,7 +9502,7 @@ private String _fecha_modificacion;
     /**
      * @param _id the _id to set
      */
-    public void set_id(Byte _id) {
+    public void set_id(Integer _id) {
         this._id = _id;
     }
     /**
@@ -9515,7 +9516,7 @@ private String _fecha_modificacion;
         Tipo_vehiculo ret = new Tipo_vehiculo();
 
         ret.set_descripcion(p_rs.getString("descripcion"));
-        ret.set_id(p_rs.getByte("id"));
+        ret.set_id(p_rs.getInt("id"));
         ret.set_fecha_modificacion(p_rs.getString("fecha_modificacion"));
 
         return ret;
@@ -9695,9 +9696,9 @@ private String _fecha_modificacion;
             "    UPDATE tipo_vehiculo" +
             "    SET" +
             "    descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
-            "    fecha_modificacion = " + (_fecha_modificacion != null ? "STR_TO_DATE(" + _fecha_modificacion + ", '%d-%m-%Y %H:%i:%s')" : "null") +
+            "    fecha_modificacion = " + (_fecha_modificacion != null ? "'" + _fecha_modificacion + "'" : "null") +
             "    WHERE" +
-            "    id_tipo_vehiculo = Byte.toString(this._id)";
+            "    id_tipo_vehiculo = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -9801,7 +9802,7 @@ private String _fecha_modificacion;
         String str_sql =
             "    DELETE FROM tipo_vehiculo" +
             "    WHERE" +
-            "    id_tipo_vehiculo = Byte.toString(this._id)";
+            "    id_tipo_vehiculo = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -9835,8 +9836,8 @@ private String _fecha_modificacion;
     }
 }
 
-DEBUG [main] (MyORM.java:140) - table: traccion
-DEBUG [main] (MyORM.java:151) - columns:
+DEBUG [main] (SQLiteORM.java:139) - table: traccion
+DEBUG [main] (SQLiteORM.java:150) - columns:
 /**
  * 
  */
@@ -9855,14 +9856,14 @@ import java.util.ArrayList;
  */
 public class Traccion {
 private String _descripcion;
-private Byte _id;
+private Integer _id;
 private String _fecha_modificacion;
 
     private final static String _str_sql = 
         "    SELECT" +
         "    tr.descripcion AS descripcion," +
         "    tr.id_traccion AS id," +
-        "    DATE_FORMAT(tr.fecha_modificacion, '%d-%m-%Y %H:%i:%s') AS fecha_modificacion" +
+        "    tr.fecha_modificacion AS fecha_modificacion" +
         "    FROM traccion tr";
 
     public Traccion() {
@@ -9880,7 +9881,7 @@ private String _fecha_modificacion;
     /**
      * @return the _id
      */
-    public Byte get_id() {
+    public Integer get_id() {
         return _id;
     }
     /**
@@ -9898,7 +9899,7 @@ private String _fecha_modificacion;
     /**
      * @param _id the _id to set
      */
-    public void set_id(Byte _id) {
+    public void set_id(Integer _id) {
         this._id = _id;
     }
     /**
@@ -9912,7 +9913,7 @@ private String _fecha_modificacion;
         Traccion ret = new Traccion();
 
         ret.set_descripcion(p_rs.getString("descripcion"));
-        ret.set_id(p_rs.getByte("id"));
+        ret.set_id(p_rs.getInt("id"));
         ret.set_fecha_modificacion(p_rs.getString("fecha_modificacion"));
 
         return ret;
@@ -10092,9 +10093,9 @@ private String _fecha_modificacion;
             "    UPDATE traccion" +
             "    SET" +
             "    descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
-            "    fecha_modificacion = " + (_fecha_modificacion != null ? "STR_TO_DATE(" + _fecha_modificacion + ", '%d-%m-%Y %H:%i:%s')" : "null") +
+            "    fecha_modificacion = " + (_fecha_modificacion != null ? "'" + _fecha_modificacion + "'" : "null") +
             "    WHERE" +
-            "    id_traccion = Byte.toString(this._id)";
+            "    id_traccion = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -10198,7 +10199,7 @@ private String _fecha_modificacion;
         String str_sql =
             "    DELETE FROM traccion" +
             "    WHERE" +
-            "    id_traccion = Byte.toString(this._id)";
+            "    id_traccion = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -10232,8 +10233,8 @@ private String _fecha_modificacion;
     }
 }
 
-DEBUG [main] (MyORM.java:140) - table: usuario
-DEBUG [main] (MyORM.java:151) - columns:
+DEBUG [main] (SQLiteORM.java:139) - table: usuario
+DEBUG [main] (SQLiteORM.java:150) - columns:
 /**
  * 
  */
@@ -10252,24 +10253,24 @@ import java.util.ArrayList;
  */
 public class Usuario {
 private String _fecha_vencimiento_licencia;
-private Boolean _hombre;
-private Boolean _borrado;
+private String _hombre;
+private String _borrado;
 private String _telefono;
 private String _fecha_modifiacion;
 private String _fecha_nacimiento;
 private String _nombre;
-private Long _id;
-private Long _id_comuna;
+private Integer _id;
+private Integer _id_comuna;
 private String _correo;
 
     private final static String _str_sql = 
         "    SELECT" +
-        "    DATE_FORMAT(us.fecha_vencimiento_licencia, '%d-%m-%Y %H:%i:%s') AS fecha_vencimiento_licencia," +
-        "    0+us.hombre AS hombre," +
-        "    0+us.borrado AS borrado," +
+        "    us.fecha_vencimiento_licencia AS fecha_vencimiento_licencia," +
+        "    us.hombre AS hombre," +
+        "    us.borrado AS borrado," +
         "    us.telefono AS telefono," +
-        "    DATE_FORMAT(us.fecha_modifiacion, '%d-%m-%Y %H:%i:%s') AS fecha_modifiacion," +
-        "    DATE_FORMAT(us.fecha_nacimiento, '%d-%m-%Y %H:%i:%s') AS fecha_nacimiento," +
+        "    us.fecha_modifiacion AS fecha_modifiacion," +
+        "    us.fecha_nacimiento AS fecha_nacimiento," +
         "    us.nombre AS nombre," +
         "    us.id_usuario AS id," +
         "    us.id_comuna AS id_comuna," +
@@ -10298,13 +10299,13 @@ private String _correo;
     /**
      * @return the _hombre
      */
-    public Boolean get_hombre() {
+    public String get_hombre() {
         return _hombre;
     }
     /**
      * @return the _borrado
      */
-    public Boolean get_borrado() {
+    public String get_borrado() {
         return _borrado;
     }
     /**
@@ -10334,13 +10335,13 @@ private String _correo;
     /**
      * @return the _id
      */
-    public Long get_id() {
+    public Integer get_id() {
         return _id;
     }
     /**
      * @return the _id_comuna
      */
-    public Long get_id_comuna() {
+    public Integer get_id_comuna() {
         return _id_comuna;
     }
     /**
@@ -10358,13 +10359,13 @@ private String _correo;
     /**
      * @param _hombre the _hombre to set
      */
-    public void set_hombre(Boolean _hombre) {
+    public void set_hombre(String _hombre) {
         this._hombre = _hombre;
     }
     /**
      * @param _borrado the _borrado to set
      */
-    public void set_borrado(Boolean _borrado) {
+    public void set_borrado(String _borrado) {
         this._borrado = _borrado;
     }
     /**
@@ -10394,13 +10395,13 @@ private String _correo;
     /**
      * @param _id the _id to set
      */
-    public void set_id(Long _id) {
+    public void set_id(Integer _id) {
         this._id = _id;
     }
     /**
      * @param _id_comuna the _id_comuna to set
      */
-    public void set_id_comuna(Long _id_comuna) {
+    public void set_id_comuna(Integer _id_comuna) {
         this._id_comuna = _id_comuna;
     }
     /**
@@ -10414,14 +10415,14 @@ private String _correo;
         Usuario ret = new Usuario();
 
         ret.set_fecha_vencimiento_licencia(p_rs.getString("fecha_vencimiento_licencia"));
-        ret.set_hombre(p_rs.getBoolean("hombre"));
-        ret.set_borrado(p_rs.getBoolean("borrado"));
+        ret.set_hombre(p_rs.getString("hombre"));
+        ret.set_borrado(p_rs.getString("borrado"));
         ret.set_telefono(p_rs.getString("telefono"));
         ret.set_fecha_modifiacion(p_rs.getString("fecha_modifiacion"));
         ret.set_fecha_nacimiento(p_rs.getString("fecha_nacimiento"));
         ret.set_nombre(p_rs.getString("nombre"));
-        ret.set_id(p_rs.getLong("id"));
-        ret.set_id_comuna(p_rs.getLong("id_comuna"));
+        ret.set_id(p_rs.getInt("id"));
+        ret.set_id_comuna(p_rs.getInt("id_comuna"));
         ret.set_correo(p_rs.getString("correo"));
 
         return ret;
@@ -10600,16 +10601,16 @@ private String _correo;
         String str_sql =
             "    UPDATE usuario" +
             "    SET" +
-            "    fecha_vencimiento_licencia = " + (_fecha_vencimiento_licencia != null ? "STR_TO_DATE(" + _fecha_vencimiento_licencia + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
-            "    hombre = " + (_hombre != null ? "b'" + _hombre : "null") + "," +
-            "    borrado = " + (_borrado != null ? "b'" + _borrado : "null") + "," +
+            "    fecha_vencimiento_licencia = " + (_fecha_vencimiento_licencia != null ? "'" + _fecha_vencimiento_licencia + "'" : "null") + "," +
+            "    hombre = " + (_hombre != null ? "'" + _hombre + "'" : "null") + "," +
+            "    borrado = " + (_borrado != null ? "'" + _borrado + "'" : "null") + "," +
             "    telefono = " + (_telefono != null ? "'" + _telefono + "'" : "null") + "," +
-            "    fecha_modifiacion = " + (_fecha_modifiacion != null ? "STR_TO_DATE(" + _fecha_modifiacion + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
-            "    fecha_nacimiento = " + (_fecha_nacimiento != null ? "STR_TO_DATE(" + _fecha_nacimiento + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    fecha_modifiacion = " + (_fecha_modifiacion != null ? "'" + _fecha_modifiacion + "'" : "null") + "," +
+            "    fecha_nacimiento = " + (_fecha_nacimiento != null ? "'" + _fecha_nacimiento + "'" : "null") + "," +
             "    nombre = " + (_nombre != null ? "'" + _nombre + "'" : "null") + "," +
             "    correo = " + (_correo != null ? "'" + _correo + "'" : "null") +
             "    WHERE" +
-            "    id_usuario = Long.toString(this._id)";
+            "    id_usuario = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -10667,10 +10668,10 @@ private String _correo;
             "    correo)" +
             "    VALUES" +
             "    (" +
-            "    " + (_fecha_vencimiento_licencia != null ? "STR_TO_DATE(" + _fecha_vencimiento_licencia + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
-            "    " + (_hombre != null ? "b'" + (_hombre ? 1 : 0) + "'" : "null") + "," +
+            "    " + (_fecha_vencimiento_licencia != null ? "'" + _fecha_vencimiento_licencia + "'" : "null") + "," +
+            "    " + (_hombre != null ? "'" + _hombre + "'" : "null") + "," +
             "    " + (_telefono != null ? "'" + _telefono + "'" : "null") + "," +
-            "    " + (_fecha_nacimiento != null ? "STR_TO_DATE(" + _fecha_nacimiento + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    " + (_fecha_nacimiento != null ? "'" + _fecha_nacimiento + "'" : "null") + "," +
             "    " + (_nombre != null ? "'" + _nombre + "'" : "null") + "," +
             "    " + (_id_usuario != null ? "'" + _id_usuario + "'" : "null") + "," +
             "    " + (_id_comuna != null ? "'" + _id_comuna + "'" : "null") + "," +
@@ -10725,7 +10726,7 @@ private String _correo;
         String str_sql =
             "    DELETE FROM usuario" +
             "    WHERE" +
-            "    id_usuario = Long.toString(this._id)";
+            "    id_usuario = Integer.toString(this._id)";
 
         try {
             stmt = p_conn.createStatement();
@@ -10759,8 +10760,8 @@ private String _correo;
     }
 }
 
-DEBUG [main] (MyORM.java:140) - table: vehiculo
-DEBUG [main] (MyORM.java:151) - columns:
+DEBUG [main] (SQLiteORM.java:139) - table: vehiculo
+DEBUG [main] (SQLiteORM.java:150) - columns:
 /**
  * 
  */
@@ -10779,30 +10780,30 @@ import java.util.ArrayList;
  */
 public class Vehiculo {
 private Integer _anio;
-private Boolean _aire_acondicionado;
+private String _aire_acondicionado;
 private String _alias;
-private Boolean _borrado;
-private Byte _id_traccion;
+private String _borrado;
+private Integer _id_traccion;
 private Integer _km;
-private Boolean _alza_vidrios;
+private String _alza_vidrios;
 private String _fecha_modificacion;
-private Long _id_usuario;
-private Long _id_vehiculo;
+private Integer _id_usuario;
+private Integer _id_vehiculo;
 private String _patente;
-private Long _id_modelo;
-private Byte _id_combustible;
-private Byte _id_tipo_transmision;
+private Integer _id_modelo;
+private Integer _id_combustible;
+private Integer _id_tipo_transmision;
 
     private final static String _str_sql = 
         "    SELECT" +
         "    ve.anio AS anio," +
-        "    0+ve.aire_acondicionado AS aire_acondicionado," +
+        "    ve.aire_acondicionado AS aire_acondicionado," +
         "    ve.alias AS alias," +
-        "    0+ve.borrado AS borrado," +
+        "    ve.borrado AS borrado," +
         "    ve.id_traccion AS id_traccion," +
         "    ve.km AS km," +
-        "    0+ve.alza_vidrios AS alza_vidrios," +
-        "    DATE_FORMAT(ve.fecha_modificacion, '%d-%m-%Y %H:%i:%s') AS fecha_modificacion," +
+        "    ve.alza_vidrios AS alza_vidrios," +
+        "    ve.fecha_modificacion AS fecha_modificacion," +
         "    ve.id_usuario AS id_usuario," +
         "    ve.id_vehiculo AS id_vehiculo," +
         "    ve.patente AS patente," +
@@ -10837,7 +10838,7 @@ private Byte _id_tipo_transmision;
     /**
      * @return the _aire_acondicionado
      */
-    public Boolean get_aire_acondicionado() {
+    public String get_aire_acondicionado() {
         return _aire_acondicionado;
     }
     /**
@@ -10849,13 +10850,13 @@ private Byte _id_tipo_transmision;
     /**
      * @return the _borrado
      */
-    public Boolean get_borrado() {
+    public String get_borrado() {
         return _borrado;
     }
     /**
      * @return the _id_traccion
      */
-    public Byte get_id_traccion() {
+    public Integer get_id_traccion() {
         return _id_traccion;
     }
     /**
@@ -10867,7 +10868,7 @@ private Byte _id_tipo_transmision;
     /**
      * @return the _alza_vidrios
      */
-    public Boolean get_alza_vidrios() {
+    public String get_alza_vidrios() {
         return _alza_vidrios;
     }
     /**
@@ -10879,13 +10880,13 @@ private Byte _id_tipo_transmision;
     /**
      * @return the _id_usuario
      */
-    public Long get_id_usuario() {
+    public Integer get_id_usuario() {
         return _id_usuario;
     }
     /**
      * @return the _id_vehiculo
      */
-    public Long get_id_vehiculo() {
+    public Integer get_id_vehiculo() {
         return _id_vehiculo;
     }
     /**
@@ -10897,19 +10898,19 @@ private Byte _id_tipo_transmision;
     /**
      * @return the _id_modelo
      */
-    public Long get_id_modelo() {
+    public Integer get_id_modelo() {
         return _id_modelo;
     }
     /**
      * @return the _id_combustible
      */
-    public Byte get_id_combustible() {
+    public Integer get_id_combustible() {
         return _id_combustible;
     }
     /**
      * @return the _id_tipo_transmision
      */
-    public Byte get_id_tipo_transmision() {
+    public Integer get_id_tipo_transmision() {
         return _id_tipo_transmision;
     }
     /**
@@ -10921,7 +10922,7 @@ private Byte _id_tipo_transmision;
     /**
      * @param _aire_acondicionado the _aire_acondicionado to set
      */
-    public void set_aire_acondicionado(Boolean _aire_acondicionado) {
+    public void set_aire_acondicionado(String _aire_acondicionado) {
         this._aire_acondicionado = _aire_acondicionado;
     }
     /**
@@ -10933,13 +10934,13 @@ private Byte _id_tipo_transmision;
     /**
      * @param _borrado the _borrado to set
      */
-    public void set_borrado(Boolean _borrado) {
+    public void set_borrado(String _borrado) {
         this._borrado = _borrado;
     }
     /**
      * @param _id_traccion the _id_traccion to set
      */
-    public void set_id_traccion(Byte _id_traccion) {
+    public void set_id_traccion(Integer _id_traccion) {
         this._id_traccion = _id_traccion;
     }
     /**
@@ -10951,7 +10952,7 @@ private Byte _id_tipo_transmision;
     /**
      * @param _alza_vidrios the _alza_vidrios to set
      */
-    public void set_alza_vidrios(Boolean _alza_vidrios) {
+    public void set_alza_vidrios(String _alza_vidrios) {
         this._alza_vidrios = _alza_vidrios;
     }
     /**
@@ -10963,13 +10964,13 @@ private Byte _id_tipo_transmision;
     /**
      * @param _id_usuario the _id_usuario to set
      */
-    public void set_id_usuario(Long _id_usuario) {
+    public void set_id_usuario(Integer _id_usuario) {
         this._id_usuario = _id_usuario;
     }
     /**
      * @param _id_vehiculo the _id_vehiculo to set
      */
-    public void set_id_vehiculo(Long _id_vehiculo) {
+    public void set_id_vehiculo(Integer _id_vehiculo) {
         this._id_vehiculo = _id_vehiculo;
     }
     /**
@@ -10981,19 +10982,19 @@ private Byte _id_tipo_transmision;
     /**
      * @param _id_modelo the _id_modelo to set
      */
-    public void set_id_modelo(Long _id_modelo) {
+    public void set_id_modelo(Integer _id_modelo) {
         this._id_modelo = _id_modelo;
     }
     /**
      * @param _id_combustible the _id_combustible to set
      */
-    public void set_id_combustible(Byte _id_combustible) {
+    public void set_id_combustible(Integer _id_combustible) {
         this._id_combustible = _id_combustible;
     }
     /**
      * @param _id_tipo_transmision the _id_tipo_transmision to set
      */
-    public void set_id_tipo_transmision(Byte _id_tipo_transmision) {
+    public void set_id_tipo_transmision(Integer _id_tipo_transmision) {
         this._id_tipo_transmision = _id_tipo_transmision;
     }
 
@@ -11001,19 +11002,19 @@ private Byte _id_tipo_transmision;
         Vehiculo ret = new Vehiculo();
 
         ret.set_anio(p_rs.getInt("anio"));
-        ret.set_aire_acondicionado(p_rs.getBoolean("aire_acondicionado"));
+        ret.set_aire_acondicionado(p_rs.getString("aire_acondicionado"));
         ret.set_alias(p_rs.getString("alias"));
-        ret.set_borrado(p_rs.getBoolean("borrado"));
-        ret.set_id_traccion(p_rs.getByte("id_traccion"));
+        ret.set_borrado(p_rs.getString("borrado"));
+        ret.set_id_traccion(p_rs.getInt("id_traccion"));
         ret.set_km(p_rs.getInt("km"));
-        ret.set_alza_vidrios(p_rs.getBoolean("alza_vidrios"));
+        ret.set_alza_vidrios(p_rs.getString("alza_vidrios"));
         ret.set_fecha_modificacion(p_rs.getString("fecha_modificacion"));
-        ret.set_id_usuario(p_rs.getLong("id_usuario"));
-        ret.set_id_vehiculo(p_rs.getLong("id_vehiculo"));
+        ret.set_id_usuario(p_rs.getInt("id_usuario"));
+        ret.set_id_vehiculo(p_rs.getInt("id_vehiculo"));
         ret.set_patente(p_rs.getString("patente"));
-        ret.set_id_modelo(p_rs.getLong("id_modelo"));
-        ret.set_id_combustible(p_rs.getByte("id_combustible"));
-        ret.set_id_tipo_transmision(p_rs.getByte("id_tipo_transmision"));
+        ret.set_id_modelo(p_rs.getInt("id_modelo"));
+        ret.set_id_combustible(p_rs.getInt("id_combustible"));
+        ret.set_id_tipo_transmision(p_rs.getInt("id_tipo_transmision"));
 
         return ret;
     }
@@ -11207,16 +11208,16 @@ private Byte _id_tipo_transmision;
             "    UPDATE vehiculo" +
             "    SET" +
             "    anio = " + (_anio != null ? _anio : "null") + "," +
-            "    aire_acondicionado = " + (_aire_acondicionado != null ? "b'" + _aire_acondicionado : "null") + "," +
+            "    aire_acondicionado = " + (_aire_acondicionado != null ? "'" + _aire_acondicionado + "'" : "null") + "," +
             "    alias = " + (_alias != null ? "'" + _alias + "'" : "null") + "," +
-            "    borrado = " + (_borrado != null ? "b'" + _borrado : "null") + "," +
+            "    borrado = " + (_borrado != null ? "'" + _borrado + "'" : "null") + "," +
             "    km = " + (_km != null ? _km : "null") + "," +
-            "    alza_vidrios = " + (_alza_vidrios != null ? "b'" + _alza_vidrios : "null") + "," +
-            "    fecha_modificacion = " + (_fecha_modificacion != null ? "STR_TO_DATE(" + _fecha_modificacion + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    alza_vidrios = " + (_alza_vidrios != null ? "'" + _alza_vidrios + "'" : "null") + "," +
+            "    fecha_modificacion = " + (_fecha_modificacion != null ? "'" + _fecha_modificacion + "'" : "null") + "," +
             "    patente = " + (_patente != null ? "'" + _patente + "'" : "null") +
             "    WHERE" +
-            "    id_usuario = Long.toString(this._id_usuario)" AND
-            "    id_vehiculo = Long.toString(this._id_vehiculo)";
+            "    id_usuario = Integer.toString(this._id_usuario)" AND
+            "    id_vehiculo = Integer.toString(this._id_vehiculo)";
 
         try {
             stmt = p_conn.createStatement();
@@ -11279,11 +11280,11 @@ private Byte _id_tipo_transmision;
             "    VALUES" +
             "    (" +
             "    " + (_anio != null ? "'" + _anio + "'" : "null") + "," +
-            "    " + (_aire_acondicionado != null ? "b'" + (_aire_acondicionado ? 1 : 0) + "'" : "null") + "," +
+            "    " + (_aire_acondicionado != null ? "'" + _aire_acondicionado + "'" : "null") + "," +
             "    " + (_alias != null ? "'" + _alias + "'" : "null") + "," +
             "    " + (_id_traccion != null ? "'" + _id_traccion + "'" : "null") + "," +
             "    " + (_km != null ? "'" + _km + "'" : "null") + "," +
-            "    " + (_alza_vidrios != null ? "b'" + (_alza_vidrios ? 1 : 0) + "'" : "null") + "," +
+            "    " + (_alza_vidrios != null ? "'" + _alza_vidrios + "'" : "null") + "," +
             "    " + (_id_usuario != null ? "'" + _id_usuario + "'" : "null") + "," +
             "    " + (_id_vehiculo != null ? "'" + _id_vehiculo + "'" : "null") + "," +
             "    " + (_patente != null ? "'" + _patente + "'" : "null") + "," +
@@ -11340,8 +11341,8 @@ private Byte _id_tipo_transmision;
         String str_sql =
             "    DELETE FROM vehiculo" +
             "    WHERE" +
-            "    id_usuario = Long.toString(this._id_usuario)" AND
-            "    id_vehiculo = Long.toString(this._id_vehiculo)";
+            "    id_usuario = Integer.toString(this._id_usuario)" AND
+            "    id_vehiculo = Integer.toString(this._id_vehiculo)";
 
         try {
             stmt = p_conn.createStatement();
