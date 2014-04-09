@@ -15,29 +15,22 @@ import java.util.ArrayList;
  *
  */
 public class Comuna {
-    private Long _id;
-    private Long _id_region;
-    private String _comuna;
+private Long _id_region;
+private String _comuna;
+private Long _id;
 
     private final static String _str_sql = 
-        "    SELECT " +
-        "    id_comuna AS id, " +
-        "    id_region, " +
-        "    comuna " +
-        "    FROM comuna co ";
+        "    SELECT" +
+        "    co.id_region AS id_region," +
+        "    co.comuna AS comuna," +
+        "    co.id_comuna AS id" +
+        "    FROM comuna co";
 
     public Comuna() {
-        _id = null;
         _id_region = null;
         _comuna = null;
+        _id = null;
 
-    }
-
-    /**
-     * @return the _id
-     */
-    public Long get_id() {
-        return _id;
     }
     /**
      * @return the _id_region
@@ -51,12 +44,11 @@ public class Comuna {
     public String get_comuna() {
         return _comuna;
     }
-
     /**
-     * @param _id the _id to set
+     * @return the _id
      */
-    public void set_id(Long _id) {
-        this._id = _id;
+    public Long get_id() {
+        return _id;
     }
     /**
      * @param _id_region the _id_region to set
@@ -70,28 +62,24 @@ public class Comuna {
     public void set_comuna(String _comuna) {
         this._comuna = _comuna;
     }
+    /**
+     * @param _id the _id to set
+     */
+    public void set_id(Long _id) {
+        this._id = _id;
+    }
 
     public static Comuna fromRS(ResultSet p_rs) throws SQLException {
         Comuna ret = new Comuna();
 
-        try {
-            ret.set_id(p_rs.getLong("id"));
-            ret.set_id_region(p_rs.getLong("id_region"));
-            ret.set_comuna(p_rs.getString("comuna"));
-        }
-        catch (SQLException ex){
-            // handle any errors
-            System.out.println("SQLException: " + ex.getMessage());
-            System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
-
-            throw ex;
-        }
+        ret.set_id_region(p_rs.getLong("id_region"));
+        ret.set_comuna(p_rs.getString("comuna"));
+        ret.set_id(p_rs.getLong("id"));
 
         return ret;
     }
 
-    public static Comuna getByParameter(Connection p_conn, String p_key, String p_value) throws Exception {
+    public static Comuna getByParameter(Connection p_conn, String p_key, String p_value) throws SQLException {
         Comuna ret = null;
         
         String str_sql = _str_sql +
@@ -124,11 +112,7 @@ public class Comuna {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registro");
-        }
-        catch (Exception e){
-            // handle any errors
-            throw new Exception("Excepcion del tipo " + e.getClass() + " Info: " + e.getMessage());
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -176,32 +160,14 @@ public class Comuna {
             str_sql = _str_sql;
             
             for (AbstractMap.SimpleEntry<String, String> p : p_parameters) {
-                if (p.getKey().equals("id_comunidad")) {
-                    array_clauses.add("co.id_comunidad = " + p.getValue());
-                }
-                else if (p.getKey().equals("id_comuna")) {
+                if (p.getKey().equals("id_comuna")) {
                     array_clauses.add("co.id_comuna = " + p.getValue());
                 }
-                else if (p.getKey().equals("latitud_mayor")) {
-                    array_clauses.add("co.latitud > " + p.getValue());
-                }
-                else if (p.getKey().equals("latitud_menor")) {
-                    array_clauses.add("co.latitud < " + p.getValue());
-                }
-                else if (p.getKey().equals("longitud_mayor")) {
-                    array_clauses.add("co.longitud > " + p.getValue());
-                }
-                else if (p.getKey().equals("longitud_menor")) {
-                    array_clauses.add("co.longitud < " + p.getValue());
-                }
-                else if (p.getKey().equals("posicion_reciente")) {
-                    array_clauses.add("co.fecha > DATE_ADD(now(), INTERVAL -" + p.getValue() + " MINUTE)");
-                }
-                else if (p.getKey().equals("id_distinto")) {
-                    array_clauses.add("co.id_usuario <> " + p.getValue());
+                else if (p.getKey().equals("id_region")) {
+                    array_clauses.add("co.id_region = " + p.getValue());
                 }
                 else {
-                	throw new Exception("Parametro no soportado: " + p.getKey());
+                    throw new Exception("Parametro no soportado: " + p.getKey());
                 }
             }
                                 
@@ -250,7 +216,7 @@ public class Comuna {
             throw ex;
         }
         catch (Exception ex) {
-        	throw ex;
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -278,19 +244,18 @@ public class Comuna {
         return ret;
     }
 
-    public int update(Connection p_conn) throws Exception {
+    public int update(Connection p_conn) throws SQLException {
 
         int ret = -1;
         Statement stmt = null;
 
         String str_sql =
             "    UPDATE comuna" +
-            "    SET " +
-            "    id_comuna, " +
-            "    id_region, " +
-            "    comuna " +
-            "    WHERE id_comuna = " + Long.toString(this._id);
-        
+            "    SET" +
+            "    comuna = " + (_comuna != null ? "'" + _comuna + "'" : "null") +
+            "    WHERE" +
+            "    id_comuna = " + Long.toString(this._id);
+
         try {
             stmt = p_conn.createStatement();
             
@@ -308,7 +273,7 @@ public class Comuna {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -328,7 +293,7 @@ public class Comuna {
         return ret;
     }
     
-    public int insert(Connection p_conn) throws Exception {
+    public int insert(Connection p_conn) throws SQLException {
         
         int ret = -1;
         Statement stmt = null;
@@ -337,40 +302,23 @@ public class Comuna {
         String str_sql =
             "    INSERT INTO comuna" +
             "    (" +
-            "    id_comuna, " +
             "    id_region, " +
-            "    comuna " +
-            "    )" +
+            "    comuna, " +
+            "    id_comuna)" +
             "    VALUES" +
             "    (" +
-            "    " + (_id != null ? _id.toString() : "null") + "," +
-            "    " + (_id_region != null ? _id_region.toString() : "null") + "," +
-            "    " + (_comuna != null ? "'" + _comuna + "'" : "null") +
+            "    " + (_id_region != null ? "'" + _id_region + "'" : "null") + "," +
+            "    " + (_comuna != null ? "'" + _comuna + "'" : "null") + "," +
+            "    " + (_id != null ? "'" + _id + "'" : "null") +
             "    )";
         
         try {
             stmt = p_conn.createStatement();
-            
-            ret = stmt.executeUpdate(str_sql, Statement.RETURN_GENERATED_KEYS);
-            /*
-            if (stmt.executeUpdate(str_sql) < 1) {
-                throw new Exception("No hubo filas afectadas");
-            }
-            */
-            
-            rs = stmt.getGeneratedKeys();
 
-            if (rs.next()) {
-                _id = rs.getLong(1);
-            } else {
-                // throw an exception from here
-                throw new Exception("Error al obtener id");
-            }
+            ret = stmt.executeUpdate(str_sql);
 
-            rs.close();
-            rs = null;
-            System.out.println("Key returned from getGeneratedKeys():" + _id.toString());
-                        
+            load(p_conn);
+
         }
         catch (SQLException ex){
             // handle any errors
@@ -378,7 +326,7 @@ public class Comuna {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -405,29 +353,21 @@ public class Comuna {
         
         return ret;
     }
-    
-    public static int delete(Connection p_conn, Integer p_id_comuna) throws Exception {
+
+    public int delete(Connection p_conn) throws SQLException {
 
         int ret = -1;
         Statement stmt = null;
 
         String str_sql =
-            "  DELETE FROM comuna";
-        
-        if (p_id_comuna != null) {
-            str_sql +=
-                "  WHERE id_comuna = " + p_id_comuna.toString();
-        }
-        
+            "    DELETE FROM comuna" +
+            "    WHERE" +
+            "    id_comuna = " + Long.toString(this._id);
+
         try {
             stmt = p_conn.createStatement();
             
             ret = stmt.executeUpdate(str_sql);
-            /*
-            if (stmt.executeUpdate(str_sql) < 1) {
-                throw new Exception("No hubo filas afectadas");
-            }
-            */
         }
         catch (SQLException ex){
             // handle any errors
@@ -435,7 +375,7 @@ public class Comuna {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al borrar registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -454,4 +394,88 @@ public class Comuna {
         
         return ret;
     }
+
+    public void load(Connection p_conn) throws SQLException {
+        Comuna obj = null;
+        
+        String str_sql = _str_sql +
+            "    WHERE" +
+            "    id_comuna = " + Long.toString(this._id) +
+            "    LIMIT 0, 1";
+        
+        //System.out.println(str_sql);
+        
+        // assume that conn is an already created JDBC connection (see previous examples)
+        Statement stmt = null;
+        ResultSet rs = null;
+        
+        try {
+            stmt = p_conn.createStatement();
+            //System.out.println("stmt = p_conn.createStatement() ok");
+            rs = stmt.executeQuery(str_sql);
+            //System.out.println("rs = stmt.executeQuery(str_sql) ok");
+
+            // Now do something with the ResultSet ....
+            
+            if (rs.next()) {
+                //System.out.println("rs.next() ok");
+                obj = fromRS(rs);
+                //System.out.println("fromRS(rs) ok");
+
+                _id_region = obj.get_id_region();
+                _comuna = obj.get_comuna();
+            }
+        }
+        catch (SQLException ex){
+            // handle any errors
+            System.out.println("SQLException: " + ex.getMessage() + " sentencia: " + str_sql);
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+            
+            throw ex;
+        }
+        finally {
+            // it is a good idea to release
+            // resources in a finally{} block
+            // in reverse-order of their creation
+            // if they are no-longer needed
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException sqlEx) { 
+                    
+                } // ignore
+                rs = null;
+            }
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException sqlEx) {
+                    
+                } // ignore
+                stmt = null;
+            }
+        }        
+        
+    }
+
+
+@Override
+    public String toString() {
+        return "Comuna [" +
+	           "    _id_region = " + (_id_region != null ? _id_region : "null") + "," +
+	           "    _comuna = " + (_comuna != null ? "'" + _comuna + "'" : "null") + "," +
+	           "    _id = " + (_id != null ? _id : "null") +
+			   "]";
+    }
+
+
+    public String toJSON() {
+        return "Comuna : {" +
+	           "    _id_region : " + (_id_region != null ? _id_region : "null") + "," +
+	           "    _comuna : " + (_comuna != null ? "'" + _comuna + "'" : "null") + "," +
+	           "    _id : " + (_id != null ? _id : "null") +
+			   "}";
+    }
+
 }

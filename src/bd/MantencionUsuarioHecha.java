@@ -15,30 +15,35 @@ import java.util.ArrayList;
  *
  */
 public class MantencionUsuarioHecha {
-    private Long _id;
-    private Long _id_mantencion_usuario;
-    private Integer _km;
-    private String _fecha;
-    private Integer _costo;
+private String _fecha;
+private Long _id;
+private Long _id_mantencion_usuario;
+private Integer _costo;
+private Integer _km;
 
     private final static String _str_sql = 
-        "    SELECT " +
-        "    id_mantencion_usuario_hecha AS id, " +
-        "    id_mantencion_usuario, " +
-        "    km, " +
-        "    DATE_FORMAT(ma.fecha, '%d-%m-%Y %H:%i:%s') AS fecha, " +
-        "    costo " +
-        "    FROM mantencion_usuario_hecha ma ";
+        "    SELECT" +
+        "    DATE_FORMAT(ma.fecha, '%d-%m-%Y %H:%i:%s') AS fecha," +
+        "    ma.id_mantencion_usuario_hecha AS id," +
+        "    ma.id_mantencion_usuario AS id_mantencion_usuario," +
+        "    ma.costo AS costo," +
+        "    ma.km AS km" +
+        "    FROM mantencion_usuario_hecha ma";
 
     public MantencionUsuarioHecha() {
+        _fecha = null;
         _id = null;
         _id_mantencion_usuario = null;
-        _km = null;
-        _fecha = null;
         _costo = null;
+        _km = null;
 
     }
-
+    /**
+     * @return the _fecha
+     */
+    public String get_fecha() {
+        return _fecha;
+    }
     /**
      * @return the _id
      */
@@ -52,24 +57,23 @@ public class MantencionUsuarioHecha {
         return _id_mantencion_usuario;
     }
     /**
+     * @return the _costo
+     */
+    public Integer get_costo() {
+        return _costo;
+    }
+    /**
      * @return the _km
      */
     public Integer get_km() {
         return _km;
     }
     /**
-     * @return the _fecha
+     * @param _fecha the _fecha to set
      */
-    public String get_fecha() {
-        return _fecha;
+    public void set_fecha(String _fecha) {
+        this._fecha = _fecha;
     }
-    /**
-     * @return the _costo
-     */
-    public Integer get_costo() {
-        return _costo;
-    }
-
     /**
      * @param _id the _id to set
      */
@@ -83,47 +87,31 @@ public class MantencionUsuarioHecha {
         this._id_mantencion_usuario = _id_mantencion_usuario;
     }
     /**
-     * @param _km the _km to set
-     */
-    public void set_km(Integer _km) {
-        this._km = _km;
-    }
-    /**
-     * @param _fecha the _fecha to set
-     */
-    public void set_fecha(String _fecha) {
-        this._fecha = _fecha;
-    }
-    /**
      * @param _costo the _costo to set
      */
     public void set_costo(Integer _costo) {
         this._costo = _costo;
     }
+    /**
+     * @param _km the _km to set
+     */
+    public void set_km(Integer _km) {
+        this._km = _km;
+    }
 
     public static MantencionUsuarioHecha fromRS(ResultSet p_rs) throws SQLException {
         MantencionUsuarioHecha ret = new MantencionUsuarioHecha();
 
-        try {
-            ret.set_id(p_rs.getLong("id"));
-            ret.set_id_mantencion_usuario(p_rs.getLong("id_mantencion_usuario"));
-            ret.set_km(p_rs.getInt("km"));
-            ret.set_fecha(p_rs.getString("fecha"));
-            ret.set_costo(p_rs.getInt("costo"));
-        }
-        catch (SQLException ex){
-            // handle any errors
-            System.out.println("SQLException: " + ex.getMessage());
-            System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
-
-            throw ex;
-        }
+        ret.set_fecha(p_rs.getString("fecha"));
+        ret.set_id(p_rs.getLong("id"));
+        ret.set_id_mantencion_usuario(p_rs.getLong("id_mantencion_usuario"));
+        ret.set_costo(p_rs.getInt("costo"));
+        ret.set_km(p_rs.getInt("km"));
 
         return ret;
     }
 
-    public static MantencionUsuarioHecha getByParameter(Connection p_conn, String p_key, String p_value) throws Exception {
+    public static MantencionUsuarioHecha getByParameter(Connection p_conn, String p_key, String p_value) throws SQLException {
         MantencionUsuarioHecha ret = null;
         
         String str_sql = _str_sql +
@@ -156,11 +144,7 @@ public class MantencionUsuarioHecha {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registro");
-        }
-        catch (Exception e){
-            // handle any errors
-            throw new Exception("Excepcion del tipo " + e.getClass() + " Info: " + e.getMessage());
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -208,32 +192,14 @@ public class MantencionUsuarioHecha {
             str_sql = _str_sql;
             
             for (AbstractMap.SimpleEntry<String, String> p : p_parameters) {
-                if (p.getKey().equals("id_comunidad")) {
-                    array_clauses.add("ma.id_comunidad = " + p.getValue());
+                if (p.getKey().equals("id_mantencion_usuario_hecha")) {
+                    array_clauses.add("ma.id_mantencion_usuario_hecha = " + p.getValue());
                 }
-                else if (p.getKey().equals("id_comuna")) {
-                    array_clauses.add("ma.id_comuna = " + p.getValue());
-                }
-                else if (p.getKey().equals("latitud_mayor")) {
-                    array_clauses.add("ma.latitud > " + p.getValue());
-                }
-                else if (p.getKey().equals("latitud_menor")) {
-                    array_clauses.add("ma.latitud < " + p.getValue());
-                }
-                else if (p.getKey().equals("longitud_mayor")) {
-                    array_clauses.add("ma.longitud > " + p.getValue());
-                }
-                else if (p.getKey().equals("longitud_menor")) {
-                    array_clauses.add("ma.longitud < " + p.getValue());
-                }
-                else if (p.getKey().equals("posicion_reciente")) {
-                    array_clauses.add("ma.fecha > DATE_ADD(now(), INTERVAL -" + p.getValue() + " MINUTE)");
-                }
-                else if (p.getKey().equals("id_distinto")) {
-                    array_clauses.add("ma.id_usuario <> " + p.getValue());
+                else if (p.getKey().equals("id_mantencion_usuario")) {
+                    array_clauses.add("ma.id_mantencion_usuario = " + p.getValue());
                 }
                 else {
-                	throw new Exception("Parametro no soportado: " + p.getKey());
+                    throw new Exception("Parametro no soportado: " + p.getKey());
                 }
             }
                                 
@@ -282,7 +248,7 @@ public class MantencionUsuarioHecha {
             throw ex;
         }
         catch (Exception ex) {
-        	throw ex;
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -310,21 +276,20 @@ public class MantencionUsuarioHecha {
         return ret;
     }
 
-    public int update(Connection p_conn) throws Exception {
+    public int update(Connection p_conn) throws SQLException {
 
         int ret = -1;
         Statement stmt = null;
 
         String str_sql =
             "    UPDATE mantencion_usuario_hecha" +
-            "    SET " +
-            "    id_mantencion_usuario_hecha AS id, " +
-            "    id_mantencion_usuario, " +
-            "    km, " +
-            "    DATE_FORMAT(ma.fecha, '%d-%m-%Y %H:%i:%s') AS fecha, " +
-            "    costo " +
-            "    WHERE id_mantencion_usuario_hecha = " + Long.toString(this._id);
-        
+            "    SET" +
+            "    fecha = " + (_fecha != null ? "STR_TO_DATE(" + _fecha + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    costo = " + (_costo != null ? _costo : "null") + "," +
+            "    km = " + (_km != null ? _km : "null") +
+            "    WHERE" +
+            "    id_mantencion_usuario_hecha = " + Long.toString(this._id);
+
         try {
             stmt = p_conn.createStatement();
             
@@ -342,7 +307,7 @@ public class MantencionUsuarioHecha {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -362,7 +327,7 @@ public class MantencionUsuarioHecha {
         return ret;
     }
     
-    public int insert(Connection p_conn) throws Exception {
+    public int insert(Connection p_conn) throws SQLException {
         
         int ret = -1;
         Statement stmt = null;
@@ -371,44 +336,27 @@ public class MantencionUsuarioHecha {
         String str_sql =
             "    INSERT INTO mantencion_usuario_hecha" +
             "    (" +
+            "    fecha, " +
             "    id_mantencion_usuario_hecha, " +
             "    id_mantencion_usuario, " +
-            "    km, " +
-            "    fecha, " +
-            "    costo " +
-            "    )" +
+            "    costo, " +
+            "    km)" +
             "    VALUES" +
             "    (" +
-            "    " + (_id != null ? _id.toString() : "null") + "," +
-            "    " + (_id_mantencion_usuario != null ? _id_mantencion_usuario.toString() : "null") + "," +
-            "    " + (_km != null ? _km.toString() : "null") + "," +
             "    " + (_fecha != null ? "STR_TO_DATE(" + _fecha + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
-            "    " + (_costo != null ? _costo.toString() : "null") +
+            "    " + (_id != null ? "'" + _id + "'" : "null") + "," +
+            "    " + (_id_mantencion_usuario != null ? "'" + _id_mantencion_usuario + "'" : "null") + "," +
+            "    " + (_costo != null ? "'" + _costo + "'" : "null") + "," +
+            "    " + (_km != null ? "'" + _km + "'" : "null") +
             "    )";
         
         try {
             stmt = p_conn.createStatement();
-            
-            ret = stmt.executeUpdate(str_sql, Statement.RETURN_GENERATED_KEYS);
-            /*
-            if (stmt.executeUpdate(str_sql) < 1) {
-                throw new Exception("No hubo filas afectadas");
-            }
-            */
-            
-            rs = stmt.getGeneratedKeys();
 
-            if (rs.next()) {
-                _id = rs.getLong(1);
-            } else {
-                // throw an exception from here
-                throw new Exception("Error al obtener id");
-            }
+            ret = stmt.executeUpdate(str_sql);
 
-            rs.close();
-            rs = null;
-            System.out.println("Key returned from getGeneratedKeys():" + _id.toString());
-                        
+            load(p_conn);
+
         }
         catch (SQLException ex){
             // handle any errors
@@ -416,7 +364,7 @@ public class MantencionUsuarioHecha {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -443,29 +391,21 @@ public class MantencionUsuarioHecha {
         
         return ret;
     }
-    
-    public static int delete(Connection p_conn, Integer p_id_mantencion_usuario_hecha) throws Exception {
+
+    public int delete(Connection p_conn) throws SQLException {
 
         int ret = -1;
         Statement stmt = null;
 
         String str_sql =
-            "  DELETE FROM mantencion_usuario_hecha";
-        
-        if (p_id_mantencion_usuario_hecha != null) {
-            str_sql +=
-                "  WHERE id_mantencion_usuario_hecha = " + p_id_mantencion_usuario_hecha.toString();
-        }
-        
+            "    DELETE FROM mantencion_usuario_hecha" +
+            "    WHERE" +
+            "    id_mantencion_usuario_hecha = " + Long.toString(this._id);
+
         try {
             stmt = p_conn.createStatement();
             
             ret = stmt.executeUpdate(str_sql);
-            /*
-            if (stmt.executeUpdate(str_sql) < 1) {
-                throw new Exception("No hubo filas afectadas");
-            }
-            */
         }
         catch (SQLException ex){
             // handle any errors
@@ -473,7 +413,7 @@ public class MantencionUsuarioHecha {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al borrar registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -492,4 +432,94 @@ public class MantencionUsuarioHecha {
         
         return ret;
     }
+
+    public void load(Connection p_conn) throws SQLException {
+        MantencionUsuarioHecha obj = null;
+        
+        String str_sql = _str_sql +
+            "    WHERE" +
+            "    id_mantencion_usuario_hecha = " + Long.toString(this._id) +
+            "    LIMIT 0, 1";
+        
+        //System.out.println(str_sql);
+        
+        // assume that conn is an already created JDBC connection (see previous examples)
+        Statement stmt = null;
+        ResultSet rs = null;
+        
+        try {
+            stmt = p_conn.createStatement();
+            //System.out.println("stmt = p_conn.createStatement() ok");
+            rs = stmt.executeQuery(str_sql);
+            //System.out.println("rs = stmt.executeQuery(str_sql) ok");
+
+            // Now do something with the ResultSet ....
+            
+            if (rs.next()) {
+                //System.out.println("rs.next() ok");
+                obj = fromRS(rs);
+                //System.out.println("fromRS(rs) ok");
+
+                _fecha = obj.get_fecha();
+                _id_mantencion_usuario = obj.get_id_mantencion_usuario();
+                _costo = obj.get_costo();
+                _km = obj.get_km();
+            }
+        }
+        catch (SQLException ex){
+            // handle any errors
+            System.out.println("SQLException: " + ex.getMessage() + " sentencia: " + str_sql);
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+            
+            throw ex;
+        }
+        finally {
+            // it is a good idea to release
+            // resources in a finally{} block
+            // in reverse-order of their creation
+            // if they are no-longer needed
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException sqlEx) { 
+                    
+                } // ignore
+                rs = null;
+            }
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException sqlEx) {
+                    
+                } // ignore
+                stmt = null;
+            }
+        }        
+        
+    }
+
+
+@Override
+    public String toString() {
+        return "MantencionUsuario_hecha [" +
+	           "    _fecha = " + (_fecha != null ? "STR_TO_DATE(" + _fecha + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+	           "    _id = " + (_id != null ? _id : "null") + "," +
+	           "    _id_mantencion_usuario = " + (_id_mantencion_usuario != null ? _id_mantencion_usuario : "null") + "," +
+	           "    _costo = " + (_costo != null ? _costo : "null") + "," +
+	           "    _km = " + (_km != null ? _km : "null") +
+			   "]";
+    }
+
+
+    public String toJSON() {
+        return "MantencionUsuario_hecha : {" +
+	           "    _fecha : " + (_fecha != null ? "STR_TO_DATE(" + _fecha + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+	           "    _id : " + (_id != null ? _id : "null") + "," +
+	           "    _id_mantencion_usuario : " + (_id_mantencion_usuario != null ? _id_mantencion_usuario : "null") + "," +
+	           "    _costo : " + (_costo != null ? _costo : "null") + "," +
+	           "    _km : " + (_km != null ? _km : "null") +
+			   "}";
+    }
+
 }

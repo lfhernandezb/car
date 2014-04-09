@@ -15,24 +15,29 @@ import java.util.ArrayList;
  *
  */
 public class Region {
-    private Long _id;
-    private Long _id_pais;
-    private String _region;
+private String _region;
+private Long _id;
+private Long _id_pais;
 
     private final static String _str_sql = 
-        "    SELECT " +
-        "    id_region AS id, " +
-        "    id_pais, " +
-        "    region " +
-        "    FROM region re ";
+        "    SELECT" +
+        "    re.region AS region," +
+        "    re.id_region AS id," +
+        "    re.id_pais AS id_pais" +
+        "    FROM region re";
 
     public Region() {
+        _region = null;
         _id = null;
         _id_pais = null;
-        _region = null;
 
     }
-
+    /**
+     * @return the _region
+     */
+    public String get_region() {
+        return _region;
+    }
     /**
      * @return the _id
      */
@@ -46,12 +51,11 @@ public class Region {
         return _id_pais;
     }
     /**
-     * @return the _region
+     * @param _region the _region to set
      */
-    public String get_region() {
-        return _region;
+    public void set_region(String _region) {
+        this._region = _region;
     }
-
     /**
      * @param _id the _id to set
      */
@@ -64,34 +68,18 @@ public class Region {
     public void set_id_pais(Long _id_pais) {
         this._id_pais = _id_pais;
     }
-    /**
-     * @param _region the _region to set
-     */
-    public void set_region(String _region) {
-        this._region = _region;
-    }
 
     public static Region fromRS(ResultSet p_rs) throws SQLException {
         Region ret = new Region();
 
-        try {
-            ret.set_id(p_rs.getLong("id"));
-            ret.set_id_pais(p_rs.getLong("id_pais"));
-            ret.set_region(p_rs.getString("region"));
-        }
-        catch (SQLException ex){
-            // handle any errors
-            System.out.println("SQLException: " + ex.getMessage());
-            System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
-
-            throw ex;
-        }
+        ret.set_region(p_rs.getString("region"));
+        ret.set_id(p_rs.getLong("id"));
+        ret.set_id_pais(p_rs.getLong("id_pais"));
 
         return ret;
     }
 
-    public static Region getByParameter(Connection p_conn, String p_key, String p_value) throws Exception {
+    public static Region getByParameter(Connection p_conn, String p_key, String p_value) throws SQLException {
         Region ret = null;
         
         String str_sql = _str_sql +
@@ -124,11 +112,7 @@ public class Region {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registro");
-        }
-        catch (Exception e){
-            // handle any errors
-            throw new Exception("Excepcion del tipo " + e.getClass() + " Info: " + e.getMessage());
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -176,32 +160,14 @@ public class Region {
             str_sql = _str_sql;
             
             for (AbstractMap.SimpleEntry<String, String> p : p_parameters) {
-                if (p.getKey().equals("id_comunidad")) {
-                    array_clauses.add("re.id_comunidad = " + p.getValue());
+                if (p.getKey().equals("id_region")) {
+                    array_clauses.add("re.id_region = " + p.getValue());
                 }
-                else if (p.getKey().equals("id_comuna")) {
-                    array_clauses.add("re.id_comuna = " + p.getValue());
-                }
-                else if (p.getKey().equals("latitud_mayor")) {
-                    array_clauses.add("re.latitud > " + p.getValue());
-                }
-                else if (p.getKey().equals("latitud_menor")) {
-                    array_clauses.add("re.latitud < " + p.getValue());
-                }
-                else if (p.getKey().equals("longitud_mayor")) {
-                    array_clauses.add("re.longitud > " + p.getValue());
-                }
-                else if (p.getKey().equals("longitud_menor")) {
-                    array_clauses.add("re.longitud < " + p.getValue());
-                }
-                else if (p.getKey().equals("posicion_reciente")) {
-                    array_clauses.add("re.fecha > DATE_ADD(now(), INTERVAL -" + p.getValue() + " MINUTE)");
-                }
-                else if (p.getKey().equals("id_distinto")) {
-                    array_clauses.add("re.id_usuario <> " + p.getValue());
+                else if (p.getKey().equals("id_pais")) {
+                    array_clauses.add("re.id_pais = " + p.getValue());
                 }
                 else {
-                	throw new Exception("Parametro no soportado: " + p.getKey());
+                    throw new Exception("Parametro no soportado: " + p.getKey());
                 }
             }
                                 
@@ -250,7 +216,7 @@ public class Region {
             throw ex;
         }
         catch (Exception ex) {
-        	throw ex;
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -278,19 +244,18 @@ public class Region {
         return ret;
     }
 
-    public int update(Connection p_conn) throws Exception {
+    public int update(Connection p_conn) throws SQLException {
 
         int ret = -1;
         Statement stmt = null;
 
         String str_sql =
             "    UPDATE region" +
-            "    SET " +
-            "    id_region, " +
-            "    id_pais, " +
-            "    region " +
-            "    WHERE id_region = " + Long.toString(this._id);
-        
+            "    SET" +
+            "    region = " + (_region != null ? "'" + _region + "'" : "null") +
+            "    WHERE" +
+            "    id_region = " + Long.toString(this._id);
+
         try {
             stmt = p_conn.createStatement();
             
@@ -308,7 +273,7 @@ public class Region {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -328,7 +293,7 @@ public class Region {
         return ret;
     }
     
-    public int insert(Connection p_conn) throws Exception {
+    public int insert(Connection p_conn) throws SQLException {
         
         int ret = -1;
         Statement stmt = null;
@@ -337,40 +302,23 @@ public class Region {
         String str_sql =
             "    INSERT INTO region" +
             "    (" +
+            "    region, " +
             "    id_region, " +
-            "    id_pais, " +
-            "    region " +
-            "    )" +
+            "    id_pais)" +
             "    VALUES" +
             "    (" +
-            "    " + (_id != null ? _id.toString() : "null") + "," +
-            "    " + (_id_pais != null ? _id_pais.toString() : "null") + "," +
-            "    " + (_region != null ? "'" + _region + "'" : "null") +
+            "    " + (_region != null ? "'" + _region + "'" : "null") + "," +
+            "    " + (_id != null ? "'" + _id + "'" : "null") + "," +
+            "    " + (_id_pais != null ? "'" + _id_pais + "'" : "null") +
             "    )";
         
         try {
             stmt = p_conn.createStatement();
-            
-            ret = stmt.executeUpdate(str_sql, Statement.RETURN_GENERATED_KEYS);
-            /*
-            if (stmt.executeUpdate(str_sql) < 1) {
-                throw new Exception("No hubo filas afectadas");
-            }
-            */
-            
-            rs = stmt.getGeneratedKeys();
 
-            if (rs.next()) {
-                _id = rs.getLong(1);
-            } else {
-                // throw an exception from here
-                throw new Exception("Error al obtener id");
-            }
+            ret = stmt.executeUpdate(str_sql);
 
-            rs.close();
-            rs = null;
-            System.out.println("Key returned from getGeneratedKeys():" + _id.toString());
-                        
+            load(p_conn);
+
         }
         catch (SQLException ex){
             // handle any errors
@@ -378,7 +326,7 @@ public class Region {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -405,29 +353,21 @@ public class Region {
         
         return ret;
     }
-    
-    public static int delete(Connection p_conn, Integer p_id_region) throws Exception {
+
+    public int delete(Connection p_conn) throws SQLException {
 
         int ret = -1;
         Statement stmt = null;
 
         String str_sql =
-            "  DELETE FROM region";
-        
-        if (p_id_region != null) {
-            str_sql +=
-                "  WHERE id_region = " + p_id_region.toString();
-        }
-        
+            "    DELETE FROM region" +
+            "    WHERE" +
+            "    id_region = " + Long.toString(this._id);
+
         try {
             stmt = p_conn.createStatement();
             
             ret = stmt.executeUpdate(str_sql);
-            /*
-            if (stmt.executeUpdate(str_sql) < 1) {
-                throw new Exception("No hubo filas afectadas");
-            }
-            */
         }
         catch (SQLException ex){
             // handle any errors
@@ -435,7 +375,7 @@ public class Region {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al borrar registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -454,4 +394,88 @@ public class Region {
         
         return ret;
     }
+
+    public void load(Connection p_conn) throws SQLException {
+        Region obj = null;
+        
+        String str_sql = _str_sql +
+            "    WHERE" +
+            "    id_region = " + Long.toString(this._id) +
+            "    LIMIT 0, 1";
+        
+        //System.out.println(str_sql);
+        
+        // assume that conn is an already created JDBC connection (see previous examples)
+        Statement stmt = null;
+        ResultSet rs = null;
+        
+        try {
+            stmt = p_conn.createStatement();
+            //System.out.println("stmt = p_conn.createStatement() ok");
+            rs = stmt.executeQuery(str_sql);
+            //System.out.println("rs = stmt.executeQuery(str_sql) ok");
+
+            // Now do something with the ResultSet ....
+            
+            if (rs.next()) {
+                //System.out.println("rs.next() ok");
+                obj = fromRS(rs);
+                //System.out.println("fromRS(rs) ok");
+
+                _region = obj.get_region();
+                _id_pais = obj.get_id_pais();
+            }
+        }
+        catch (SQLException ex){
+            // handle any errors
+            System.out.println("SQLException: " + ex.getMessage() + " sentencia: " + str_sql);
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+            
+            throw ex;
+        }
+        finally {
+            // it is a good idea to release
+            // resources in a finally{} block
+            // in reverse-order of their creation
+            // if they are no-longer needed
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException sqlEx) { 
+                    
+                } // ignore
+                rs = null;
+            }
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException sqlEx) {
+                    
+                } // ignore
+                stmt = null;
+            }
+        }        
+        
+    }
+
+
+@Override
+    public String toString() {
+        return "Region [" +
+	           "    _region = " + (_region != null ? "'" + _region + "'" : "null") + "," +
+	           "    _id = " + (_id != null ? _id : "null") + "," +
+	           "    _id_pais = " + (_id_pais != null ? _id_pais : "null") +
+			   "]";
+    }
+
+
+    public String toJSON() {
+        return "Region : {" +
+	           "    _region : " + (_region != null ? "'" + _region + "'" : "null") + "," +
+	           "    _id : " + (_id != null ? _id : "null") + "," +
+	           "    _id_pais : " + (_id_pais != null ? _id_pais : "null") +
+			   "}";
+    }
+
 }

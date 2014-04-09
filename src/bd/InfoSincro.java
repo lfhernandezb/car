@@ -14,140 +14,156 @@ import java.util.ArrayList;
  * @author petete-ntbk
  *
  */
-public class Estilo {
-private String _nombre;
-private Byte _puertas;
-private String _traccion;
-private Long _id_modelo_anio;
-private Short _rendimiento_carretera;
-private Short _rendimiento_ciudad;
-private Long _id;
+public class InfoSincro {
+private Integer _id;
+private String _fecha;
+private String _fecha_fin_procesamiento;
+private Byte _sentido;
+private String _fecha_lectura;
+private String _archivo_nombre;
+private String _archivo_md5;
+private Long _archivo_tamano;
 
     private final static String _str_sql = 
         "    SELECT" +
-        "    es.nombre AS nombre," +
-        "    es.puertas AS puertas," +
-        "    es.traccion AS traccion," +
-        "    es.id_modelo_anio AS id_modelo_anio," +
-        "    es.rendimiento_carretera AS rendimiento_carretera," +
-        "    es.rendimiento_ciudad AS rendimiento_ciudad," +
-        "    es.id_estilo AS id" +
-        "    FROM estilo es";
+        "    in.id_info_sincro AS id," +
+        "    DATE_FORMAT(in.fecha, '%d-%m-%Y %H:%i:%s') AS fecha," +
+        "    DATE_FORMAT(in.fecha_fin_procesamiento, '%d-%m-%Y %H:%i:%s') AS fecha_fin_procesamiento," +
+        "    in.sentido AS sentido," +
+        "    DATE_FORMAT(in.fecha_lectura, '%d-%m-%Y %H:%i:%s') AS fecha_lectura," +
+        "    in.archivo_nombre AS archivo_nombre," +
+        "    in.archivo_md5 AS archivo_md5," +
+        "    in.archivo_tamano AS archivo_tamano" +
+        "    FROM info_sincro in";
 
-    public Estilo() {
-        _nombre = null;
-        _puertas = null;
-        _traccion = null;
-        _id_modelo_anio = null;
-        _rendimiento_carretera = null;
-        _rendimiento_ciudad = null;
+    public InfoSincro() {
         _id = null;
+        _fecha = null;
+        _fecha_fin_procesamiento = null;
+        _sentido = null;
+        _fecha_lectura = null;
+        _archivo_nombre = null;
+        _archivo_md5 = null;
+        _archivo_tamano = null;
 
-    }
-    /**
-     * @return the _nombre
-     */
-    public String get_nombre() {
-        return _nombre;
-    }
-    /**
-     * @return the _puertas
-     */
-    public Byte get_puertas() {
-        return _puertas;
-    }
-    /**
-     * @return the _traccion
-     */
-    public String get_traccion() {
-        return _traccion;
-    }
-    /**
-     * @return the _id_modelo_anio
-     */
-    public Long get_id_modelo_anio() {
-        return _id_modelo_anio;
-    }
-    /**
-     * @return the _rendimiento_carretera
-     */
-    public Short get_rendimiento_carretera() {
-        return _rendimiento_carretera;
-    }
-    /**
-     * @return the _rendimiento_ciudad
-     */
-    public Short get_rendimiento_ciudad() {
-        return _rendimiento_ciudad;
     }
     /**
      * @return the _id
      */
-    public Long get_id() {
+    public Integer get_id() {
         return _id;
     }
     /**
-     * @param _nombre the _nombre to set
+     * @return the _fecha
      */
-    public void set_nombre(String _nombre) {
-        this._nombre = _nombre;
+    public String get_fecha() {
+        return _fecha;
     }
     /**
-     * @param _puertas the _puertas to set
+     * @return the _fecha_fin_procesamiento
      */
-    public void set_puertas(Byte _puertas) {
-        this._puertas = _puertas;
+    public String get_fecha_fin_procesamiento() {
+        return _fecha_fin_procesamiento;
     }
     /**
-     * @param _traccion the _traccion to set
+     * @return the _sentido
      */
-    public void set_traccion(String _traccion) {
-        this._traccion = _traccion;
+    public Byte get_sentido() {
+        return _sentido;
     }
     /**
-     * @param _id_modelo_anio the _id_modelo_anio to set
+     * @return the _fecha_lectura
      */
-    public void set_id_modelo_anio(Long _id_modelo_anio) {
-        this._id_modelo_anio = _id_modelo_anio;
+    public String get_fecha_lectura() {
+        return _fecha_lectura;
     }
     /**
-     * @param _rendimiento_carretera the _rendimiento_carretera to set
+     * @return the _archivo_nombre
      */
-    public void set_rendimiento_carretera(Short _rendimiento_carretera) {
-        this._rendimiento_carretera = _rendimiento_carretera;
+    public String get_archivo_nombre() {
+        return _archivo_nombre;
     }
     /**
-     * @param _rendimiento_ciudad the _rendimiento_ciudad to set
+     * @return the _archivo_md5
      */
-    public void set_rendimiento_ciudad(Short _rendimiento_ciudad) {
-        this._rendimiento_ciudad = _rendimiento_ciudad;
+    public String get_archivo_md5() {
+        return _archivo_md5;
+    }
+    /**
+     * @return the _archivo_tamano
+     */
+    public Long get_archivo_tamano() {
+        return _archivo_tamano;
     }
     /**
      * @param _id the _id to set
      */
-    public void set_id(Long _id) {
+    public void set_id(Integer _id) {
         this._id = _id;
     }
+    /**
+     * @param _fecha the _fecha to set
+     */
+    public void set_fecha(String _fecha) {
+        this._fecha = _fecha;
+    }
+    /**
+     * @param _fecha_fin_procesamiento the _fecha_fin_procesamiento to set
+     */
+    public void set_fecha_fin_procesamiento(String _fecha_fin_procesamiento) {
+        this._fecha_fin_procesamiento = _fecha_fin_procesamiento;
+    }
+    /**
+     * @param _sentido the _sentido to set
+     */
+    public void set_sentido(Byte _sentido) {
+        this._sentido = _sentido;
+    }
+    /**
+     * @param _fecha_lectura the _fecha_lectura to set
+     */
+    public void set_fecha_lectura(String _fecha_lectura) {
+        this._fecha_lectura = _fecha_lectura;
+    }
+    /**
+     * @param _archivo_nombre the _archivo_nombre to set
+     */
+    public void set_archivo_nombre(String _archivo_nombre) {
+        this._archivo_nombre = _archivo_nombre;
+    }
+    /**
+     * @param _archivo_md5 the _archivo_md5 to set
+     */
+    public void set_archivo_md5(String _archivo_md5) {
+        this._archivo_md5 = _archivo_md5;
+    }
+    /**
+     * @param _archivo_tamano the _archivo_tamano to set
+     */
+    public void set_archivo_tamano(Long _archivo_tamano) {
+        this._archivo_tamano = _archivo_tamano;
+    }
 
-    public static Estilo fromRS(ResultSet p_rs) throws SQLException {
-        Estilo ret = new Estilo();
+    public static InfoSincro fromRS(ResultSet p_rs) throws SQLException {
+        InfoSincro ret = new InfoSincro();
 
-        ret.set_nombre(p_rs.getString("nombre"));
-        ret.set_puertas(p_rs.getByte("puertas"));
-        ret.set_traccion(p_rs.getString("traccion"));
-        ret.set_id_modelo_anio(p_rs.getLong("id_modelo_anio"));
-        ret.set_rendimiento_carretera(p_rs.getShort("rendimiento_carretera"));
-        ret.set_rendimiento_ciudad(p_rs.getShort("rendimiento_ciudad"));
-        ret.set_id(p_rs.getLong("id"));
+        ret.set_id(p_rs.getInt("id"));
+        ret.set_fecha(p_rs.getString("fecha"));
+        ret.set_fecha_fin_procesamiento(p_rs.getString("fecha_fin_procesamiento"));
+        ret.set_sentido(p_rs.getByte("sentido"));
+        ret.set_fecha_lectura(p_rs.getString("fecha_lectura"));
+        ret.set_archivo_nombre(p_rs.getString("archivo_nombre"));
+        ret.set_archivo_md5(p_rs.getString("archivo_md5"));
+        ret.set_archivo_tamano(p_rs.getLong("archivo_tamano"));
 
         return ret;
     }
 
-    public static Estilo getByParameter(Connection p_conn, String p_key, String p_value) throws SQLException {
-        Estilo ret = null;
+    public static InfoSincro getByParameter(Connection p_conn, String p_key, String p_value) throws SQLException {
+        InfoSincro ret = null;
         
         String str_sql = _str_sql +
-            "  WHERE es." + p_key + " = " + p_value +
+            "  WHERE in." + p_key + " = " + p_value +
             "  LIMIT 0, 1";
         
         //System.out.println(str_sql);
@@ -204,31 +220,28 @@ private Long _id;
         return ret;        
     }
 
-    public static Estilo getById(Connection p_conn, String p_id) throws Exception {
-        return getByParameter(p_conn, "id_estilo", p_id);
+    public static InfoSincro getById(Connection p_conn, String p_id) throws Exception {
+        return getByParameter(p_conn, "id_info_sincro", p_id);
     }
     
-    public static ArrayList<Estilo> seek(Connection p_conn, ArrayList<AbstractMap.SimpleEntry<String, String>> p_parameters, String p_order, String p_direction, int p_offset, int p_limit) throws Exception {
+    public static ArrayList<InfoSincro> seek(Connection p_conn, ArrayList<AbstractMap.SimpleEntry<String, String>> p_parameters, String p_order, String p_direction, int p_offset, int p_limit) throws Exception {
         Statement stmt = null;
         ResultSet rs = null;
         String str_sql;
-        ArrayList<Estilo> ret;
+        ArrayList<InfoSincro> ret;
         
         str_sql = "";
         
         try {
             ArrayList<String> array_clauses = new ArrayList<String>();
             
-            ret = new ArrayList<Estilo>();
+            ret = new ArrayList<InfoSincro>();
             
             str_sql = _str_sql;
             
             for (AbstractMap.SimpleEntry<String, String> p : p_parameters) {
-                if (p.getKey().equals("id_estilo")) {
-                    array_clauses.add("es.id_estilo = " + p.getValue());
-                }
-                else if (p.getKey().equals("id_modelo_anio")) {
-                    array_clauses.add("es.id_modelo_anio = " + p.getValue());
+                if (p.getKey().equals("id_info_sincro")) {
+                    array_clauses.add("in.id_info_sincro = " + p.getValue());
                 }
                 else {
                     throw new Exception("Parametro no soportado: " + p.getKey());
@@ -314,15 +327,17 @@ private Long _id;
         Statement stmt = null;
 
         String str_sql =
-            "    UPDATE estilo" +
+            "    UPDATE info_sincro" +
             "    SET" +
-            "    nombre = " + (_nombre != null ? "'" + _nombre + "'" : "null") + "," +
-            "    puertas = " + (_puertas != null ? _puertas : "null") + "," +
-            "    traccion = " + (_traccion != null ? "'" + _traccion + "'" : "null") + "," +
-            "    rendimiento_carretera = " + (_rendimiento_carretera != null ? _rendimiento_carretera : "null") + "," +
-            "    rendimiento_ciudad = " + (_rendimiento_ciudad != null ? _rendimiento_ciudad : "null") +
+            "    fecha = " + (_fecha != null ? "STR_TO_DATE(" + _fecha + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    fecha_fin_procesamiento = " + (_fecha_fin_procesamiento != null ? "STR_TO_DATE(" + _fecha_fin_procesamiento + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    sentido = " + (_sentido != null ? _sentido : "null") + "," +
+            "    fecha_lectura = " + (_fecha_lectura != null ? "STR_TO_DATE(" + _fecha_lectura + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    archivo_nombre = " + (_archivo_nombre != null ? "'" + _archivo_nombre + "'" : "null") + "," +
+            "    archivo_md5 = " + (_archivo_md5 != null ? "'" + _archivo_md5 + "'" : "null") + "," +
+            "    archivo_tamano = " + (_archivo_tamano != null ? _archivo_tamano : "null") +
             "    WHERE" +
-            "    id_estilo = " + Long.toString(this._id);
+            "    id_info_sincro = " + Integer.toString(this._id);
 
         try {
             stmt = p_conn.createStatement();
@@ -368,24 +383,26 @@ private Long _id;
         ResultSet rs = null;
 
         String str_sql =
-            "    INSERT INTO estilo" +
+            "    INSERT INTO info_sincro" +
             "    (" +
-            "    nombre, " +
-            "    puertas, " +
-            "    traccion, " +
-            "    id_modelo_anio, " +
-            "    rendimiento_carretera, " +
-            "    rendimiento_ciudad, " +
-            "    id_estilo)" +
+            "    id_info_sincro, " +
+            "    fecha, " +
+            "    fecha_fin_procesamiento, " +
+            "    sentido, " +
+            "    fecha_lectura, " +
+            "    archivo_nombre, " +
+            "    archivo_md5, " +
+            "    archivo_tamano)" +
             "    VALUES" +
             "    (" +
-            "    " + (_nombre != null ? "'" + _nombre + "'" : "null") + "," +
-            "    " + (_puertas != null ? "'" + _puertas + "'" : "null") + "," +
-            "    " + (_traccion != null ? "'" + _traccion + "'" : "null") + "," +
-            "    " + (_id_modelo_anio != null ? "'" + _id_modelo_anio + "'" : "null") + "," +
-            "    " + (_rendimiento_carretera != null ? "'" + _rendimiento_carretera + "'" : "null") + "," +
-            "    " + (_rendimiento_ciudad != null ? "'" + _rendimiento_ciudad + "'" : "null") + "," +
-            "    " + (_id != null ? "'" + _id + "'" : "null") +
+            "    " + (_id != null ? "'" + _id + "'" : "null") + "," +
+            "    " + (_fecha != null ? "STR_TO_DATE(" + _fecha + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    " + (_fecha_fin_procesamiento != null ? "STR_TO_DATE(" + _fecha_fin_procesamiento + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    " + (_sentido != null ? "'" + _sentido + "'" : "null") + "," +
+            "    " + (_fecha_lectura != null ? "STR_TO_DATE(" + _fecha_lectura + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    " + (_archivo_nombre != null ? "'" + _archivo_nombre + "'" : "null") + "," +
+            "    " + (_archivo_md5 != null ? "'" + _archivo_md5 + "'" : "null") + "," +
+            "    " + (_archivo_tamano != null ? "'" + _archivo_tamano + "'" : "null") +
             "    )";
         
         try {
@@ -436,9 +453,9 @@ private Long _id;
         Statement stmt = null;
 
         String str_sql =
-            "    DELETE FROM estilo" +
+            "    DELETE FROM info_sincro" +
             "    WHERE" +
-            "    id_estilo = " + Long.toString(this._id);
+            "    id_info_sincro = " + Integer.toString(this._id);
 
         try {
             stmt = p_conn.createStatement();
@@ -472,11 +489,11 @@ private Long _id;
     }
 
     public void load(Connection p_conn) throws SQLException {
-        Estilo obj = null;
+        InfoSincro obj = null;
         
         String str_sql = _str_sql +
             "    WHERE" +
-            "    id_estilo = " + Long.toString(this._id) +
+            "    id_info_sincro = " + Integer.toString(this._id) +
             "    LIMIT 0, 1";
         
         //System.out.println(str_sql);
@@ -498,12 +515,13 @@ private Long _id;
                 obj = fromRS(rs);
                 //System.out.println("fromRS(rs) ok");
 
-                _nombre = obj.get_nombre();
-                _puertas = obj.get_puertas();
-                _traccion = obj.get_traccion();
-                _id_modelo_anio = obj.get_id_modelo_anio();
-                _rendimiento_carretera = obj.get_rendimiento_carretera();
-                _rendimiento_ciudad = obj.get_rendimiento_ciudad();
+                _fecha = obj.get_fecha();
+                _fecha_fin_procesamiento = obj.get_fecha_fin_procesamiento();
+                _sentido = obj.get_sentido();
+                _fecha_lectura = obj.get_fecha_lectura();
+                _archivo_nombre = obj.get_archivo_nombre();
+                _archivo_md5 = obj.get_archivo_md5();
+                _archivo_tamano = obj.get_archivo_tamano();
             }
         }
         catch (SQLException ex){
@@ -542,27 +560,29 @@ private Long _id;
 
 @Override
     public String toString() {
-        return "Estilo [" +
-	           "    _nombre = " + (_nombre != null ? "'" + _nombre + "'" : "null") + "," +
-	           "    _puertas = " + (_puertas != null ? _puertas : "null") + "," +
-	           "    _traccion = " + (_traccion != null ? "'" + _traccion + "'" : "null") + "," +
-	           "    _id_modelo_anio = " + (_id_modelo_anio != null ? _id_modelo_anio : "null") + "," +
-	           "    _rendimiento_carretera = " + (_rendimiento_carretera != null ? _rendimiento_carretera : "null") + "," +
-	           "    _rendimiento_ciudad = " + (_rendimiento_ciudad != null ? _rendimiento_ciudad : "null") + "," +
-	           "    _id = " + (_id != null ? _id : "null") +
+        return "InfoSincro [" +
+	           "    _id = " + (_id != null ? _id : "null") + "," +
+	           "    _fecha = " + (_fecha != null ? "STR_TO_DATE(" + _fecha + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+	           "    _fecha_fin_procesamiento = " + (_fecha_fin_procesamiento != null ? "STR_TO_DATE(" + _fecha_fin_procesamiento + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+	           "    _sentido = " + (_sentido != null ? _sentido : "null") + "," +
+	           "    _fecha_lectura = " + (_fecha_lectura != null ? "STR_TO_DATE(" + _fecha_lectura + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+	           "    _archivo_nombre = " + (_archivo_nombre != null ? "'" + _archivo_nombre + "'" : "null") + "," +
+	           "    _archivo_md5 = " + (_archivo_md5 != null ? "'" + _archivo_md5 + "'" : "null") + "," +
+	           "    _archivo_tamano = " + (_archivo_tamano != null ? _archivo_tamano : "null") +
 			   "]";
     }
 
 
     public String toJSON() {
-        return "Estilo : {" +
-	           "    _nombre : " + (_nombre != null ? "'" + _nombre + "'" : "null") + "," +
-	           "    _puertas : " + (_puertas != null ? _puertas : "null") + "," +
-	           "    _traccion : " + (_traccion != null ? "'" + _traccion + "'" : "null") + "," +
-	           "    _id_modelo_anio : " + (_id_modelo_anio != null ? _id_modelo_anio : "null") + "," +
-	           "    _rendimiento_carretera : " + (_rendimiento_carretera != null ? _rendimiento_carretera : "null") + "," +
-	           "    _rendimiento_ciudad : " + (_rendimiento_ciudad != null ? _rendimiento_ciudad : "null") + "," +
-	           "    _id : " + (_id != null ? _id : "null") +
+        return "InfoSincro : {" +
+	           "    _id : " + (_id != null ? _id : "null") + "," +
+	           "    _fecha : " + (_fecha != null ? "STR_TO_DATE(" + _fecha + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+	           "    _fecha_fin_procesamiento : " + (_fecha_fin_procesamiento != null ? "STR_TO_DATE(" + _fecha_fin_procesamiento + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+	           "    _sentido : " + (_sentido != null ? _sentido : "null") + "," +
+	           "    _fecha_lectura : " + (_fecha_lectura != null ? "STR_TO_DATE(" + _fecha_lectura + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+	           "    _archivo_nombre : " + (_archivo_nombre != null ? "'" + _archivo_nombre + "'" : "null") + "," +
+	           "    _archivo_md5 : " + (_archivo_md5 != null ? "'" + _archivo_md5 + "'" : "null") + "," +
+	           "    _archivo_tamano : " + (_archivo_tamano != null ? _archivo_tamano : "null") +
 			   "}";
     }
 

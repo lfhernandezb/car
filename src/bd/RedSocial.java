@@ -15,21 +15,20 @@ import java.util.ArrayList;
  *
  */
 public class RedSocial {
-    private Long _id;
-    private String _red_social;
+private Long _id;
+private String _red_social;
 
     private final static String _str_sql = 
-        "    SELECT " +
-        "    id_red_social AS id, " +
-        "    red_social " +
-        "    FROM red_social re ";
+        "    SELECT" +
+        "    re.id_red_social AS id," +
+        "    re.red_social AS red_social" +
+        "    FROM red_social re";
 
     public RedSocial() {
         _id = null;
         _red_social = null;
 
     }
-
     /**
      * @return the _id
      */
@@ -42,7 +41,6 @@ public class RedSocial {
     public String get_red_social() {
         return _red_social;
     }
-
     /**
      * @param _id the _id to set
      */
@@ -59,23 +57,13 @@ public class RedSocial {
     public static RedSocial fromRS(ResultSet p_rs) throws SQLException {
         RedSocial ret = new RedSocial();
 
-        try {
-            ret.set_id(p_rs.getLong("id"));
-            ret.set_red_social(p_rs.getString("red_social"));
-        }
-        catch (SQLException ex){
-            // handle any errors
-            System.out.println("SQLException: " + ex.getMessage());
-            System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
-
-            throw ex;
-        }
+        ret.set_id(p_rs.getLong("id"));
+        ret.set_red_social(p_rs.getString("red_social"));
 
         return ret;
     }
 
-    public static RedSocial getByParameter(Connection p_conn, String p_key, String p_value) throws Exception {
+    public static RedSocial getByParameter(Connection p_conn, String p_key, String p_value) throws SQLException {
         RedSocial ret = null;
         
         String str_sql = _str_sql +
@@ -108,11 +96,7 @@ public class RedSocial {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registro");
-        }
-        catch (Exception e){
-            // handle any errors
-            throw new Exception("Excepcion del tipo " + e.getClass() + " Info: " + e.getMessage());
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -160,32 +144,11 @@ public class RedSocial {
             str_sql = _str_sql;
             
             for (AbstractMap.SimpleEntry<String, String> p : p_parameters) {
-                if (p.getKey().equals("id_comunidad")) {
-                    array_clauses.add("re.id_comunidad = " + p.getValue());
-                }
-                else if (p.getKey().equals("id_comuna")) {
-                    array_clauses.add("re.id_comuna = " + p.getValue());
-                }
-                else if (p.getKey().equals("latitud_mayor")) {
-                    array_clauses.add("re.latitud > " + p.getValue());
-                }
-                else if (p.getKey().equals("latitud_menor")) {
-                    array_clauses.add("re.latitud < " + p.getValue());
-                }
-                else if (p.getKey().equals("longitud_mayor")) {
-                    array_clauses.add("re.longitud > " + p.getValue());
-                }
-                else if (p.getKey().equals("longitud_menor")) {
-                    array_clauses.add("re.longitud < " + p.getValue());
-                }
-                else if (p.getKey().equals("posicion_reciente")) {
-                    array_clauses.add("re.fecha > DATE_ADD(now(), INTERVAL -" + p.getValue() + " MINUTE)");
-                }
-                else if (p.getKey().equals("id_distinto")) {
-                    array_clauses.add("re.id_usuario <> " + p.getValue());
+                if (p.getKey().equals("id_red_social")) {
+                    array_clauses.add("re.id_red_social = " + p.getValue());
                 }
                 else {
-                	throw new Exception("Parametro no soportado: " + p.getKey());
+                    throw new Exception("Parametro no soportado: " + p.getKey());
                 }
             }
                                 
@@ -234,7 +197,7 @@ public class RedSocial {
             throw ex;
         }
         catch (Exception ex) {
-        	throw ex;
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -262,18 +225,18 @@ public class RedSocial {
         return ret;
     }
 
-    public int update(Connection p_conn) throws Exception {
+    public int update(Connection p_conn) throws SQLException {
 
         int ret = -1;
         Statement stmt = null;
 
         String str_sql =
             "    UPDATE red_social" +
-            "    SET " +
-            "    id_red_social, " +
-            "    red_social " +
-            "    WHERE id_red_social = " + Long.toString(this._id);
-        
+            "    SET" +
+            "    red_social = " + (_red_social != null ? "'" + _red_social + "'" : "null") +
+            "    WHERE" +
+            "    id_red_social = " + Long.toString(this._id);
+
         try {
             stmt = p_conn.createStatement();
             
@@ -291,7 +254,7 @@ public class RedSocial {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -311,7 +274,7 @@ public class RedSocial {
         return ret;
     }
     
-    public int insert(Connection p_conn) throws Exception {
+    public int insert(Connection p_conn) throws SQLException {
         
         int ret = -1;
         Statement stmt = null;
@@ -321,37 +284,20 @@ public class RedSocial {
             "    INSERT INTO red_social" +
             "    (" +
             "    id_red_social, " +
-            "    red_social " +
-            "    )" +
+            "    red_social)" +
             "    VALUES" +
             "    (" +
-            "    " + (_id != null ? _id.toString() : "null") + "," +
+            "    " + (_id != null ? "'" + _id + "'" : "null") + "," +
             "    " + (_red_social != null ? "'" + _red_social + "'" : "null") +
             "    )";
         
         try {
             stmt = p_conn.createStatement();
-            
-            ret = stmt.executeUpdate(str_sql, Statement.RETURN_GENERATED_KEYS);
-            /*
-            if (stmt.executeUpdate(str_sql) < 1) {
-                throw new Exception("No hubo filas afectadas");
-            }
-            */
-            
-            rs = stmt.getGeneratedKeys();
 
-            if (rs.next()) {
-                _id = rs.getLong(1);
-            } else {
-                // throw an exception from here
-                throw new Exception("Error al obtener id");
-            }
+            ret = stmt.executeUpdate(str_sql);
 
-            rs.close();
-            rs = null;
-            System.out.println("Key returned from getGeneratedKeys():" + _id.toString());
-                        
+            load(p_conn);
+
         }
         catch (SQLException ex){
             // handle any errors
@@ -359,7 +305,7 @@ public class RedSocial {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -386,29 +332,21 @@ public class RedSocial {
         
         return ret;
     }
-    
-    public static int delete(Connection p_conn, Integer p_id_red_social) throws Exception {
+
+    public int delete(Connection p_conn) throws SQLException {
 
         int ret = -1;
         Statement stmt = null;
 
         String str_sql =
-            "  DELETE FROM red_social";
-        
-        if (p_id_red_social != null) {
-            str_sql +=
-                "  WHERE id_red_social = " + p_id_red_social.toString();
-        }
-        
+            "    DELETE FROM red_social" +
+            "    WHERE" +
+            "    id_red_social = " + Long.toString(this._id);
+
         try {
             stmt = p_conn.createStatement();
             
             ret = stmt.executeUpdate(str_sql);
-            /*
-            if (stmt.executeUpdate(str_sql) < 1) {
-                throw new Exception("No hubo filas afectadas");
-            }
-            */
         }
         catch (SQLException ex){
             // handle any errors
@@ -416,7 +354,7 @@ public class RedSocial {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al borrar registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -435,4 +373,85 @@ public class RedSocial {
         
         return ret;
     }
+
+    public void load(Connection p_conn) throws SQLException {
+        RedSocial obj = null;
+        
+        String str_sql = _str_sql +
+            "    WHERE" +
+            "    id_red_social = " + Long.toString(this._id) +
+            "    LIMIT 0, 1";
+        
+        //System.out.println(str_sql);
+        
+        // assume that conn is an already created JDBC connection (see previous examples)
+        Statement stmt = null;
+        ResultSet rs = null;
+        
+        try {
+            stmt = p_conn.createStatement();
+            //System.out.println("stmt = p_conn.createStatement() ok");
+            rs = stmt.executeQuery(str_sql);
+            //System.out.println("rs = stmt.executeQuery(str_sql) ok");
+
+            // Now do something with the ResultSet ....
+            
+            if (rs.next()) {
+                //System.out.println("rs.next() ok");
+                obj = fromRS(rs);
+                //System.out.println("fromRS(rs) ok");
+
+                _red_social = obj.get_red_social();
+            }
+        }
+        catch (SQLException ex){
+            // handle any errors
+            System.out.println("SQLException: " + ex.getMessage() + " sentencia: " + str_sql);
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+            
+            throw ex;
+        }
+        finally {
+            // it is a good idea to release
+            // resources in a finally{} block
+            // in reverse-order of their creation
+            // if they are no-longer needed
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException sqlEx) { 
+                    
+                } // ignore
+                rs = null;
+            }
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException sqlEx) {
+                    
+                } // ignore
+                stmt = null;
+            }
+        }        
+        
+    }
+
+
+@Override
+    public String toString() {
+        return "RedSocial [" +
+	           "    _id = " + (_id != null ? _id : "null") + "," +
+	           "    _red_social = " + (_red_social != null ? "'" + _red_social + "'" : "null") +
+			   "]";
+    }
+
+
+    public String toJSON() {
+        return "RedSocial : {" +
+	           "    _id : " + (_id != null ? _id : "null") + "," +
+	           "    _red_social : " + (_red_social != null ? "'" + _red_social + "'" : "null") +
+			   "}";
+    }
+
 }

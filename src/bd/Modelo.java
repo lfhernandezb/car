@@ -15,30 +15,47 @@ import java.util.ArrayList;
  *
  */
 public class Modelo {
-    private Long _id;
-    private Short _id_marca;
-    private Byte _id_tipo_vehiculo;
-    private String _descripcion;
-    private String _fecha_modificacion;
+private String _descripcion;
+private Byte _id_tipo_vehiculo;
+private String _fecha_modificacion;
+private Long _id;
+private Short _id_marca;
 
     private final static String _str_sql = 
-        "    SELECT " +
-        "    mo.id_modelo AS id, " +
-        "    mo.id_marca, " +
-        "    mo.id_tipo_vehiculo, " +
-        "    mo.descripcion, " +
-        "    DATE_FORMAT(mo.fecha_modificacion, '%d-%m-%Y %H:%i:%s') AS fecha_modificacion " +
-        "    FROM modelo mo ";
+        "    SELECT" +
+        "    mo.descripcion AS descripcion," +
+        "    mo.id_tipo_vehiculo AS id_tipo_vehiculo," +
+        "    DATE_FORMAT(mo.fecha_modificacion, '%d-%m-%Y %H:%i:%s') AS fecha_modificacion," +
+        "    mo.id_modelo AS id," +
+        "    mo.id_marca AS id_marca" +
+        "    FROM modelo mo";
 
     public Modelo() {
+        _descripcion = null;
+        _id_tipo_vehiculo = null;
+        _fecha_modificacion = null;
         _id = null;
         _id_marca = null;
-        _id_tipo_vehiculo = null;
-        _descripcion = null;
-        _fecha_modificacion = null;
 
     }
-
+    /**
+     * @return the _descripcion
+     */
+    public String get_descripcion() {
+        return _descripcion;
+    }
+    /**
+     * @return the _id_tipo_vehiculo
+     */
+    public Byte get_id_tipo_vehiculo() {
+        return _id_tipo_vehiculo;
+    }
+    /**
+     * @return the _fecha_modificacion
+     */
+    public String get_fecha_modificacion() {
+        return _fecha_modificacion;
+    }
     /**
      * @return the _id
      */
@@ -52,24 +69,23 @@ public class Modelo {
         return _id_marca;
     }
     /**
-     * @return the _id_tipo_vehiculo
+     * @param _descripcion the _descripcion to set
      */
-    public Byte get_id_tipo_vehiculo() {
-        return _id_tipo_vehiculo;
+    public void set_descripcion(String _descripcion) {
+        this._descripcion = _descripcion;
     }
     /**
-     * @return the _descripcion
+     * @param _id_tipo_vehiculo the _id_tipo_vehiculo to set
      */
-    public String get_descripcion() {
-        return _descripcion;
+    public void set_id_tipo_vehiculo(Byte _id_tipo_vehiculo) {
+        this._id_tipo_vehiculo = _id_tipo_vehiculo;
     }
     /**
-     * @return the _fecha_modificacion
+     * @param _fecha_modificacion the _fecha_modificacion to set
      */
-    public String get_fecha_modificacion() {
-        return _fecha_modificacion;
+    public void set_fecha_modificacion(String _fecha_modificacion) {
+        this._fecha_modificacion = _fecha_modificacion;
     }
-
     /**
      * @param _id the _id to set
      */
@@ -82,48 +98,20 @@ public class Modelo {
     public void set_id_marca(Short _id_marca) {
         this._id_marca = _id_marca;
     }
-    /**
-     * @param _id_tipo_vehiculo the _id_tipo_vehiculo to set
-     */
-    public void set_id_tipo_vehiculo(Byte _id_tipo_vehiculo) {
-        this._id_tipo_vehiculo = _id_tipo_vehiculo;
-    }
-    /**
-     * @param _descripcion the _descripcion to set
-     */
-    public void set_descripcion(String _descripcion) {
-        this._descripcion = _descripcion;
-    }
-    /**
-     * @param _fecha_modificacion the _fecha_modificacion to set
-     */
-    public void set_fecha_modificacion(String _fecha_modificacion) {
-        this._fecha_modificacion = _fecha_modificacion;
-    }
 
     public static Modelo fromRS(ResultSet p_rs) throws SQLException {
         Modelo ret = new Modelo();
 
-        try {
-            ret.set_id(p_rs.getLong("id"));
-            ret.set_id_marca(p_rs.getShort("id_marca"));
-            ret.set_id_tipo_vehiculo(p_rs.getByte("id_tipo_vehiculo"));
-            ret.set_descripcion(p_rs.getString("descripcion"));
-            ret.set_fecha_modificacion(p_rs.getString("fecha_modificacion"));
-        }
-        catch (SQLException ex){
-            // handle any errors
-            System.out.println("SQLException: " + ex.getMessage());
-            System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
-
-            throw ex;
-        }
+        ret.set_descripcion(p_rs.getString("descripcion"));
+        ret.set_id_tipo_vehiculo(p_rs.getByte("id_tipo_vehiculo"));
+        ret.set_fecha_modificacion(p_rs.getString("fecha_modificacion"));
+        ret.set_id(p_rs.getLong("id"));
+        ret.set_id_marca(p_rs.getShort("id_marca"));
 
         return ret;
     }
 
-    public static Modelo getByParameter(Connection p_conn, String p_key, String p_value) throws Exception {
+    public static Modelo getByParameter(Connection p_conn, String p_key, String p_value) throws SQLException {
         Modelo ret = null;
         
         String str_sql = _str_sql +
@@ -156,11 +144,7 @@ public class Modelo {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registro");
-        }
-        catch (Exception e){
-            // handle any errors
-            throw new Exception("Excepcion del tipo " + e.getClass() + " Info: " + e.getMessage());
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -208,33 +192,21 @@ public class Modelo {
             str_sql = _str_sql;
             
             for (AbstractMap.SimpleEntry<String, String> p : p_parameters) {
-                if (p.getKey().equals("id_marca")) {
-                    array_clauses.add("mo.id_marca = " + p.getValue());
-                }
-                else if (p.getKey().equals("descripcion")) {
-                    array_clauses.add("mo.descripcion = '" + p.getValue() + "'");
+                if (p.getKey().equals("id_modelo")) {
+                    array_clauses.add("mo.id_modelo = " + p.getValue());
                 }
                 else if (p.getKey().equals("id_tipo_vehiculo")) {
-                	array_clauses.add("mo.id_tipo_vehiculo = " + p.getValue());
+                    array_clauses.add("mo.id_tipo_vehiculo = " + p.getValue());
                 }
-                else if (p.getKey().equals("latitud_menor")) {
-                    array_clauses.add("up.latitud < " + p.getValue());
+                else if (p.getKey().equals("id_marca")) {
+                    array_clauses.add("mo.id_marca = " + p.getValue());
                 }
-                else if (p.getKey().equals("longitud_mayor")) {
-                    array_clauses.add("up.longitud > " + p.getValue());
+                else if (p.getKey().equals("mas reciente")) {
+                    array_clauses.add("mo.fecha_modificacion > STR_TO_DATE('" + p.getValue() + "', '%d-%m-%Y %H:%i:%s')");
                 }
-                else if (p.getKey().equals("longitud_menor")) {
-                    array_clauses.add("up.longitud < " + p.getValue());
+                else {
+                    throw new Exception("Parametro no soportado: " + p.getKey());
                 }
-                else if (p.getKey().equals("posicion_reciente")) {
-                    array_clauses.add("up.fecha > DATE_ADD(now(), INTERVAL -" + p.getValue() + " MINUTE)");
-                }
-                else if (p.getKey().equals("id_distinto")) {
-                    array_clauses.add("u.id_usuario <> " + p.getValue());
-                }
-				else {
-					throw new Exception("Parametro no soportado: " + p.getKey());
-				}
             }
                                 
             boolean bFirstTime = false;
@@ -274,16 +246,15 @@ public class Modelo {
             */
         }
         catch (SQLException ex){
-        	/*
             // handle any errors
             System.out.println("SQLException: " + ex.getMessage() + " sentencia: " + str_sql);
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
-            */
+            
             throw ex;
         }
         catch (Exception ex) {
-        	throw ex;
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -311,20 +282,19 @@ public class Modelo {
         return ret;
     }
 
-    public int update(Connection p_conn) throws Exception {
+    public int update(Connection p_conn) throws SQLException {
 
         int ret = -1;
         Statement stmt = null;
 
         String str_sql =
             "    UPDATE modelo" +
-            "    SET " +
-            "    id_marca, " +
-            "    id_tipo_vehiculo, " +
-            "    descripcion, " +
-            "    DATE_FORMAT(fecha_modificacion, '%d-%m-%Y %H:%i:%s') AS fecha_modificacion " +
-            "    WHERE id_modelo = " + Long.toString(this._id);
-        
+            "    SET" +
+            "    descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
+            "    fecha_modificacion = " + (_fecha_modificacion != null ? "STR_TO_DATE(" + _fecha_modificacion + ", '%d-%m-%Y %H:%i:%s')" : "null") +
+            "    WHERE" +
+            "    id_modelo = " + Long.toString(this._id);
+
         try {
             stmt = p_conn.createStatement();
             
@@ -342,7 +312,7 @@ public class Modelo {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -362,7 +332,7 @@ public class Modelo {
         return ret;
     }
     
-    public int insert(Connection p_conn) throws Exception {
+    public int insert(Connection p_conn) throws SQLException {
         
         int ret = -1;
         Statement stmt = null;
@@ -371,42 +341,25 @@ public class Modelo {
         String str_sql =
             "    INSERT INTO modelo" +
             "    (" +
-            "    id_marca, " +
-            "    id_tipo_vehiculo, " +
             "    descripcion, " +
-            "    fecha_modificacion " +
-            "    )" +
+            "    id_tipo_vehiculo, " +
+            "    id_modelo, " +
+            "    id_marca)" +
             "    VALUES" +
             "    (" +
-            "    " + (_id_marca != null ? _id_marca.toString() : "null") + "," +
-            "    " + (_id_tipo_vehiculo != null ? _id_tipo_vehiculo.toString() : "null") + "," +
             "    " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
-            "    " + (_fecha_modificacion != null ? "STR_TO_DATE(" + _fecha_modificacion + ", '%d-%m-%Y %H:%i:%s')" : "null") +
+            "    " + (_id_tipo_vehiculo != null ? "'" + _id_tipo_vehiculo + "'" : "null") + "," +
+            "    " + (_id != null ? "'" + _id + "'" : "null") + "," +
+            "    " + (_id_marca != null ? "'" + _id_marca + "'" : "null") +
             "    )";
         
         try {
             stmt = p_conn.createStatement();
-            
-            ret = stmt.executeUpdate(str_sql, Statement.RETURN_GENERATED_KEYS);
-            /*
-            if (stmt.executeUpdate(str_sql) < 1) {
-                throw new Exception("No hubo filas afectadas");
-            }
-            */
-            
-            rs = stmt.getGeneratedKeys();
 
-            if (rs.next()) {
-                _id = rs.getLong(1);
-            } else {
-                // throw an exception from here
-                throw new Exception("Error al obtener id");
-            }
+            ret = stmt.executeUpdate(str_sql);
 
-            rs.close();
-            rs = null;
-            //System.out.println("Key returned from getGeneratedKeys():" + _id.toString());
-                        
+            load(p_conn);
+
         }
         catch (SQLException ex){
             // handle any errors
@@ -414,7 +367,7 @@ public class Modelo {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -441,29 +394,21 @@ public class Modelo {
         
         return ret;
     }
-    
-    public static int delete(Connection p_conn, Integer p_id_usuario) throws Exception {
+
+    public int delete(Connection p_conn) throws SQLException {
 
         int ret = -1;
         Statement stmt = null;
 
         String str_sql =
-            "  DELETE FROM modelo";
-        
-        if (p_id_usuario != null) {
-            str_sql +=
-                "  WHERE id_modelo = " + p_id_usuario.toString();
-        }
-        
+            "    DELETE FROM modelo" +
+            "    WHERE" +
+            "    id_modelo = " + Long.toString(this._id);
+
         try {
             stmt = p_conn.createStatement();
             
             ret = stmt.executeUpdate(str_sql);
-            /*
-            if (stmt.executeUpdate(str_sql) < 1) {
-                throw new Exception("No hubo filas afectadas");
-            }
-            */
         }
         catch (SQLException ex){
             // handle any errors
@@ -471,7 +416,7 @@ public class Modelo {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al borrar registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -490,4 +435,94 @@ public class Modelo {
         
         return ret;
     }
+
+    public void load(Connection p_conn) throws SQLException {
+        Modelo obj = null;
+        
+        String str_sql = _str_sql +
+            "    WHERE" +
+            "    id_modelo = " + Long.toString(this._id) +
+            "    LIMIT 0, 1";
+        
+        //System.out.println(str_sql);
+        
+        // assume that conn is an already created JDBC connection (see previous examples)
+        Statement stmt = null;
+        ResultSet rs = null;
+        
+        try {
+            stmt = p_conn.createStatement();
+            //System.out.println("stmt = p_conn.createStatement() ok");
+            rs = stmt.executeQuery(str_sql);
+            //System.out.println("rs = stmt.executeQuery(str_sql) ok");
+
+            // Now do something with the ResultSet ....
+            
+            if (rs.next()) {
+                //System.out.println("rs.next() ok");
+                obj = fromRS(rs);
+                //System.out.println("fromRS(rs) ok");
+
+                _descripcion = obj.get_descripcion();
+                _id_tipo_vehiculo = obj.get_id_tipo_vehiculo();
+                _fecha_modificacion = obj.get_fecha_modificacion();
+                _id_marca = obj.get_id_marca();
+            }
+        }
+        catch (SQLException ex){
+            // handle any errors
+            System.out.println("SQLException: " + ex.getMessage() + " sentencia: " + str_sql);
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+            
+            throw ex;
+        }
+        finally {
+            // it is a good idea to release
+            // resources in a finally{} block
+            // in reverse-order of their creation
+            // if they are no-longer needed
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException sqlEx) { 
+                    
+                } // ignore
+                rs = null;
+            }
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException sqlEx) {
+                    
+                } // ignore
+                stmt = null;
+            }
+        }        
+        
+    }
+
+
+@Override
+    public String toString() {
+        return "Modelo [" +
+	           "    _descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
+	           "    _id_tipo_vehiculo = " + (_id_tipo_vehiculo != null ? _id_tipo_vehiculo : "null") + "," +
+	           "    _fecha_modificacion = " + (_fecha_modificacion != null ? "STR_TO_DATE(" + _fecha_modificacion + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+	           "    _id = " + (_id != null ? _id : "null") + "," +
+	           "    _id_marca = " + (_id_marca != null ? _id_marca : "null") +
+			   "]";
+    }
+
+
+    public String toJSON() {
+        return "Modelo : {" +
+	           "    _descripcion : " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
+	           "    _id_tipo_vehiculo : " + (_id_tipo_vehiculo != null ? _id_tipo_vehiculo : "null") + "," +
+	           "    _fecha_modificacion : " + (_fecha_modificacion != null ? "STR_TO_DATE(" + _fecha_modificacion + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+	           "    _id : " + (_id != null ? _id : "null") + "," +
+	           "    _id_marca : " + (_id_marca != null ? _id_marca : "null") +
+			   "}";
+    }
+
 }

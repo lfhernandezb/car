@@ -15,29 +15,22 @@ import java.util.ArrayList;
  *
  */
 public class Marca {
-    private Short _id;
-    private String _descripcion;
-    private String _fecha_modificacion;
+private String _descripcion;
+private String _fecha_modificacion;
+private Short _id;
 
     private final static String _str_sql = 
-        "    SELECT " +
-        "    ma.id_marca AS id, " +
-        "    ma.descripcion, " +
-        "    DATE_FORMAT(ma.fecha_modificacion, '%d-%m-%Y %H:%i:%s') AS fecha_modificacion " +
-        "    FROM marca ma ";
+        "    SELECT" +
+        "    ma.descripcion AS descripcion," +
+        "    DATE_FORMAT(ma.fecha_modificacion, '%d-%m-%Y %H:%i:%s') AS fecha_modificacion," +
+        "    ma.id_marca AS id" +
+        "    FROM marca ma";
 
     public Marca() {
-        _id = null;
         _descripcion = null;
         _fecha_modificacion = null;
+        _id = null;
 
-    }
-
-    /**
-     * @return the _id
-     */
-    public Short get_id() {
-        return _id;
     }
     /**
      * @return the _descripcion
@@ -51,12 +44,11 @@ public class Marca {
     public String get_fecha_modificacion() {
         return _fecha_modificacion;
     }
-
     /**
-     * @param _id the _id to set
+     * @return the _id
      */
-    public void set_id(Short _id) {
-        this._id = _id;
+    public Short get_id() {
+        return _id;
     }
     /**
      * @param _descripcion the _descripcion to set
@@ -70,28 +62,24 @@ public class Marca {
     public void set_fecha_modificacion(String _fecha_modificacion) {
         this._fecha_modificacion = _fecha_modificacion;
     }
+    /**
+     * @param _id the _id to set
+     */
+    public void set_id(Short _id) {
+        this._id = _id;
+    }
 
     public static Marca fromRS(ResultSet p_rs) throws SQLException {
         Marca ret = new Marca();
 
-        try {
-            ret.set_id(p_rs.getShort("id"));
-            ret.set_descripcion(p_rs.getString("descripcion"));
-            ret.set_fecha_modificacion(p_rs.getString("fecha_modificacion"));
-        }
-        catch (SQLException ex){
-            // handle any errors
-            System.out.println("SQLException: " + ex.getMessage());
-            System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
-
-            throw ex;
-        }
+        ret.set_descripcion(p_rs.getString("descripcion"));
+        ret.set_fecha_modificacion(p_rs.getString("fecha_modificacion"));
+        ret.set_id(p_rs.getShort("id"));
 
         return ret;
     }
 
-    public static Marca getByParameter(Connection p_conn, String p_key, String p_value) throws Exception {
+    public static Marca getByParameter(Connection p_conn, String p_key, String p_value) throws SQLException {
         Marca ret = null;
         
         String str_sql = _str_sql +
@@ -124,11 +112,7 @@ public class Marca {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registro");
-        }
-        catch (Exception e){
-            // handle any errors
-            throw new Exception("Excepcion del tipo " + e.getClass() + " Info: " + e.getMessage());
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -160,10 +144,6 @@ public class Marca {
         return getByParameter(p_conn, "id_marca", p_id);
     }
     
-    public static Marca getByDescripcion(Connection p_conn, String p_descripcion) throws Exception {
-        return getByParameter(p_conn, "descripcion", "'" + p_descripcion + "'");
-    }
-
     public static ArrayList<Marca> seek(Connection p_conn, ArrayList<AbstractMap.SimpleEntry<String, String>> p_parameters, String p_order, String p_direction, int p_offset, int p_limit) throws Exception {
         Statement stmt = null;
         ResultSet rs = null;
@@ -180,33 +160,15 @@ public class Marca {
             str_sql = _str_sql;
             
             for (AbstractMap.SimpleEntry<String, String> p : p_parameters) {
-                if (p.getKey().equals("id_comunidad")) {
-                    array_clauses.add("c.id_comunidad = " + p.getValue());
+                if (p.getKey().equals("id_marca")) {
+                    array_clauses.add("ma.id_marca = " + p.getValue());
                 }
-                else if (p.getKey().equals("id_comuna")) {
-                    array_clauses.add("cm.id_comuna = " + p.getValue());
+                else if (p.getKey().equals("mas reciente")) {
+                    array_clauses.add("ma.fecha_modificacion > STR_TO_DATE('" + p.getValue() + "', '%d-%m-%Y %H:%i:%s')");
                 }
-                else if (p.getKey().equals("latitud_mayor")) {
-                    array_clauses.add("up.latitud > " + p.getValue());
+                else {
+                    throw new Exception("Parametro no soportado: " + p.getKey());
                 }
-                else if (p.getKey().equals("latitud_menor")) {
-                    array_clauses.add("up.latitud < " + p.getValue());
-                }
-                else if (p.getKey().equals("longitud_mayor")) {
-                    array_clauses.add("up.longitud > " + p.getValue());
-                }
-                else if (p.getKey().equals("longitud_menor")) {
-                    array_clauses.add("up.longitud < " + p.getValue());
-                }
-                else if (p.getKey().equals("posicion_reciente")) {
-                    array_clauses.add("up.fecha > DATE_ADD(now(), INTERVAL -" + p.getValue() + " MINUTE)");
-                }
-                else if (p.getKey().equals("id_distinto")) {
-                    array_clauses.add("u.id_usuario <> " + p.getValue());
-                }
-				else {
-					throw new Exception("Parametro no soportado: " + p.getKey());
-				}
             }
                                 
             boolean bFirstTime = false;
@@ -254,7 +216,7 @@ public class Marca {
             throw ex;
         }
         catch (Exception ex) {
-        	throw ex;
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -282,18 +244,19 @@ public class Marca {
         return ret;
     }
 
-    public int update(Connection p_conn) throws Exception {
+    public int update(Connection p_conn) throws SQLException {
 
         int ret = -1;
         Statement stmt = null;
 
         String str_sql =
             "    UPDATE marca" +
-            "    SET " +
-            "    descripcion, " +
-            "    DATE_FORMAT(fecha_modificacion, '%d-%m-%Y %H:%i:%s') AS fecha_modificacion " +
-            "    WHERE id_marca = " + Integer.toString(this._id);
-        
+            "    SET" +
+            "    descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
+            "    fecha_modificacion = " + (_fecha_modificacion != null ? "STR_TO_DATE(" + _fecha_modificacion + ", '%d-%m-%Y %H:%i:%s')" : "null") +
+            "    WHERE" +
+            "    id_marca = " + Short.toString(this._id);
+
         try {
             stmt = p_conn.createStatement();
             
@@ -311,7 +274,7 @@ public class Marca {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -331,7 +294,7 @@ public class Marca {
         return ret;
     }
     
-    public int insert(Connection p_conn) throws Exception {
+    public int insert(Connection p_conn) throws SQLException {
         
         int ret = -1;
         Statement stmt = null;
@@ -341,37 +304,20 @@ public class Marca {
             "    INSERT INTO marca" +
             "    (" +
             "    descripcion, " +
-            "    fecha_modificacion " +
-            "    )" +
+            "    id_marca)" +
             "    VALUES" +
             "    (" +
             "    " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
-            "    " + (_fecha_modificacion != null ? "STR_TO_DATE(" + _fecha_modificacion + ", '%d-%m-%Y %H:%i:%s')" : "null") +
+            "    " + (_id != null ? "'" + _id + "'" : "null") +
             "    )";
         
         try {
             stmt = p_conn.createStatement();
-            
-            ret = stmt.executeUpdate(str_sql, Statement.RETURN_GENERATED_KEYS);
-            /*
-            if (stmt.executeUpdate(str_sql) < 1) {
-                throw new Exception("No hubo filas afectadas");
-            }
-            */
-            
-            rs = stmt.getGeneratedKeys();
 
-            if (rs.next()) {
-                _id = rs.getShort(1);
-            } else {
-                // throw an exception from here
-                throw new Exception("Error al obtener id");
-            }
+            ret = stmt.executeUpdate(str_sql);
 
-            rs.close();
-            rs = null;
-            //System.out.println("Key returned from getGeneratedKeys():" + _id.toString());
-                        
+            load(p_conn);
+
         }
         catch (SQLException ex){
             // handle any errors
@@ -379,7 +325,7 @@ public class Marca {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -406,29 +352,21 @@ public class Marca {
         
         return ret;
     }
-    
-    public static int delete(Connection p_conn, Integer p_id_usuario) throws Exception {
+
+    public int delete(Connection p_conn) throws SQLException {
 
         int ret = -1;
         Statement stmt = null;
 
         String str_sql =
-            "  DELETE FROM marca";
-        
-        if (p_id_usuario != null) {
-            str_sql +=
-                "  WHERE id_marca = " + p_id_usuario.toString();
-        }
-        
+            "    DELETE FROM marca" +
+            "    WHERE" +
+            "    id_marca = " + Short.toString(this._id);
+
         try {
             stmt = p_conn.createStatement();
             
             ret = stmt.executeUpdate(str_sql);
-            /*
-            if (stmt.executeUpdate(str_sql) < 1) {
-                throw new Exception("No hubo filas afectadas");
-            }
-            */
         }
         catch (SQLException ex){
             // handle any errors
@@ -436,7 +374,7 @@ public class Marca {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al borrar registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -455,4 +393,88 @@ public class Marca {
         
         return ret;
     }
+
+    public void load(Connection p_conn) throws SQLException {
+        Marca obj = null;
+        
+        String str_sql = _str_sql +
+            "    WHERE" +
+            "    id_marca = " + Short.toString(this._id) +
+            "    LIMIT 0, 1";
+        
+        //System.out.println(str_sql);
+        
+        // assume that conn is an already created JDBC connection (see previous examples)
+        Statement stmt = null;
+        ResultSet rs = null;
+        
+        try {
+            stmt = p_conn.createStatement();
+            //System.out.println("stmt = p_conn.createStatement() ok");
+            rs = stmt.executeQuery(str_sql);
+            //System.out.println("rs = stmt.executeQuery(str_sql) ok");
+
+            // Now do something with the ResultSet ....
+            
+            if (rs.next()) {
+                //System.out.println("rs.next() ok");
+                obj = fromRS(rs);
+                //System.out.println("fromRS(rs) ok");
+
+                _descripcion = obj.get_descripcion();
+                _fecha_modificacion = obj.get_fecha_modificacion();
+            }
+        }
+        catch (SQLException ex){
+            // handle any errors
+            System.out.println("SQLException: " + ex.getMessage() + " sentencia: " + str_sql);
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+            
+            throw ex;
+        }
+        finally {
+            // it is a good idea to release
+            // resources in a finally{} block
+            // in reverse-order of their creation
+            // if they are no-longer needed
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException sqlEx) { 
+                    
+                } // ignore
+                rs = null;
+            }
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException sqlEx) {
+                    
+                } // ignore
+                stmt = null;
+            }
+        }        
+        
+    }
+
+
+@Override
+    public String toString() {
+        return "Marca [" +
+	           "    _descripcion = " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
+	           "    _fecha_modificacion = " + (_fecha_modificacion != null ? "STR_TO_DATE(" + _fecha_modificacion + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+	           "    _id = " + (_id != null ? _id : "null") +
+			   "]";
+    }
+
+
+    public String toJSON() {
+        return "Marca : {" +
+	           "    _descripcion : " + (_descripcion != null ? "'" + _descripcion + "'" : "null") + "," +
+	           "    _fecha_modificacion : " + (_fecha_modificacion != null ? "STR_TO_DATE(" + _fecha_modificacion + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+	           "    _id : " + (_id != null ? _id : "null") +
+			   "}";
+    }
+
 }

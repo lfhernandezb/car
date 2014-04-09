@@ -15,26 +15,19 @@ import java.util.ArrayList;
  *
  */
 public class Pais {
-    private Long _id;
-    private String _pais;
+private String _pais;
+private Long _id;
 
     private final static String _str_sql = 
-        "    SELECT " +
-        "    id_pais AS id, " +
-        "    pais " +
-        "    FROM pais pa ";
+        "    SELECT" +
+        "    pa.pais AS pais," +
+        "    pa.id_pais AS id" +
+        "    FROM pais pa";
 
     public Pais() {
-        _id = null;
         _pais = null;
+        _id = null;
 
-    }
-
-    /**
-     * @return the _id
-     */
-    public Long get_id() {
-        return _id;
     }
     /**
      * @return the _pais
@@ -42,12 +35,11 @@ public class Pais {
     public String get_pais() {
         return _pais;
     }
-
     /**
-     * @param _id the _id to set
+     * @return the _id
      */
-    public void set_id(Long _id) {
-        this._id = _id;
+    public Long get_id() {
+        return _id;
     }
     /**
      * @param _pais the _pais to set
@@ -55,27 +47,23 @@ public class Pais {
     public void set_pais(String _pais) {
         this._pais = _pais;
     }
+    /**
+     * @param _id the _id to set
+     */
+    public void set_id(Long _id) {
+        this._id = _id;
+    }
 
     public static Pais fromRS(ResultSet p_rs) throws SQLException {
         Pais ret = new Pais();
 
-        try {
-            ret.set_id(p_rs.getLong("id"));
-            ret.set_pais(p_rs.getString("pais"));
-        }
-        catch (SQLException ex){
-            // handle any errors
-            System.out.println("SQLException: " + ex.getMessage());
-            System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
-
-            throw ex;
-        }
+        ret.set_pais(p_rs.getString("pais"));
+        ret.set_id(p_rs.getLong("id"));
 
         return ret;
     }
 
-    public static Pais getByParameter(Connection p_conn, String p_key, String p_value) throws Exception {
+    public static Pais getByParameter(Connection p_conn, String p_key, String p_value) throws SQLException {
         Pais ret = null;
         
         String str_sql = _str_sql +
@@ -108,11 +96,7 @@ public class Pais {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registro");
-        }
-        catch (Exception e){
-            // handle any errors
-            throw new Exception("Excepcion del tipo " + e.getClass() + " Info: " + e.getMessage());
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -160,32 +144,11 @@ public class Pais {
             str_sql = _str_sql;
             
             for (AbstractMap.SimpleEntry<String, String> p : p_parameters) {
-                if (p.getKey().equals("id_comunidad")) {
-                    array_clauses.add("pa.id_comunidad = " + p.getValue());
-                }
-                else if (p.getKey().equals("id_comuna")) {
-                    array_clauses.add("pa.id_comuna = " + p.getValue());
-                }
-                else if (p.getKey().equals("latitud_mayor")) {
-                    array_clauses.add("pa.latitud > " + p.getValue());
-                }
-                else if (p.getKey().equals("latitud_menor")) {
-                    array_clauses.add("pa.latitud < " + p.getValue());
-                }
-                else if (p.getKey().equals("longitud_mayor")) {
-                    array_clauses.add("pa.longitud > " + p.getValue());
-                }
-                else if (p.getKey().equals("longitud_menor")) {
-                    array_clauses.add("pa.longitud < " + p.getValue());
-                }
-                else if (p.getKey().equals("posicion_reciente")) {
-                    array_clauses.add("pa.fecha > DATE_ADD(now(), INTERVAL -" + p.getValue() + " MINUTE)");
-                }
-                else if (p.getKey().equals("id_distinto")) {
-                    array_clauses.add("pa.id_usuario <> " + p.getValue());
+                if (p.getKey().equals("id_pais")) {
+                    array_clauses.add("pa.id_pais = " + p.getValue());
                 }
                 else {
-                	throw new Exception("Parametro no soportado: " + p.getKey());
+                    throw new Exception("Parametro no soportado: " + p.getKey());
                 }
             }
                                 
@@ -234,7 +197,7 @@ public class Pais {
             throw ex;
         }
         catch (Exception ex) {
-        	throw ex;
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -262,18 +225,18 @@ public class Pais {
         return ret;
     }
 
-    public int update(Connection p_conn) throws Exception {
+    public int update(Connection p_conn) throws SQLException {
 
         int ret = -1;
         Statement stmt = null;
 
         String str_sql =
             "    UPDATE pais" +
-            "    SET " +
-            "    id_pais AS id, " +
-            "    pais " +
-            "    WHERE id_pais = " + Long.toString(this._id);
-        
+            "    SET" +
+            "    pais = " + (_pais != null ? "'" + _pais + "'" : "null") +
+            "    WHERE" +
+            "    id_pais = " + Long.toString(this._id);
+
         try {
             stmt = p_conn.createStatement();
             
@@ -291,7 +254,7 @@ public class Pais {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -311,7 +274,7 @@ public class Pais {
         return ret;
     }
     
-    public int insert(Connection p_conn) throws Exception {
+    public int insert(Connection p_conn) throws SQLException {
         
         int ret = -1;
         Statement stmt = null;
@@ -320,38 +283,21 @@ public class Pais {
         String str_sql =
             "    INSERT INTO pais" +
             "    (" +
-            "    id_pais, " +
-            "    pais " +
-            "    )" +
+            "    pais, " +
+            "    id_pais)" +
             "    VALUES" +
             "    (" +
-            "    " + (_id != null ? _id.toString() : "null") + "," +
-            "    " + (_pais != null ? "'" + _pais + "'" : "null") +
+            "    " + (_pais != null ? "'" + _pais + "'" : "null") + "," +
+            "    " + (_id != null ? "'" + _id + "'" : "null") +
             "    )";
         
         try {
             stmt = p_conn.createStatement();
-            
-            ret = stmt.executeUpdate(str_sql, Statement.RETURN_GENERATED_KEYS);
-            /*
-            if (stmt.executeUpdate(str_sql) < 1) {
-                throw new Exception("No hubo filas afectadas");
-            }
-            */
-            
-            rs = stmt.getGeneratedKeys();
 
-            if (rs.next()) {
-                _id = rs.getLong(1);
-            } else {
-                // throw an exception from here
-                throw new Exception("Error al obtener id");
-            }
+            ret = stmt.executeUpdate(str_sql);
 
-            rs.close();
-            rs = null;
-            System.out.println("Key returned from getGeneratedKeys():" + _id.toString());
-                        
+            load(p_conn);
+
         }
         catch (SQLException ex){
             // handle any errors
@@ -359,7 +305,7 @@ public class Pais {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -386,29 +332,21 @@ public class Pais {
         
         return ret;
     }
-    
-    public static int delete(Connection p_conn, Integer p_id_pais) throws Exception {
+
+    public int delete(Connection p_conn) throws SQLException {
 
         int ret = -1;
         Statement stmt = null;
 
         String str_sql =
-            "  DELETE FROM pais";
-        
-        if (p_id_pais != null) {
-            str_sql +=
-                "  WHERE id_pais = " + p_id_pais.toString();
-        }
-        
+            "    DELETE FROM pais" +
+            "    WHERE" +
+            "    id_pais = " + Long.toString(this._id);
+
         try {
             stmt = p_conn.createStatement();
             
             ret = stmt.executeUpdate(str_sql);
-            /*
-            if (stmt.executeUpdate(str_sql) < 1) {
-                throw new Exception("No hubo filas afectadas");
-            }
-            */
         }
         catch (SQLException ex){
             // handle any errors
@@ -416,7 +354,7 @@ public class Pais {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al borrar registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -435,4 +373,85 @@ public class Pais {
         
         return ret;
     }
+
+    public void load(Connection p_conn) throws SQLException {
+        Pais obj = null;
+        
+        String str_sql = _str_sql +
+            "    WHERE" +
+            "    id_pais = " + Long.toString(this._id) +
+            "    LIMIT 0, 1";
+        
+        //System.out.println(str_sql);
+        
+        // assume that conn is an already created JDBC connection (see previous examples)
+        Statement stmt = null;
+        ResultSet rs = null;
+        
+        try {
+            stmt = p_conn.createStatement();
+            //System.out.println("stmt = p_conn.createStatement() ok");
+            rs = stmt.executeQuery(str_sql);
+            //System.out.println("rs = stmt.executeQuery(str_sql) ok");
+
+            // Now do something with the ResultSet ....
+            
+            if (rs.next()) {
+                //System.out.println("rs.next() ok");
+                obj = fromRS(rs);
+                //System.out.println("fromRS(rs) ok");
+
+                _pais = obj.get_pais();
+            }
+        }
+        catch (SQLException ex){
+            // handle any errors
+            System.out.println("SQLException: " + ex.getMessage() + " sentencia: " + str_sql);
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+            
+            throw ex;
+        }
+        finally {
+            // it is a good idea to release
+            // resources in a finally{} block
+            // in reverse-order of their creation
+            // if they are no-longer needed
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException sqlEx) { 
+                    
+                } // ignore
+                rs = null;
+            }
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException sqlEx) {
+                    
+                } // ignore
+                stmt = null;
+            }
+        }        
+        
+    }
+
+
+@Override
+    public String toString() {
+        return "Pais [" +
+	           "    _pais = " + (_pais != null ? "'" + _pais + "'" : "null") + "," +
+	           "    _id = " + (_id != null ? _id : "null") +
+			   "]";
+    }
+
+
+    public String toJSON() {
+        return "Pais : {" +
+	           "    _pais : " + (_pais != null ? "'" + _pais + "'" : "null") + "," +
+	           "    _id : " + (_id != null ? _id : "null") +
+			   "}";
+    }
+
 }

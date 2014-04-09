@@ -4,11 +4,13 @@ scp dsoft/java/Car/bd/data/geografico.sql lfhernandez@centauro:car/bd/data/geogr
 
 sh dsoft/java/MyORM/scripts/run.sh > dsoft/java/Car/doc/clases.txt
 
+sh dsoft/java/SQLiteORM/scripts/run.sh > dsoft/java/Car/mobile/doc/clases.txt
+
 sh dsoft/java/Car/scripts/data_load.sh
 
 mysqldump -u root --opt car > car_20140325.sql
 
-mysqldump -u root -t car > car_20140327_data.sql
+mysqldump -u root -t --extended-insert=FALSE --single-transaction car > car_20140405_data.sql
 
 mysql -u root -f car < car_20140325_data.sql
 

@@ -15,41 +15,34 @@ import java.util.ArrayList;
  *
  */
 public class Autenticacion {
-    private Long _id;
-    private Long _id_usuario;
-    private Long _id_red_social;
-    private String _token;
-    private String _fecha;
+private String _fecha;
+private Long _id_red_social;
+private String _token;
+private Long _id_usuario;
+private Long _id;
 
     private final static String _str_sql = 
-        "    SELECT " +
-        "    id_autenticacion AS id, " +
-        "    id_usuario, " +
-        "    id_red_social, " +
-        "    token, " +
-        "    DATE_FORMAT(au.fecha, '%d-%m-%Y %H:%i:%s') AS fecha " +
-        "    FROM autenticacion au ";
+        "    SELECT" +
+        "    DATE_FORMAT(au.fecha, '%d-%m-%Y %H:%i:%s') AS fecha," +
+        "    au.id_red_social AS id_red_social," +
+        "    au.token AS token," +
+        "    au.id_usuario AS id_usuario," +
+        "    au.id_autenticacion AS id" +
+        "    FROM autenticacion au";
 
     public Autenticacion() {
-        _id = null;
-        _id_usuario = null;
+        _fecha = null;
         _id_red_social = null;
         _token = null;
-        _fecha = null;
+        _id_usuario = null;
+        _id = null;
 
     }
-
     /**
-     * @return the _id
+     * @return the _fecha
      */
-    public Long get_id() {
-        return _id;
-    }
-    /**
-     * @return the _id_usuario
-     */
-    public Long get_id_usuario() {
-        return _id_usuario;
+    public String get_fecha() {
+        return _fecha;
     }
     /**
      * @return the _id_red_social
@@ -64,23 +57,22 @@ public class Autenticacion {
         return _token;
     }
     /**
-     * @return the _fecha
+     * @return the _id_usuario
      */
-    public String get_fecha() {
-        return _fecha;
-    }
-
-    /**
-     * @param _id the _id to set
-     */
-    public void set_id(Long _id) {
-        this._id = _id;
+    public Long get_id_usuario() {
+        return _id_usuario;
     }
     /**
-     * @param _id_usuario the _id_usuario to set
+     * @return the _id
      */
-    public void set_id_usuario(Long _id_usuario) {
-        this._id_usuario = _id_usuario;
+    public Long get_id() {
+        return _id;
+    }
+    /**
+     * @param _fecha the _fecha to set
+     */
+    public void set_fecha(String _fecha) {
+        this._fecha = _fecha;
     }
     /**
      * @param _id_red_social the _id_red_social to set
@@ -95,35 +87,31 @@ public class Autenticacion {
         this._token = _token;
     }
     /**
-     * @param _fecha the _fecha to set
+     * @param _id_usuario the _id_usuario to set
      */
-    public void set_fecha(String _fecha) {
-        this._fecha = _fecha;
+    public void set_id_usuario(Long _id_usuario) {
+        this._id_usuario = _id_usuario;
+    }
+    /**
+     * @param _id the _id to set
+     */
+    public void set_id(Long _id) {
+        this._id = _id;
     }
 
     public static Autenticacion fromRS(ResultSet p_rs) throws SQLException {
         Autenticacion ret = new Autenticacion();
 
-        try {
-            ret.set_id(p_rs.getLong("id"));
-            ret.set_id_usuario(p_rs.getLong("id_usuario"));
-            ret.set_id_red_social(p_rs.getLong("id_red_social"));
-            ret.set_token(p_rs.getString("token"));
-            ret.set_fecha(p_rs.getString("fecha"));
-        }
-        catch (SQLException ex){
-            // handle any errors
-            System.out.println("SQLException: " + ex.getMessage());
-            System.out.println("SQLState: " + ex.getSQLState());
-            System.out.println("VendorError: " + ex.getErrorCode());
-
-            throw ex;
-        }
+        ret.set_fecha(p_rs.getString("fecha"));
+        ret.set_id_red_social(p_rs.getLong("id_red_social"));
+        ret.set_token(p_rs.getString("token"));
+        ret.set_id_usuario(p_rs.getLong("id_usuario"));
+        ret.set_id(p_rs.getLong("id"));
 
         return ret;
     }
 
-    public static Autenticacion getByParameter(Connection p_conn, String p_key, String p_value) throws Exception {
+    public static Autenticacion getByParameter(Connection p_conn, String p_key, String p_value) throws SQLException {
         Autenticacion ret = null;
         
         String str_sql = _str_sql +
@@ -156,11 +144,7 @@ public class Autenticacion {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registro");
-        }
-        catch (Exception e){
-            // handle any errors
-            throw new Exception("Excepcion del tipo " + e.getClass() + " Info: " + e.getMessage());
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -208,32 +192,17 @@ public class Autenticacion {
             str_sql = _str_sql;
             
             for (AbstractMap.SimpleEntry<String, String> p : p_parameters) {
-                if (p.getKey().equals("id_comunidad")) {
-                    array_clauses.add("au.id_comunidad = " + p.getValue());
+                if (p.getKey().equals("id_autenticacion")) {
+                    array_clauses.add("au.id_autenticacion = " + p.getValue());
                 }
-                else if (p.getKey().equals("id_comuna")) {
-                    array_clauses.add("au.id_comuna = " + p.getValue());
+                else if (p.getKey().equals("id_red_social")) {
+                    array_clauses.add("au.id_red_social = " + p.getValue());
                 }
-                else if (p.getKey().equals("latitud_mayor")) {
-                    array_clauses.add("au.latitud > " + p.getValue());
-                }
-                else if (p.getKey().equals("latitud_menor")) {
-                    array_clauses.add("au.latitud < " + p.getValue());
-                }
-                else if (p.getKey().equals("longitud_mayor")) {
-                    array_clauses.add("au.longitud > " + p.getValue());
-                }
-                else if (p.getKey().equals("longitud_menor")) {
-                    array_clauses.add("au.longitud < " + p.getValue());
-                }
-                else if (p.getKey().equals("posicion_reciente")) {
-                    array_clauses.add("au.fecha > DATE_ADD(now(), INTERVAL -" + p.getValue() + " MINUTE)");
-                }
-                else if (p.getKey().equals("id_distinto")) {
-                    array_clauses.add("au.id_usuario <> " + p.getValue());
+                else if (p.getKey().equals("id_usuario")) {
+                    array_clauses.add("au.id_usuario = " + p.getValue());
                 }
                 else {
-                	throw new Exception("Parametro no soportado: " + p.getKey());
+                    throw new Exception("Parametro no soportado: " + p.getKey());
                 }
             }
                                 
@@ -282,7 +251,7 @@ public class Autenticacion {
             throw ex;
         }
         catch (Exception ex) {
-        	throw ex;
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -310,21 +279,19 @@ public class Autenticacion {
         return ret;
     }
 
-    public int update(Connection p_conn) throws Exception {
+    public int update(Connection p_conn) throws SQLException {
 
         int ret = -1;
         Statement stmt = null;
 
         String str_sql =
             "    UPDATE autenticacion" +
-            "    SET " +
-            "    id_autenticacion AS id, " +
-            "    id_usuario, " +
-            "    id_red_social, " +
-            "    token, " +
-            "    DATE_FORMAT(au.fecha, '%d-%m-%Y %H:%i:%s') AS fecha " +
-            "    WHERE id_autenticacion = " + Long.toString(this._id);
-        
+            "    SET" +
+            "    fecha = " + (_fecha != null ? "STR_TO_DATE(" + _fecha + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    token = " + (_token != null ? "'" + _token + "'" : "null") +
+            "    WHERE" +
+            "    id_autenticacion = " + Long.toString(this._id);
+
         try {
             stmt = p_conn.createStatement();
             
@@ -342,7 +309,7 @@ public class Autenticacion {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -362,7 +329,7 @@ public class Autenticacion {
         return ret;
     }
     
-    public int insert(Connection p_conn) throws Exception {
+    public int insert(Connection p_conn) throws SQLException {
         
         int ret = -1;
         Statement stmt = null;
@@ -371,44 +338,27 @@ public class Autenticacion {
         String str_sql =
             "    INSERT INTO autenticacion" +
             "    (" +
-            "    id_autenticacion, " +
-            "    id_usuario, " +
+            "    fecha, " +
             "    id_red_social, " +
             "    token, " +
-            "    fecha " +
-            "    )" +
+            "    id_usuario, " +
+            "    id_autenticacion)" +
             "    VALUES" +
             "    (" +
-            "    " + (_id != null ? _id.toString() : "null") + "," +
-            "    " + (_id_usuario != null ? _id_usuario.toString() : "null") + "," +
-            "    " + (_id_red_social != null ? _id_red_social.toString() : "null") + "," +
+            "    " + (_fecha != null ? "STR_TO_DATE(" + _fecha + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+            "    " + (_id_red_social != null ? "'" + _id_red_social + "'" : "null") + "," +
             "    " + (_token != null ? "'" + _token + "'" : "null") + "," +
-            "    " + (_fecha != null ? "STR_TO_DATE(" + _fecha + ", '%d-%m-%Y %H:%i:%s')" : "null") +
+            "    " + (_id_usuario != null ? "'" + _id_usuario + "'" : "null") + "," +
+            "    " + (_id != null ? "'" + _id + "'" : "null") +
             "    )";
         
         try {
             stmt = p_conn.createStatement();
-            
-            ret = stmt.executeUpdate(str_sql, Statement.RETURN_GENERATED_KEYS);
-            /*
-            if (stmt.executeUpdate(str_sql) < 1) {
-                throw new Exception("No hubo filas afectadas");
-            }
-            */
-            
-            rs = stmt.getGeneratedKeys();
 
-            if (rs.next()) {
-                _id = rs.getLong(1);
-            } else {
-                // throw an exception from here
-                throw new Exception("Error al obtener id");
-            }
+            ret = stmt.executeUpdate(str_sql);
 
-            rs.close();
-            rs = null;
-            System.out.println("Key returned from getGeneratedKeys():" + _id.toString());
-                        
+            load(p_conn);
+
         }
         catch (SQLException ex){
             // handle any errors
@@ -416,7 +366,7 @@ public class Autenticacion {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al obtener registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -443,29 +393,21 @@ public class Autenticacion {
         
         return ret;
     }
-    
-    public static int delete(Connection p_conn, Integer p_id_autenticacion) throws Exception {
+
+    public int delete(Connection p_conn) throws SQLException {
 
         int ret = -1;
         Statement stmt = null;
 
         String str_sql =
-            "  DELETE FROM autenticacion";
-        
-        if (p_id_autenticacion != null) {
-            str_sql +=
-                "  WHERE id_autenticacion = " + p_id_autenticacion.toString();
-        }
-        
+            "    DELETE FROM autenticacion" +
+            "    WHERE" +
+            "    id_autenticacion = " + Long.toString(this._id);
+
         try {
             stmt = p_conn.createStatement();
             
             ret = stmt.executeUpdate(str_sql);
-            /*
-            if (stmt.executeUpdate(str_sql) < 1) {
-                throw new Exception("No hubo filas afectadas");
-            }
-            */
         }
         catch (SQLException ex){
             // handle any errors
@@ -473,7 +415,7 @@ public class Autenticacion {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
             
-            throw new Exception("Error al borrar registros");
+            throw ex;
         }
         finally {
             // it is a good idea to release
@@ -492,4 +434,94 @@ public class Autenticacion {
         
         return ret;
     }
+
+    public void load(Connection p_conn) throws SQLException {
+        Autenticacion obj = null;
+        
+        String str_sql = _str_sql +
+            "    WHERE" +
+            "    id_autenticacion = " + Long.toString(this._id) +
+            "    LIMIT 0, 1";
+        
+        //System.out.println(str_sql);
+        
+        // assume that conn is an already created JDBC connection (see previous examples)
+        Statement stmt = null;
+        ResultSet rs = null;
+        
+        try {
+            stmt = p_conn.createStatement();
+            //System.out.println("stmt = p_conn.createStatement() ok");
+            rs = stmt.executeQuery(str_sql);
+            //System.out.println("rs = stmt.executeQuery(str_sql) ok");
+
+            // Now do something with the ResultSet ....
+            
+            if (rs.next()) {
+                //System.out.println("rs.next() ok");
+                obj = fromRS(rs);
+                //System.out.println("fromRS(rs) ok");
+
+                _fecha = obj.get_fecha();
+                _id_red_social = obj.get_id_red_social();
+                _token = obj.get_token();
+                _id_usuario = obj.get_id_usuario();
+            }
+        }
+        catch (SQLException ex){
+            // handle any errors
+            System.out.println("SQLException: " + ex.getMessage() + " sentencia: " + str_sql);
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+            
+            throw ex;
+        }
+        finally {
+            // it is a good idea to release
+            // resources in a finally{} block
+            // in reverse-order of their creation
+            // if they are no-longer needed
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException sqlEx) { 
+                    
+                } // ignore
+                rs = null;
+            }
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException sqlEx) {
+                    
+                } // ignore
+                stmt = null;
+            }
+        }        
+        
+    }
+
+
+@Override
+    public String toString() {
+        return "Autenticacion [" +
+	           "    _fecha = " + (_fecha != null ? "STR_TO_DATE(" + _fecha + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+	           "    _id_red_social = " + (_id_red_social != null ? _id_red_social : "null") + "," +
+	           "    _token = " + (_token != null ? "'" + _token + "'" : "null") + "," +
+	           "    _id_usuario = " + (_id_usuario != null ? _id_usuario : "null") + "," +
+	           "    _id = " + (_id != null ? _id : "null") +
+			   "]";
+    }
+
+
+    public String toJSON() {
+        return "Autenticacion : {" +
+	           "    _fecha : " + (_fecha != null ? "STR_TO_DATE(" + _fecha + ", '%d-%m-%Y %H:%i:%s')" : "null") + "," +
+	           "    _id_red_social : " + (_id_red_social != null ? _id_red_social : "null") + "," +
+	           "    _token : " + (_token != null ? "'" + _token + "'" : "null") + "," +
+	           "    _id_usuario : " + (_id_usuario != null ? _id_usuario : "null") + "," +
+	           "    _id : " + (_id != null ? _id : "null") +
+			   "}";
+    }
+
 }
