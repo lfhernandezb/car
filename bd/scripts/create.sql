@@ -122,7 +122,7 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `hombre` BIT(1) NULL,
   `telefono` VARCHAR(20) NULL,
   `fecha_vencimiento_licencia` DATE NULL,
-  `fecha_modifiacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `borrado` BIT(1) NULL DEFAULT b'0',
   PRIMARY KEY (`id_usuario`),
   CONSTRAINT `fk_Usuario_Comuna1`
@@ -313,11 +313,10 @@ CREATE TABLE IF NOT EXISTS `mantencion_usuario` (
   `DependeKm` BIT(1) NULL,
   `KmEntreMantenciones` INT NULL,
   `DiasEntreMantenciones` INT NULL,
-  `MantencionUsuariocol` VARCHAR(45) NULL,
   `id_mantencion_base` BIGINT NULL,
   `mantecion_base` TINYINT(1) NULL,
-  `mantencion_usuariocol` VARCHAR(45) NULL,
   `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `borrado` BIT(1) NULL DEFAULT b'0',
   PRIMARY KEY (`id_mantencion_usuario`, `id_usuario`),
   CONSTRAINT `fk_mantencion_usuario_vehiculo1`
     FOREIGN KEY (`id_vehiculo` , `id_usuario`)
@@ -333,20 +332,23 @@ CREATE INDEX `fk_mantencion_usuario_vehiculo1_idx` ON `mantencion_usuario` (`id_
 -- Table `mantencion_usuario_hecha`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mantencion_usuario_hecha` (
-  `id_mantencion_usuario_hecha` BIGINT NOT NULL AUTO_INCREMENT,
+  `id_mantencion_usuario_hecha` BIGINT NOT NULL,
+  `id_usuario` BIGINT NOT NULL,
   `id_mantencion_usuario` BIGINT NOT NULL,
   `km` INT NULL,
   `fecha` DATE NULL,
   `costo` INT NULL,
-  PRIMARY KEY (`id_mantencion_usuario_hecha`),
-  CONSTRAINT `fk_MantencionUsuarioHecha_MantencionUsuario1`
-    FOREIGN KEY (`id_mantencion_usuario`)
-    REFERENCES `mantencion_usuario` (`id_mantencion_usuario`)
+  `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `borrado` BIT(1) NULL DEFAULT b'0',
+  PRIMARY KEY (`id_mantencion_usuario_hecha`, `id_usuario`),
+  CONSTRAINT `fk_mantencion_usuario_hecha_mantencion_usuario1`
+    FOREIGN KEY (`id_mantencion_usuario` , `id_usuario`)
+    REFERENCES `mantencion_usuario` (`id_mantencion_usuario` , `id_usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_MantencionUsuarioHecha_MantencionUsuario1_idx` ON `mantencion_usuario_hecha` (`id_mantencion_usuario` ASC);
+CREATE INDEX `fk_mantencion_usuario_hecha_mantencion_usuario1_idx` ON `mantencion_usuario_hecha` (`id_mantencion_usuario` ASC, `id_usuario` ASC);
 
 
 -- -----------------------------------------------------
@@ -362,9 +364,8 @@ CREATE TABLE IF NOT EXISTS `recordatorio` (
   `km` INT NULL,
   `titulo` VARCHAR(30) NULL,
   `descripcion` TEXT NULL,
-  `recordatoriocol` VARCHAR(45) NOT NULL,
   `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `descartado` BIT(1) NULL DEFAULT b'0',
+  `borrado` BIT(1) NULL DEFAULT b'0',
   PRIMARY KEY (`id_recordatorio`, `id_usuario`),
   CONSTRAINT `fk_recordatorio_vehiculo1`
     FOREIGN KEY (`id_vehiculo` , `id_usuario`)
@@ -406,6 +407,7 @@ CREATE TABLE IF NOT EXISTS `reparacion` (
   `descripcion` TEXT NOT NULL,
   `costo` INT NULL,
   `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `borrado` BIT(1) NULL DEFAULT b'0',
   PRIMARY KEY (`id_reparacion`, `id_usuario`),
   CONSTRAINT `fk_reparacion_vehiculo1`
     FOREIGN KEY (`id_vehiculo` , `id_usuario`)
@@ -430,7 +432,8 @@ CREATE TABLE IF NOT EXISTS `rendimiento` (
   `costo` INT NULL,
   `latitud` INT NULL,
   `longitud` INT NULL,
-  `fecha` DATE NULL,
+  `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `borrado` BIT(1) NULL DEFAULT b'0',
   PRIMARY KEY (`id_rendimiento`, `id_usuario`),
   CONSTRAINT `fk_rendimiento_vehiculo1`
     FOREIGN KEY (`id_vehiculo` , `id_usuario`)

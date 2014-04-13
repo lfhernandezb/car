@@ -10,6 +10,14 @@ import java.sql.Statement;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+
 /**
  * @author petete-ntbk
  *
@@ -719,6 +727,30 @@ private String _beneficios;
 	           "    _tipo_traccion : " + (_tipo_traccion != null ? "'" + _tipo_traccion + "'" : "null") + "," +
 	           "    _beneficios : " + (_beneficios != null ? "'" + _beneficios + "'" : "null") +
 			   "}";
+    }
+
+    public static MantencionBase fromXMLNode(Node p_xmlNode) {
+    	
+        MantencionBase ret = new MantencionBase();
+        
+		Element element = (Element) p_xmlNode;
+ 
+        ret.set_dias_entre_mantenciones(Integer.decode(eElement.getElementsByTagName("dias_entre_mantenciones").item(0).getTextContent()));
+        ret.set_tipo_transmision(eElement.getElementsByTagName("tipo_transmision").item(0).getTextContent());
+        ret.set_codigo_motor(eElement.getElementsByTagName("codigo_motor").item(0).getTextContent());
+        ret.set_km_entre_mantenciones(Integer.decode(eElement.getElementsByTagName("km_entre_mantenciones").item(0).getTextContent()));
+        ret.set_depende_km(Boolean.decode(eElement.getElementsByTagName("dias_entre_mantenciones").item(0).getTextContent()));
+        ret.set_accion(eElement.getElementsByTagName("dias_entre_mantenciones").item(0).getTextContent());
+        ret.set_url(eElement.getElementsByTagName("dias_entre_mantenciones").item(0).getTextContent());
+        ret.set_descripcion_item(eElement.getElementsByTagName("dias_entre_mantenciones").item(0).getTextContent());
+        ret.set_fecha_modificacion(eElement.getElementsByTagName("dias_entre_mantenciones").item(0).getTextContent());
+        ret.set_id_modelo_anio(Long.decode(eElement.getElementsByTagName("dias_entre_mantenciones").item(0).getTextContent()));
+        ret.set_id(Long.decode(eElement.getElementsByTagName("dias_entre_mantenciones").item(0).getTextContent()));
+        ret.set_item(eElement.getElementsByTagName("dias_entre_mantenciones").item(0).getTextContent());
+        ret.set_tipo_traccion(eElement.getElementsByTagName("dias_entre_mantenciones").item(0).getTextContent());
+        ret.set_beneficios(eElement.getElementsByTagName("dias_entre_mantenciones").item(0).getTextContent());
+
+        return ret;
     }
 
 }

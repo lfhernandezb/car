@@ -16,3 +16,5 @@ mysql -u root -f car < car_20140325_data.sql
 
 mysql -u root -f car < car/bd/data/geografico.sql
 
+sed -f ../data/script.sed ../data/car_20140405_data.sql | sqlite3.exe car.db3
+

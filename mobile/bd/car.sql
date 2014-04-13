@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS usuario (
   hombre BIT(1) NULL,
   telefono VARCHAR(20) NULL,
   fecha_vencimiento_licencia DATE NULL,
-  fecha_modifiacion TIMESTAMP NULL DEFAULT (datetime('now', 'localtime')),
+  fecha_modificacion TIMESTAMP NULL DEFAULT (datetime('now', 'localtime')),
   borrado BIT(1) NULL DEFAULT 0,
   PRIMARY KEY (id_usuario),
   CONSTRAINT fk_Usuario_Comuna1
@@ -314,11 +314,10 @@ CREATE TABLE IF NOT EXISTS mantencion_usuario (
   DependeKm BIT(1) NULL,
   KmEntreMantenciones INT NULL,
   DiasEntreMantenciones INT NULL,
-  MantencionUsuariocol VARCHAR(45) NULL,
   id_mantencion_base BIGINT NULL,
   mantecion_base TINYINT(1) NULL,
-  mantencion_usuariocol VARCHAR(45) NULL,
   fecha_modificacion TIMESTAMP NULL DEFAULT (datetime('now', 'localtime')),
+  borrado BIT(1) NULL DEFAULT 0,
   PRIMARY KEY (id_mantencion_usuario, id_usuario),
   CONSTRAINT fk_mantencion_usuario_vehiculo1
     FOREIGN KEY (id_vehiculo , id_usuario)
@@ -335,19 +334,22 @@ CREATE INDEX fk_mantencion_usuario_vehiculo1_idx ON mantencion_usuario (id_vehic
 
 CREATE TABLE IF NOT EXISTS mantencion_usuario_hecha (
   id_mantencion_usuario_hecha BIGINT NOT NULL,
+  id_usuario BIGINT NOT NULL,
   id_mantencion_usuario BIGINT NOT NULL,
   km INT NULL,
   fecha DATE NULL,
   costo INT NULL,
-  PRIMARY KEY (id_mantencion_usuario_hecha),
-  CONSTRAINT fk_MantencionUsuarioHecha_MantencionUsuario1
-    FOREIGN KEY (id_mantencion_usuario)
-    REFERENCES mantencion_usuario (id_mantencion_usuario)
+  fecha_modificacion TIMESTAMP NULL DEFAULT (datetime('now', 'localtime')),
+  borrado BIT(1) NULL DEFAULT 0,
+  PRIMARY KEY (id_mantencion_usuario_hecha, id_usuario),
+  CONSTRAINT fk_mantencion_usuario_hecha_mantencion_usuario1
+    FOREIGN KEY (id_mantencion_usuario , id_usuario)
+    REFERENCES mantencion_usuario (id_mantencion_usuario , id_usuario)
     
     )
 ;
 
-CREATE INDEX fk_MantencionUsuarioHecha_MantencionUsuario1_idx ON mantencion_usuario_hecha (id_mantencion_usuario ASC);
+CREATE INDEX fk_mantencion_usuario_hecha_mantencion_usuario1_idx ON mantencion_usuario_hecha (id_mantencion_usuario ASC, id_usuario ASC);
 
 
 
@@ -363,9 +365,8 @@ CREATE TABLE IF NOT EXISTS recordatorio (
   km INT NULL,
   titulo VARCHAR(30) NULL,
   descripcion TEXT NULL,
-  recordatoriocol VARCHAR(45) NOT NULL,
   fecha_modificacion TIMESTAMP NULL DEFAULT (datetime('now', 'localtime')),
-  descartado BIT(1) NULL DEFAULT 0,
+  borrado BIT(1) NULL DEFAULT 0,
   PRIMARY KEY (id_recordatorio, id_usuario),
   CONSTRAINT fk_recordatorio_vehiculo1
     FOREIGN KEY (id_vehiculo , id_usuario)
@@ -407,6 +408,7 @@ CREATE TABLE IF NOT EXISTS reparacion (
   descripcion TEXT NOT NULL,
   costo INT NULL,
   fecha_modificacion TIMESTAMP NULL DEFAULT (datetime('now', 'localtime')),
+  borrado BIT(1) NULL DEFAULT 0,
   PRIMARY KEY (id_reparacion, id_usuario),
   CONSTRAINT fk_reparacion_vehiculo1
     FOREIGN KEY (id_vehiculo , id_usuario)
@@ -431,7 +433,8 @@ CREATE TABLE IF NOT EXISTS rendimiento (
   costo INT NULL,
   latitud INT NULL,
   longitud INT NULL,
-  fecha DATE NULL,
+  fecha_modificacion TIMESTAMP NULL DEFAULT (datetime('now', 'localtime')),
+  borrado BIT(1) NULL DEFAULT 0,
   PRIMARY KEY (id_rendimiento, id_usuario),
   CONSTRAINT fk_rendimiento_vehiculo1
     FOREIGN KEY (id_vehiculo , id_usuario)
@@ -554,4 +557,146 @@ INSERT INTO traccion (id_traccion, descripcion, fecha_modificacion) VALUES (4, '
 INSERT INTO traccion (id_traccion, descripcion, fecha_modificacion) VALUES (5, 'RWD', NULL);
 
 
+
+  -- marca como borrados los registros de lablas relacionadas con 'vehiculo'
+  CREATE TRIGGER borra_vehiculo 
+  AFTER UPDATE OF borrado 
+  ON vehiculo 
+  FOR EACH ROW 
+  WHEN NEW.borrado = 1
+  BEGIN
+    UPDATE reparacion SET borrado = 1 
+    WHERE id_vehiculo = NEW.id_vehiculo 
+    AND id_usuario = NEW.id_usuario;
+
+    UPDATE recordatorio SET borrado = 1 
+    WHERE id_vehiculo = NEW.id_vehiculo 
+    AND id_usuario = NEW.id_usuario;
+
+    UPDATE mantencion_usuario SET borrado = 1 
+    WHERE id_vehiculo = NEW.id_vehiculo 
+    AND id_usuario = NEW.id_usuario;
+
+    UPDATE rendimiento SET borrado = 1 
+    WHERE id_vehiculo = NEW.id_vehiculo 
+    AND id_usuario = NEW.id_usuario;
+  END;
+  
+  -- actualiza fecha_modificacion al actualizar cualquier columna de 'vehiculo'
+  CREATE TRIGGER actualiza_vehiculo  
+  AFTER UPDATE OF 
+    id_modelo,
+    id_tipo_transmision,
+    id_combustible,
+    id_traccion,
+    alias,
+    patente,
+    anio,
+    km,
+    aire_acondicionado,
+    alza_vidrios,
+    borrado
+  ON vehiculo FOR EACH ROW 
+  BEGIN
+    UPDATE vehiculo SET fecha_modificacion = datetime('now', 'localtime') WHERE id_vehiculo = NEW.id_vehiculo AND id_usuario = NEW.id_usuario;
+  END;
+
+  -- marca como borrados los registros de lablas relacionadas con 'mantencion_usuario'
+  CREATE TRIGGER borra_mantencion_usuario
+  AFTER UPDATE OF borrado 
+  ON mantencion_usuario 
+  FOR EACH ROW 
+  WHEN NEW.borrado = 1
+  BEGIN
+    UPDATE mantencion_usuario_hecha SET borrado = 1 
+    WHERE id_mantencion_usuario = NEW.id_mantencion_usuario 
+    AND id_usuario = NEW.id_usuario;
+  END;
+
+  -- actualiza fecha_modificacion al actualizar cualquier columna de 'mantencion_usuario'
+  CREATE TRIGGER actualiza_mantencion_usuario
+  AFTER UPDATE OF 
+    id_mantencion_usuario,
+    km,
+    fecha,
+    costo,
+    borrado
+  ON mantencion_usuario FOR EACH ROW 
+  BEGIN
+    UPDATE mantencion_usuario SET fecha_modificacion = datetime('now', 'localtime') WHERE id_mantencion_usuario = NEW.id_mantencion_usuario AND id_usuario = NEW.id_usuario;
+  END;
+
+  -- actualiza fecha_modificacion al actualizar cualquier columna de 'reparacion'
+  CREATE TRIGGER actualiza_reparacion
+  AFTER UPDATE OF 
+    id_vehiculo,
+    titulo,
+    descripcion,
+    costo,
+    borrado
+  ON reparacion FOR EACH ROW 
+  BEGIN
+    UPDATE reparacion SET fecha_modificacion = datetime('now', 'localtime') WHERE id_reparacion = NEW.id_reparacion AND id_usuario = NEW.id_usuario;
+  END;
+
+  -- actualiza fecha_modificacion al actualizar cualquier columna de 'recordatorio'
+  CREATE TRIGGER actualiza_recordatorio
+  AFTER UPDATE OF 
+    id_vehiculo,
+    recordar_fecha,
+    recordar_km,
+    fecha,
+    km,
+    titulo,
+    descripcion,
+    borrado
+  ON recordatorio FOR EACH ROW 
+  BEGIN
+    UPDATE recordatorio SET fecha_modificacion = datetime('now', 'localtime') WHERE id_recordatorio = NEW.id_recordatorio AND id_usuario = NEW.id_usuario;
+  END;
+
+  -- actualiza fecha_modificacion al actualizar cualquier columna de 'rendimiento'
+  CREATE TRIGGER actualiza_rendimiento
+  AFTER UPDATE OF 
+    id_vehiculo,
+    km,
+    litros,
+    estanque_lleno,
+    costo,
+    latitud,
+    longitud,
+    borrado
+  ON rendimiento FOR EACH ROW 
+  BEGIN
+    UPDATE rendimiento SET fecha_modificacion = datetime('now', 'localtime') WHERE id_rendimiento = NEW.id_rendimiento AND id_usuario = NEW.id_usuario;
+  END;
+
+  -- actualiza fecha_modificacion al actualizar cualquier columna de 'mantencion_usuario_hecha'
+  CREATE TRIGGER actualiza_mantencion_usuario_hecha
+  AFTER UPDATE OF 
+    id_mantencion_usuario,
+    km,
+    fecha,
+    costo,
+    borrado
+  ON mantencion_usuario_hecha FOR EACH ROW 
+  BEGIN
+    UPDATE mantencion_usuario_hecha SET fecha_modificacion = datetime('now', 'localtime') WHERE id_mantencion_usuario_hecha = NEW.id_mantencion_usuario_hecha AND id_usuario = NEW.id_usuario;
+  END;
+
+  -- actualiza fecha_modificacion al actualizar cualquier columna de 'usuario'
+  CREATE TRIGGER actualiza_usuario
+  AFTER UPDATE OF 
+    id_comuna,
+    nombre,
+    correo,
+    fecha_nacimiento,
+    hombre,
+    telefono,
+    fecha_vencimiento_licencia,
+    borrado
+  ON usuario FOR EACH ROW 
+  BEGIN
+    UPDATE usuario SET fecha_modificacion = datetime('now', 'localtime') WHERE id_usuario = NEW.id_usuario;
+  END;
 
