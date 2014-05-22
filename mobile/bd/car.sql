@@ -315,7 +315,7 @@ CREATE TABLE IF NOT EXISTS mantencion_usuario (
   KmEntreMantenciones INT NULL,
   DiasEntreMantenciones INT NULL,
   id_mantencion_base BIGINT NULL,
-  mantecion_base TINYINT(1) NULL,
+  mantecion_base BIT(1) NULL,
   fecha_modificacion TIMESTAMP NULL DEFAULT (datetime('now', 'localtime')),
   borrado BIT(1) NULL DEFAULT 0,
   PRIMARY KEY (id_mantencion_usuario, id_usuario),
