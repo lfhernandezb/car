@@ -119,11 +119,11 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `nombre` VARCHAR(45) NULL,
   `correo` VARCHAR(45) NULL,
   `fecha_nacimiento` DATE NULL,
-  `hombre` BIT(1) NULL,
+  `hombre` TINYINT(1) NULL,
   `telefono` VARCHAR(20) NULL,
   `fecha_vencimiento_licencia` DATE NULL,
   `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `borrado` BIT(1) NULL DEFAULT b'0',
+  `borrado` TINYINT(1) NULL DEFAULT false,
   PRIMARY KEY (`id_usuario`),
   CONSTRAINT `fk_Usuario_Comuna1`
     FOREIGN KEY (`id_comuna`)
@@ -182,10 +182,10 @@ CREATE TABLE IF NOT EXISTS `vehiculo` (
   `patente` VARCHAR(10) NULL,
   `anio` INT NULL,
   `km` INT NULL,
-  `aire_acondicionado` BIT(1) NULL,
-  `alza_vidrios` BIT(1) NULL,
+  `aire_acondicionado` TINYINT(1) NULL,
+  `alza_vidrios` TINYINT(1) NULL,
   `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `borrado` BIT(1) NULL DEFAULT b'0',
+  `borrado` TINYINT(1) NULL DEFAULT false,
   PRIMARY KEY (`id_vehiculo`, `id_usuario`),
   CONSTRAINT `fk_Vehiculo_Usuario1`
     FOREIGN KEY (`id_usuario`)
@@ -278,7 +278,7 @@ CREATE TABLE IF NOT EXISTS `mantencion_base` (
   `id_modelo_anio` BIGINT NOT NULL,
   `beneficios` TEXT NULL,
   `url` VARCHAR(256) NULL,
-  `depende_km` BIT(1) NULL,
+  `depende_km` TINYINT(1) NULL,
   `km_entre_mantenciones` INT NULL,
   `dias_entre_mantenciones` INT NULL,
   `accion` VARCHAR(64) NULL,
@@ -310,13 +310,13 @@ CREATE TABLE IF NOT EXISTS `mantencion_usuario` (
   `descripcion` VARCHAR(1024) NULL,
   `beneficios` TEXT NULL,
   `URL` VARCHAR(256) NULL,
-  `DependeKm` BIT(1) NULL,
+  `DependeKm` TINYINT(1) NULL,
   `KmEntreMantenciones` INT NULL,
   `DiasEntreMantenciones` INT NULL,
   `id_mantencion_base` BIGINT NULL,
-  `mantecion_base` BIT(1) NULL,
+  `mantecion_base` TINYINT(1) NULL,
   `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `borrado` BIT(1) NULL DEFAULT b'0',
+  `borrado` TINYINT(1) NULL DEFAULT false,
   PRIMARY KEY (`id_mantencion_usuario`, `id_usuario`),
   CONSTRAINT `fk_mantencion_usuario_vehiculo1`
     FOREIGN KEY (`id_vehiculo` , `id_usuario`)
@@ -339,7 +339,7 @@ CREATE TABLE IF NOT EXISTS `mantencion_usuario_hecha` (
   `fecha` DATE NULL,
   `costo` INT NULL,
   `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `borrado` BIT(1) NULL DEFAULT b'0',
+  `borrado` TINYINT(1) NULL DEFAULT false,
   PRIMARY KEY (`id_mantencion_usuario_hecha`, `id_usuario`),
   CONSTRAINT `fk_mantencion_usuario_hecha_mantencion_usuario1`
     FOREIGN KEY (`id_mantencion_usuario` , `id_usuario`)
@@ -358,14 +358,14 @@ CREATE TABLE IF NOT EXISTS `recordatorio` (
   `id_recordatorio` BIGINT NOT NULL,
   `id_usuario` BIGINT NOT NULL,
   `id_vehiculo` BIGINT NOT NULL,
-  `recordar_fecha` BIT(1) NULL,
-  `recordar_km` BIT(1) NULL,
+  `recordar_fecha` TINYINT(1) NULL,
+  `recordar_km` TINYINT(1) NULL,
   `fecha` DATE NULL,
   `km` INT NULL,
   `titulo` VARCHAR(30) NULL,
   `descripcion` TEXT NULL,
   `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `borrado` BIT(1) NULL DEFAULT b'0',
+  `borrado` TINYINT(1) NULL DEFAULT false,
   PRIMARY KEY (`id_recordatorio`, `id_usuario`),
   CONSTRAINT `fk_recordatorio_vehiculo1`
     FOREIGN KEY (`id_vehiculo` , `id_usuario`)
@@ -407,7 +407,7 @@ CREATE TABLE IF NOT EXISTS `reparacion` (
   `descripcion` TEXT NOT NULL,
   `costo` INT NULL,
   `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `borrado` BIT(1) NULL DEFAULT b'0',
+  `borrado` TINYINT(1) NULL DEFAULT false,
   PRIMARY KEY (`id_reparacion`, `id_usuario`),
   CONSTRAINT `fk_reparacion_vehiculo1`
     FOREIGN KEY (`id_vehiculo` , `id_usuario`)
@@ -428,12 +428,12 @@ CREATE TABLE IF NOT EXISTS `rendimiento` (
   `id_vehiculo` BIGINT NOT NULL,
   `km` INT NULL,
   `litros` INT NULL,
-  `estanque_lleno` BIT(1) NULL,
+  `estanque_lleno` TINYINT(1) NULL,
   `costo` INT NULL,
   `latitud` INT NULL,
   `longitud` INT NULL,
   `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `borrado` BIT(1) NULL DEFAULT b'0',
+  `borrado` TINYINT(1) NULL DEFAULT false,
   PRIMARY KEY (`id_rendimiento`, `id_usuario`),
   CONSTRAINT `fk_rendimiento_vehiculo1`
     FOREIGN KEY (`id_vehiculo` , `id_usuario`)

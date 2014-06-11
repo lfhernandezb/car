@@ -14,10 +14,9 @@ s/SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;//g
 s/SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;//g
 s/ AUTO_INCREMENT//g
 s/'::character varying/'/g
+s/TINYINT(1)/BOOLEAN/g
 s/ DEFAULT CURRENT_TIMESTAMP/ DEFAULT (datetime('now', 'localtime'))/g
 s/ DEFAULT now()/ DEFAULT (datetime('now', 'localtime'))/g
-s/false/0/ig
-s/true/1/ig
 s/SET client_encoding = 'UTF8';//g
 s/SET check_function_bodies = 0;//g
 s/SELECT pg_catalog\.setval('[a-z_]*_seq', [0-9]*, 0);//g

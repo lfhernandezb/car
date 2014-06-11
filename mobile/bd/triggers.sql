@@ -3,21 +3,21 @@
   AFTER UPDATE OF borrado 
   ON vehiculo 
   FOR EACH ROW 
-  WHEN NEW.borrado = 1
+  WHEN NEW.borrado = true
   BEGIN
-    UPDATE reparacion SET borrado = 1 
+    UPDATE reparacion SET borrado = true 
     WHERE id_vehiculo = NEW.id_vehiculo 
     AND id_usuario = NEW.id_usuario;
 
-    UPDATE recordatorio SET borrado = 1 
+    UPDATE recordatorio SET borrado = true 
     WHERE id_vehiculo = NEW.id_vehiculo 
     AND id_usuario = NEW.id_usuario;
 
-    UPDATE mantencion_usuario SET borrado = 1 
+    UPDATE mantencion_usuario SET borrado = true 
     WHERE id_vehiculo = NEW.id_vehiculo 
     AND id_usuario = NEW.id_usuario;
 
-    UPDATE rendimiento SET borrado = 1 
+    UPDATE rendimiento SET borrado = true 
     WHERE id_vehiculo = NEW.id_vehiculo 
     AND id_usuario = NEW.id_usuario;
   END;
@@ -46,9 +46,9 @@
   AFTER UPDATE OF borrado 
   ON mantencion_usuario 
   FOR EACH ROW 
-  WHEN NEW.borrado = 1
+  WHEN NEW.borrado = true
   BEGIN
-    UPDATE mantencion_usuario_hecha SET borrado = 1 
+    UPDATE mantencion_usuario_hecha SET borrado = true 
     WHERE id_mantencion_usuario = NEW.id_mantencion_usuario 
     AND id_usuario = NEW.id_usuario;
   END;
