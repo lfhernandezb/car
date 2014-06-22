@@ -1,4 +1,4 @@
-CREATE USER 'car'@'localhost' IDENTIFIED BY 'car';
+-- CREATE USER 'car'@'localhost' IDENTIFIED BY 'car';
 
 GRANT ALL ON car.* TO 'car'@'localhost' IDENTIFIED BY 'car';
 

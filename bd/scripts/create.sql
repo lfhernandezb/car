@@ -69,8 +69,24 @@ CREATE TABLE IF NOT EXISTS `marca` (
   `id_marca` SMALLINT NOT NULL AUTO_INCREMENT,
   `descripcion` VARCHAR(20) NOT NULL,
   `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_marca`))
+  `id_pais` BIGINT NOT NULL,
+  `id_tipo_vehiculo` TINYINT NOT NULL,
+  PRIMARY KEY (`id_marca`, `id_tipo_vehiculo`),
+  CONSTRAINT `fk_marca_pais1`
+    FOREIGN KEY (`id_pais`)
+    REFERENCES `pais` (`id_pais`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_marca_tipo_vehiculo1`
+    FOREIGN KEY (`id_tipo_vehiculo`)
+    REFERENCES `tipo_vehiculo` (`id_tipo_vehiculo`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+CREATE INDEX `fk_marca_pais1_idx` ON `marca` (`id_pais` ASC);
+
+CREATE INDEX `fk_marca_tipo_vehiculo1_idx` ON `marca` (`id_tipo_vehiculo` ASC);
 
 
 -- -----------------------------------------------------
@@ -79,7 +95,6 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `modelo` (
   `id_modelo` BIGINT NOT NULL AUTO_INCREMENT,
   `id_marca` SMALLINT NOT NULL,
-  `id_tipo_vehiculo` TINYINT NOT NULL,
   `descripcion` VARCHAR(64) NOT NULL,
   `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_modelo`),
@@ -87,17 +102,10 @@ CREATE TABLE IF NOT EXISTS `modelo` (
     FOREIGN KEY (`id_marca`)
     REFERENCES `marca` (`id_marca`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_modelo_tipo_vehiculo1`
-    FOREIGN KEY (`id_tipo_vehiculo`)
-    REFERENCES `tipo_vehiculo` (`id_tipo_vehiculo`)
-    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 CREATE INDEX `fk_Modelo_Marca1_idx` ON `modelo` (`id_marca` ASC);
-
-CREATE INDEX `fk_modelo_tipo_vehiculo_idx` ON `modelo` (`id_tipo_vehiculo` ASC);
 
 
 -- -----------------------------------------------------
@@ -253,50 +261,37 @@ CREATE INDEX `fk_autenticacion_red_social1_idx` ON `autenticacion` (`id_red_soci
 
 
 -- -----------------------------------------------------
--- Table `modelo_anio`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `modelo_anio` (
-  `id_modelo_anio` BIGINT NOT NULL,
-  `id_modelo` BIGINT NOT NULL,
-  `anio` INT(11) NOT NULL,
-  PRIMARY KEY (`id_modelo_anio`),
-  CONSTRAINT `fk_modelo_ano_modelo1`
-    FOREIGN KEY (`id_modelo`)
-    REFERENCES `modelo` (`id_modelo`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-CREATE INDEX `fk_modelo_ano_modelo1_idx` ON `modelo_anio` (`id_modelo` ASC);
-
-
--- -----------------------------------------------------
 -- Table `mantencion_base`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mantencion_base` (
-  `id_mantencion_base` BIGINT NOT NULL,
-  `id_modelo_anio` BIGINT NOT NULL,
-  `beneficios` TEXT NULL,
-  `url` VARCHAR(256) NULL,
-  `depende_km` TINYINT(1) NULL,
-  `km_entre_mantenciones` INT NULL,
-  `dias_entre_mantenciones` INT NULL,
-  `accion` VARCHAR(64) NULL,
-  `item` VARCHAR(64) NOT NULL,
-  `descripcion_item` TEXT NULL,
-  `tipo_traccion` VARCHAR(16) NOT NULL,
-  `tipo_transmision` VARCHAR(16) NOT NULL,
-  `codigo_motor` VARCHAR(16) NOT NULL,
+  `id_mantencion_base` BIGINT NOT NULL AUTO_INCREMENT,
+  `id_traccion` TINYINT NOT NULL,
+  `id_combustible` TINYINT NOT NULL,
+  `nombre` VARCHAR(45) NOT NULL,
+  `accion` VARCHAR(64) NULL COMMENT 'Detalla el trabajo a realizar. Es un listado de las tareas a realizar.',
+  `beneficios` TEXT NULL COMMENT 'Contiene la descripción de los beneficios de esta mantención.',
+  `descripcion_item` TEXT NULL COMMENT 'Describe en qué consiste la mantención y cuáles son los trabajos asociados.',
+  `url` VARCHAR(256) NULL COMMENT 'Contiene la URL a un sitio en el que se encuentra mayor detalle de esta mantención.',
+  `depende_km` TINYINT(1) NULL COMMENT 'Indica si esta mantención depende de los Km recorridos o bien del tiempo.',
+  `km_entre_mantenciones` INT NULL COMMENT 'Indica la periocidad en Km entre las cuales debe volverse a realizarse esta mantención',
+  `dias_entre_mantenciones` INT NULL COMMENT 'Indica los días entre los cuales debe realizarse esta mantención',
   `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_mantencion_base`),
-  CONSTRAINT `fk_mantencion_base_modelo_ano1`
-    FOREIGN KEY (`id_modelo_anio`)
-    REFERENCES `modelo_anio` (`id_modelo_anio`)
+  CONSTRAINT `fk_mantencion_base_traccion1`
+    FOREIGN KEY (`id_traccion`)
+    REFERENCES `traccion` (`id_traccion`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_mantencion_base_combustible1`
+    FOREIGN KEY (`id_combustible`)
+    REFERENCES `combustible` (`id_combustible`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_mantencion_base_modelo_ano1_idx` ON `mantencion_base` (`id_modelo_anio` ASC);
+CREATE INDEX `fk_mantencion_base_traccion1_idx` ON `mantencion_base` (`id_traccion` ASC);
+
+CREATE INDEX `fk_mantencion_base_combustible1_idx` ON `mantencion_base` (`id_combustible` ASC);
 
 
 -- -----------------------------------------------------
@@ -313,8 +308,6 @@ CREATE TABLE IF NOT EXISTS `mantencion_usuario` (
   `DependeKm` TINYINT(1) NULL,
   `KmEntreMantenciones` INT NULL,
   `DiasEntreMantenciones` INT NULL,
-  `id_mantencion_base` BIGINT NULL,
-  `mantecion_base` TINYINT(1) NULL,
   `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `borrado` TINYINT(1) NULL DEFAULT false,
   PRIMARY KEY (`id_mantencion_usuario`, `id_usuario`),
@@ -406,6 +399,7 @@ CREATE TABLE IF NOT EXISTS `reparacion` (
   `titulo` VARCHAR(30) NOT NULL,
   `descripcion` TEXT NOT NULL,
   `costo` INT NULL,
+  `fecha` DATE NULL,
   `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `borrado` TINYINT(1) NULL DEFAULT false,
   PRIMARY KEY (`id_reparacion`, `id_usuario`),
@@ -420,21 +414,22 @@ CREATE INDEX `fk_reparacion_vehiculo1_idx` ON `reparacion` (`id_vehiculo` ASC, `
 
 
 -- -----------------------------------------------------
--- Table `rendimiento`
+-- Table `carga_combustible`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `rendimiento` (
-  `id_rendimiento` BIGINT NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `carga_combustible` (
+  `id_carga_combustible` BIGINT NOT NULL,
   `id_usuario` BIGINT NOT NULL,
   `id_vehiculo` BIGINT NOT NULL,
   `km` INT NULL,
   `litros` INT NULL,
+  `fecha` DATE NULL,
   `estanque_lleno` TINYINT(1) NULL,
   `costo` INT NULL,
   `latitud` INT NULL,
   `longitud` INT NULL,
   `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `borrado` TINYINT(1) NULL DEFAULT false,
-  PRIMARY KEY (`id_rendimiento`, `id_usuario`),
+  PRIMARY KEY (`id_carga_combustible`, `id_usuario`),
   CONSTRAINT `fk_rendimiento_vehiculo1`
     FOREIGN KEY (`id_vehiculo` , `id_usuario`)
     REFERENCES `vehiculo` (`id_vehiculo` , `id_usuario`)
@@ -442,7 +437,7 @@ CREATE TABLE IF NOT EXISTS `rendimiento` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_rendimiento_vehiculo1_idx` ON `rendimiento` (`id_vehiculo` ASC, `id_usuario` ASC);
+CREATE INDEX `fk_rendimiento_vehiculo1_idx` ON `carga_combustible` (`id_vehiculo` ASC, `id_usuario` ASC);
 
 
 -- -----------------------------------------------------
@@ -462,60 +457,50 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `motor`
+-- Table `mantencion_base_hecha`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `motor` (
-  `id_motor` BIGINT NOT NULL,
-  `codigo` VARCHAR(416) NOT NULL,
-  `razon_compresion` VARCHAR(8) NULL,
-  `cilindros` TINYINT NULL,
-  `tamanio` VARCHAR(8) NULL,
-  `desplazamiento` INT NULL,
-  `configuracion` VARCHAR(16) NULL,
-  `tipo_combustible` VARCHAR(64) NULL,
-  `potencia` INT NULL,
-  `torque` INT NULL,
-  `valvulas` TINYINT NULL,
-  `codigo_fabricante` VARCHAR(16) NULL,
-  `tipo` VARCHAR(32) NULL,
-  `tipo_compresor` VARCHAR(32) NULL,
-  `id_modelo_anio` BIGINT NOT NULL,
-  PRIMARY KEY (`id_motor`),
-  CONSTRAINT `fk_motor_modelo_anio1`
-    FOREIGN KEY (`id_modelo_anio`)
-    REFERENCES `modelo_anio` (`id_modelo_anio`)
+CREATE TABLE IF NOT EXISTS `mantencion_base_hecha` (
+  `id_mantencion_base_hecha` INT NOT NULL,
+  `id_mantencion_base` BIGINT NOT NULL,
+  `km` INT NULL,
+  `fecha` DATE NULL,
+  `costo` INT NULL,
+  `fecha_modificacion` TIMESTAMP NULL,
+  `borrado` TINYINT(1) NULL,
+  PRIMARY KEY (`id_mantencion_base_hecha`),
+  CONSTRAINT `fk_mantencion_base_hecha_mantencion_base1`
+    FOREIGN KEY (`id_mantencion_base`)
+    REFERENCES `mantencion_base` (`id_mantencion_base`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_motor_modelo_anio1_idx` ON `motor` (`id_modelo_anio` ASC);
-
-
--- -----------------------------------------------------
--- Table `estilo`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `estilo` (
-  `id_estilo` BIGINT NOT NULL,
-  `traccion` VARCHAR(32) NOT NULL,
-  `puertas` TINYINT NOT NULL,
-  `nombre` VARCHAR(128) NOT NULL,
-  `rendimiento_ciudad` SMALLINT NULL,
-  `rendimiento_carretera` SMALLINT NULL,
-  `id_modelo_anio` BIGINT NOT NULL,
-  PRIMARY KEY (`id_estilo`),
-  CONSTRAINT `fk_estilo_modelo_anio1`
-    FOREIGN KEY (`id_modelo_anio`)
-    REFERENCES `modelo_anio` (`id_modelo_anio`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-CREATE INDEX `fk_estilo_modelo_anio1_idx` ON `estilo` (`id_modelo_anio` ASC);
+CREATE INDEX `fk_mantencion_base_hecha_mantencion_base1_idx` ON `mantencion_base_hecha` (`id_mantencion_base` ASC);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+-- -----------------------------------------------------
+-- Data for table `tipo_vehiculo`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `car`;
+INSERT INTO `tipo_vehiculo` (`id_tipo_vehiculo`, `descripcion`, `fecha_modificacion`) VALUES (1, 'vehiculo liviano', '2014-01-01 12:00:00');
+
+COMMIT;
+
+
+-- -----------------------------------------------------
+-- Data for table `red_social`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `car`;
+INSERT INTO `red_social` (`id_red_social`, `red_social`) VALUES (1, 'facebook');
+
+COMMIT;
+
 
 -- -----------------------------------------------------
 -- Data for table `tipo_transmision`

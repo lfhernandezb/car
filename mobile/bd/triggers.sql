@@ -17,7 +17,7 @@
     WHERE id_vehiculo = NEW.id_vehiculo 
     AND id_usuario = NEW.id_usuario;
 
-    UPDATE rendimiento SET borrado = true 
+    UPDATE carga_combustible SET borrado = true 
     WHERE id_vehiculo = NEW.id_vehiculo 
     AND id_usuario = NEW.id_usuario;
   END;
@@ -95,8 +95,8 @@
     UPDATE recordatorio SET fecha_modificacion = datetime('now', 'localtime') WHERE id_recordatorio = NEW.id_recordatorio AND id_usuario = NEW.id_usuario;
   END;
 
-  -- actualiza fecha_modificacion al actualizar cualquier columna de 'rendimiento'
-  CREATE TRIGGER actualiza_rendimiento
+  -- actualiza fecha_modificacion al actualizar cualquier columna de 'carga_combustible'
+  CREATE TRIGGER actualiza_carga_combustible
   AFTER UPDATE OF 
     id_vehiculo,
     km,
@@ -106,9 +106,9 @@
     latitud,
     longitud,
     borrado
-  ON rendimiento FOR EACH ROW 
+  ON carga_combustible FOR EACH ROW 
   BEGIN
-    UPDATE rendimiento SET fecha_modificacion = datetime('now', 'localtime') WHERE id_rendimiento = NEW.id_rendimiento AND id_usuario = NEW.id_usuario;
+    UPDATE carga_combustible SET fecha_modificacion = datetime('now', 'localtime') WHERE id_carga_combustible = NEW.id_carga_combustible AND id_usuario = NEW.id_usuario;
   END;
 
   -- actualiza fecha_modificacion al actualizar cualquier columna de 'mantencion_usuario_hecha'

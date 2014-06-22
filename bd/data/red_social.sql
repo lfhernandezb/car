@@ -1,0 +1,1 @@
+INSERT INTO `red_social` VALUES (1,'facebook');

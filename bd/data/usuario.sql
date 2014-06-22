@@ -1,0 +1,1 @@
+INSERT INTO `usuario` VALUES (1,1,'Luis Hernandez','lfhernandezb@gmail.com','1967-02-09',true,'+56998218206','2019-02-09','2014-05-03 22:13:18',false);

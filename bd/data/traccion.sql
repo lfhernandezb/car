@@ -1,0 +1,5 @@
+INSERT INTO `traccion` VALUES (1,'ALL',NULL);
+INSERT INTO `traccion` VALUES (2,'AWD',NULL);
+INSERT INTO `traccion` VALUES (3,'FWD',NULL);
+INSERT INTO `traccion` VALUES (4,'4WD',NULL);
+INSERT INTO `traccion` VALUES (5,'RWD',NULL);
