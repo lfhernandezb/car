@@ -11,6 +11,7 @@ USE `car` ;
 CREATE TABLE IF NOT EXISTS `pais` (
   `id_pais` BIGINT NOT NULL,
   `pais` VARCHAR(20) NOT NULL,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_pais`))
 ENGINE = InnoDB;
 
@@ -22,6 +23,7 @@ CREATE TABLE IF NOT EXISTS `region` (
   `id_region` BIGINT NOT NULL,
   `id_pais` BIGINT NOT NULL,
   `region` VARCHAR(64) NOT NULL,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_region`),
   CONSTRAINT `fk_Region_Pais`
     FOREIGN KEY (`id_pais`)
@@ -40,6 +42,7 @@ CREATE TABLE IF NOT EXISTS `comuna` (
   `id_comuna` BIGINT NOT NULL,
   `id_region` BIGINT NOT NULL,
   `comuna` VARCHAR(20) NOT NULL,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_comuna`),
   CONSTRAINT `fk_comuna_region1`
     FOREIGN KEY (`id_region`)
@@ -57,7 +60,7 @@ CREATE INDEX `fk_comuna_region1_idx` ON `comuna` (`id_region` ASC);
 CREATE TABLE IF NOT EXISTS `tipo_vehiculo` (
   `id_tipo_vehiculo` TINYINT NOT NULL AUTO_INCREMENT,
   `descripcion` VARCHAR(20) NOT NULL,
-  `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_tipo_vehiculo`))
 ENGINE = InnoDB;
 
@@ -67,11 +70,11 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `marca` (
   `id_marca` SMALLINT NOT NULL AUTO_INCREMENT,
-  `descripcion` VARCHAR(20) NOT NULL,
-  `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `id_pais` BIGINT NOT NULL,
   `id_tipo_vehiculo` TINYINT NOT NULL,
-  PRIMARY KEY (`id_marca`, `id_tipo_vehiculo`),
+  `id_pais` BIGINT NOT NULL,
+  `descripcion` VARCHAR(20) NOT NULL,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_marca`),
   CONSTRAINT `fk_marca_pais1`
     FOREIGN KEY (`id_pais`)
     REFERENCES `pais` (`id_pais`)
@@ -96,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `modelo` (
   `id_modelo` BIGINT NOT NULL AUTO_INCREMENT,
   `id_marca` SMALLINT NOT NULL,
   `descripcion` VARCHAR(64) NOT NULL,
-  `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_modelo`),
   CONSTRAINT `fk_Modelo_Marca1`
     FOREIGN KEY (`id_marca`)
@@ -114,6 +117,7 @@ CREATE INDEX `fk_Modelo_Marca1_idx` ON `modelo` (`id_marca` ASC);
 CREATE TABLE IF NOT EXISTS `red_social` (
   `id_red_social` BIGINT NOT NULL,
   `red_social` VARCHAR(20) NOT NULL,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_red_social`))
 ENGINE = InnoDB;
 
@@ -130,8 +134,8 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `hombre` TINYINT(1) NULL,
   `telefono` VARCHAR(20) NULL,
   `fecha_vencimiento_licencia` DATE NULL,
-  `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `borrado` TINYINT(1) NULL DEFAULT false,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `borrado` TINYINT(1) NOT NULL DEFAULT false,
   PRIMARY KEY (`id_usuario`),
   CONSTRAINT `fk_Usuario_Comuna1`
     FOREIGN KEY (`id_comuna`)
@@ -149,7 +153,7 @@ CREATE INDEX `fk_Usuario_Comuna1_idx` ON `usuario` (`id_comuna` ASC);
 CREATE TABLE IF NOT EXISTS `tipo_transmision` (
   `id_tipo_transmision` TINYINT NOT NULL,
   `descripcion` VARCHAR(16) NOT NULL,
-  `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_tipo_transmision`))
 ENGINE = InnoDB;
 
@@ -160,7 +164,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `combustible` (
   `id_combustible` TINYINT NOT NULL,
   `descripcion` VARCHAR(32) NOT NULL,
-  `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_combustible`))
 ENGINE = InnoDB;
 
@@ -170,8 +174,8 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `traccion` (
   `id_traccion` TINYINT NOT NULL,
-  `descripcion` VARCHAR(16) NULL,
-  `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `descripcion` VARCHAR(16) NOT NULL,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_traccion`))
 ENGINE = InnoDB;
 
@@ -192,8 +196,8 @@ CREATE TABLE IF NOT EXISTS `vehiculo` (
   `km` INT NULL,
   `aire_acondicionado` TINYINT(1) NULL,
   `alza_vidrios` TINYINT(1) NULL,
-  `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `borrado` TINYINT(1) NULL DEFAULT false,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `borrado` TINYINT(1) NOT NULL DEFAULT false,
   PRIMARY KEY (`id_vehiculo`, `id_usuario`),
   CONSTRAINT `fk_Vehiculo_Usuario1`
     FOREIGN KEY (`id_usuario`)
@@ -242,6 +246,7 @@ CREATE TABLE IF NOT EXISTS `autenticacion` (
   `id_red_social` BIGINT NOT NULL,
   `token` VARCHAR(45) NULL,
   `fecha` DATE NULL,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_autenticacion`),
   CONSTRAINT `fk_Autenticacion_Usuario1`
     FOREIGN KEY (`id_usuario`)
@@ -275,7 +280,7 @@ CREATE TABLE IF NOT EXISTS `mantencion_base` (
   `depende_km` TINYINT(1) NULL COMMENT 'Indica si esta mantención depende de los Km recorridos o bien del tiempo.',
   `km_entre_mantenciones` INT NULL COMMENT 'Indica la periocidad en Km entre las cuales debe volverse a realizarse esta mantención',
   `dias_entre_mantenciones` INT NULL COMMENT 'Indica los días entre los cuales debe realizarse esta mantención',
-  `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_mantencion_base`),
   CONSTRAINT `fk_mantencion_base_traccion1`
     FOREIGN KEY (`id_traccion`)
@@ -308,8 +313,8 @@ CREATE TABLE IF NOT EXISTS `mantencion_usuario` (
   `DependeKm` TINYINT(1) NULL,
   `KmEntreMantenciones` INT NULL,
   `DiasEntreMantenciones` INT NULL,
-  `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `borrado` TINYINT(1) NULL DEFAULT false,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `borrado` TINYINT(1) NOT NULL DEFAULT false,
   PRIMARY KEY (`id_mantencion_usuario`, `id_usuario`),
   CONSTRAINT `fk_mantencion_usuario_vehiculo1`
     FOREIGN KEY (`id_vehiculo` , `id_usuario`)
@@ -331,8 +336,8 @@ CREATE TABLE IF NOT EXISTS `mantencion_usuario_hecha` (
   `km` INT NULL,
   `fecha` DATE NULL,
   `costo` INT NULL,
-  `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `borrado` TINYINT(1) NULL DEFAULT false,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `borrado` TINYINT(1) NOT NULL DEFAULT false,
   PRIMARY KEY (`id_mantencion_usuario_hecha`, `id_usuario`),
   CONSTRAINT `fk_mantencion_usuario_hecha_mantencion_usuario1`
     FOREIGN KEY (`id_mantencion_usuario` , `id_usuario`)
@@ -357,8 +362,8 @@ CREATE TABLE IF NOT EXISTS `recordatorio` (
   `km` INT NULL,
   `titulo` VARCHAR(30) NULL,
   `descripcion` TEXT NULL,
-  `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `borrado` TINYINT(1) NULL DEFAULT false,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `borrado` TINYINT(1) NOT NULL DEFAULT false,
   PRIMARY KEY (`id_recordatorio`, `id_usuario`),
   CONSTRAINT `fk_recordatorio_vehiculo1`
     FOREIGN KEY (`id_vehiculo` , `id_usuario`)
@@ -400,8 +405,8 @@ CREATE TABLE IF NOT EXISTS `reparacion` (
   `descripcion` TEXT NOT NULL,
   `costo` INT NULL,
   `fecha` DATE NULL,
-  `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `borrado` TINYINT(1) NULL DEFAULT false,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `borrado` TINYINT(1) NOT NULL DEFAULT false,
   PRIMARY KEY (`id_reparacion`, `id_usuario`),
   CONSTRAINT `fk_reparacion_vehiculo1`
     FOREIGN KEY (`id_vehiculo` , `id_usuario`)
@@ -427,8 +432,8 @@ CREATE TABLE IF NOT EXISTS `carga_combustible` (
   `costo` INT NULL,
   `latitud` INT NULL,
   `longitud` INT NULL,
-  `fecha_modificacion` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-  `borrado` TINYINT(1) NULL DEFAULT false,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `borrado` TINYINT(1) NOT NULL DEFAULT false,
   PRIMARY KEY (`id_carga_combustible`, `id_usuario`),
   CONSTRAINT `fk_rendimiento_vehiculo1`
     FOREIGN KEY (`id_vehiculo` , `id_usuario`)
@@ -465,8 +470,8 @@ CREATE TABLE IF NOT EXISTS `mantencion_base_hecha` (
   `km` INT NULL,
   `fecha` DATE NULL,
   `costo` INT NULL,
-  `fecha_modificacion` TIMESTAMP NULL,
-  `borrado` TINYINT(1) NULL,
+  `fecha_modificacion` TIMESTAMP NOT NULL,
+  `borrado` TINYINT(1) NOT NULL,
   PRIMARY KEY (`id_mantencion_base_hecha`),
   CONSTRAINT `fk_mantencion_base_hecha_mantencion_base1`
     FOREIGN KEY (`id_mantencion_base`)
@@ -497,7 +502,7 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `car`;
-INSERT INTO `red_social` (`id_red_social`, `red_social`) VALUES (1, 'facebook');
+INSERT INTO `red_social` (`id_red_social`, `red_social`, `fecha_modificacion`) VALUES (1, 'facebook', '2014-01-01 12:00:00');
 
 COMMIT;
 
@@ -507,9 +512,9 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `car`;
-INSERT INTO `tipo_transmision` (`id_tipo_transmision`, `descripcion`, `fecha_modificacion`) VALUES (1, 'ALL', NULL);
-INSERT INTO `tipo_transmision` (`id_tipo_transmision`, `descripcion`, `fecha_modificacion`) VALUES (2, 'AUTOMATIC', NULL);
-INSERT INTO `tipo_transmision` (`id_tipo_transmision`, `descripcion`, `fecha_modificacion`) VALUES (3, 'MANUAL', NULL);
+INSERT INTO `tipo_transmision` (`id_tipo_transmision`, `descripcion`, `fecha_modificacion`) VALUES (1, 'ALL', '2014-01-01 12:00:00');
+INSERT INTO `tipo_transmision` (`id_tipo_transmision`, `descripcion`, `fecha_modificacion`) VALUES (2, 'AUTOMATIC', '2014-01-01 12:00:00');
+INSERT INTO `tipo_transmision` (`id_tipo_transmision`, `descripcion`, `fecha_modificacion`) VALUES (3, 'MANUAL', '2014-01-01 12:00:00');
 
 COMMIT;
 
@@ -519,12 +524,12 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `car`;
-INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (1, 'gas', NULL);
-INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (2, 'diesel', NULL);
-INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (3, 'hybrid', NULL);
-INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (4, 'flex-fuel (FFV)', NULL);
-INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (5, 'natural gas (CNG)', NULL);
-INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (6, 'electric', NULL);
+INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (1, 'gas', '2014-01-01 12:00:00');
+INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (2, 'diesel', '2014-01-01 12:00:00');
+INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (3, 'hybrid', '2014-01-01 12:00:00');
+INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (4, 'flex-fuel (FFV)', '2014-01-01 12:00:00');
+INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (5, 'natural gas (CNG)', '2014-01-01 12:00:00');
+INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (6, 'electric', '2014-01-01 12:00:00');
 
 COMMIT;
 
@@ -534,11 +539,11 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `car`;
-INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (1, 'ALL', NULL);
-INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (2, 'AWD', NULL);
-INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (3, 'FWD', NULL);
-INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (4, '4WD', NULL);
-INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (5, 'RWD', NULL);
+INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (1, 'ALL', '2014-01-01 12:00:00');
+INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (2, 'AWD', '2014-01-01 12:00:00');
+INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (3, 'FWD', '2014-01-01 12:00:00');
+INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (4, '4WD', '2014-01-01 12:00:00');
+INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (5, 'RWD', '2014-01-01 12:00:00');
 
 COMMIT;
 
