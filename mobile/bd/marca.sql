@@ -1,0 +1,1 @@
+INSERT INTO `marca` VALUES (1,1,1,'Toyota','2014-06-23 02:58:31');

@@ -25,6 +25,8 @@ echo "vehiculo"
 /usr/bin/mysql -u car -pcar car < ../data/vehiculo.sql
 echo "mantencion_usuario"
 /usr/bin/mysql -u car -pcar car < ../data/mantencion_usuario.sql
+echo "mantencion_base"
+/usr/bin/mysql -u car -pcar car < ../data/mantencion_base.sql
 echo "mantencion_usuario_hecha"
 /usr/bin/mysql -u car -pcar car < ../data/mantencion_usuario_hecha.sql
 echo "recordatorio"
