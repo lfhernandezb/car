@@ -924,21 +924,21 @@ INSERT INTO `modelo` VALUES (1,1,'Yaris 1.5 GLX','2014-06-23 02:58:32');
   AFTER UPDATE OF borrado 
   ON vehiculo 
   FOR EACH ROW 
-  WHEN NEW.borrado = true
+  WHEN NEW.borrado = 'true'
   BEGIN
-    UPDATE reparacion SET borrado = true 
+    UPDATE reparacion SET borrado = 'true' 
     WHERE id_vehiculo = NEW.id_vehiculo 
     AND id_usuario = NEW.id_usuario;
 
-    UPDATE recordatorio SET borrado = true 
+    UPDATE recordatorio SET borrado = 'true' 
     WHERE id_vehiculo = NEW.id_vehiculo 
     AND id_usuario = NEW.id_usuario;
 
-    UPDATE mantencion_usuario SET borrado = true 
+    UPDATE mantencion_usuario SET borrado = 'true' 
     WHERE id_vehiculo = NEW.id_vehiculo 
     AND id_usuario = NEW.id_usuario;
 
-    UPDATE carga_combustible SET borrado = true 
+    UPDATE carga_combustible SET borrado = 'true' 
     WHERE id_vehiculo = NEW.id_vehiculo 
     AND id_usuario = NEW.id_usuario;
   END;
@@ -967,9 +967,9 @@ INSERT INTO `modelo` VALUES (1,1,'Yaris 1.5 GLX','2014-06-23 02:58:32');
   AFTER UPDATE OF borrado 
   ON mantencion_usuario 
   FOR EACH ROW 
-  WHEN NEW.borrado = true
+  WHEN NEW.borrado = 'true'
   BEGIN
-    UPDATE mantencion_usuario_hecha SET borrado = true 
+    UPDATE mantencion_usuario_hecha SET borrado = 'true' 
     WHERE id_mantencion_usuario = NEW.id_mantencion_usuario 
     AND id_usuario = NEW.id_usuario;
   END;
@@ -978,8 +978,13 @@ INSERT INTO `modelo` VALUES (1,1,'Yaris 1.5 GLX','2014-06-23 02:58:32');
   CREATE TRIGGER actualiza_mantencion_usuario
   AFTER UPDATE OF 
     id_mantencion_usuario,
-    km,
-    fecha,
+    nombre,
+    descripcion,
+    beneficios,
+    URL,
+    DependeKm,
+    KmEntreMantenciones,
+    DiasEntreMantenciones,
     costo,
     borrado
   ON mantencion_usuario FOR EACH ROW 
@@ -994,6 +999,7 @@ INSERT INTO `modelo` VALUES (1,1,'Yaris 1.5 GLX','2014-06-23 02:58:32');
     titulo,
     descripcion,
     costo,
+    fecha,
     borrado
   ON reparacion FOR EACH ROW 
   BEGIN
@@ -1022,6 +1028,7 @@ INSERT INTO `modelo` VALUES (1,1,'Yaris 1.5 GLX','2014-06-23 02:58:32');
     id_vehiculo,
     km,
     litros,
+    fecha,
     estanque_lleno,
     costo,
     latitud,
