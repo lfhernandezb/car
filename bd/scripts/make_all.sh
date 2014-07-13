@@ -8,7 +8,8 @@ cd $DIR
 /usr/bin/mysql -u root -ptoor --default-character-set=latin1 < users.sql
 echo "datos geograficos"
 /usr/bin/mysql -u car -pcar car < ../data/geografico.sql
-#/usr/bin/mysql -u car -pcar car < ../data/tipo_vehiculo.sql
+echo "tipo_vehiculo"
+/usr/bin/mysql -u car -pcar car < ../data/tipo_vehiculo.sql
 echo "marca"
 /usr/bin/mysql -u car -pcar car < ../data/marca.sql
 echo "modelo"
@@ -35,6 +36,8 @@ echo "carga_combustible"
 /usr/bin/mysql -u car -pcar car < ../data/carga_combustible.sql
 echo "reparacion"
 /usr/bin/mysql -u car -pcar car < ../data/reparacion.sql
-/usr/bin/mysqldump --opt -u car -pcar car marca | grep -E "^INSERT" > ../../mobile/bd/marca.sql
-/usr/bin/mysqldump --opt -u car -pcar car modelo | grep -E "^INSERT" > ../../mobile/bd/modelo.sql
+/usr/bin/mysqldump --opt --skip-extended-insert -u car -pcar car tipo_vehiculo | grep -E "^INSERT" > ../../mobile/bd/tipo_vehiculo.sql
+/usr/bin/mysqldump --opt --skip-extended-insert -u car -pcar car marca | grep -E "^INSERT" > ../../mobile/bd/marca.sql
+/usr/bin/mysqldump --opt --skip-extended-insert -u car -pcar car modelo | grep -E "^INSERT" > ../../mobile/bd/modelo.sql
+/usr/bin/mysqldump --opt --skip-extended-insert -u car -pcar car mantencion_base | grep -E "^INSERT" > ../../mobile/bd/mantencion_base.sql
 

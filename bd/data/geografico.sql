@@ -1,23 +1,23 @@
 INSERT INTO `pais` (`id_pais`, `pais`) VALUES 
-(1, 'Chile');
+(56, 'Chile');
 
 
 INSERT INTO `region` (`id_region`, `id_pais`, `region`) VALUES 
-(1, 1, 'De Tarapacá'),
-(2, 1, 'Antofagasta'),
-(3, 1, 'Atacama'),
-(4, 1, 'Coquimbo'),
-(5, 1, 'De Valparaíso'),
-(6, 1, 'Del Lib. Bernardo O''Higgins'),
-(7, 1, 'Del Maule'),
-(8, 1, 'Del Bío  Bío'),
-(9, 1, 'De La Araucanía'),
-(10, 1, 'De Los Lagos'),
-(11, 1, 'Aysén'),
-(12, 1, 'De Magallanes y La Antártica Chilena'),
-(13, 1, 'Metropolitana'),
-(14, 1, 'De Los Ríos'),
-(15, 1, 'Arica y Parinacota');
+(1, 56, 'De Tarapacá'),
+(2, 56, 'Antofagasta'),
+(3, 56, 'Atacama'),
+(4, 56, 'Coquimbo'),
+(5, 56, 'De Valparaíso'),
+(6, 56, 'Del Lib. Bernardo O''Higgins'),
+(7, 56, 'Del Maule'),
+(8, 56, 'Del Bío  Bío'),
+(9, 56, 'De La Araucanía'),
+(10, 56, 'De Los Lagos'),
+(11, 56, 'Aysén'),
+(12, 56, 'De Magallanes y La Antártica Chilena'),
+(13, 56, 'Metropolitana'),
+(14, 56, 'De Los Ríos'),
+(15, 56, 'Arica y Parinacota');
 
 
 INSERT INTO `comuna` (`id_comuna`, `id_region`, `comuna`) VALUES 

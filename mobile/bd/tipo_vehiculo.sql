@@ -1,0 +1,4 @@
+INSERT INTO `tipo_vehiculo` VALUES (1,'AUTOMOVIL','2014-07-12 18:05:06');
+INSERT INTO `tipo_vehiculo` VALUES (2,'FURGÓN','2014-07-12 18:05:06');
+INSERT INTO `tipo_vehiculo` VALUES (3,'MINI BUS','2014-07-12 18:05:06');
+INSERT INTO `tipo_vehiculo` VALUES (4,'MOTO','2014-07-12 18:05:06');

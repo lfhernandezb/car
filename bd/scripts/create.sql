@@ -58,7 +58,7 @@ CREATE INDEX `fk_comuna_region1_idx` ON `comuna` (`id_region` ASC);
 -- Table `tipo_vehiculo`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `tipo_vehiculo` (
-  `id_tipo_vehiculo` TINYINT NOT NULL AUTO_INCREMENT,
+  `id_tipo_vehiculo` TINYINT NOT NULL,
   `descripcion` VARCHAR(20) NOT NULL,
   `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_tipo_vehiculo`))
@@ -69,7 +69,7 @@ ENGINE = InnoDB;
 -- Table `marca`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `marca` (
-  `id_marca` SMALLINT NOT NULL AUTO_INCREMENT,
+  `id_marca` SMALLINT NOT NULL,
   `id_tipo_vehiculo` TINYINT NOT NULL,
   `id_pais` BIGINT NOT NULL,
   `descripcion` VARCHAR(20) NOT NULL,
@@ -96,7 +96,7 @@ CREATE INDEX `fk_marca_tipo_vehiculo1_idx` ON `marca` (`id_tipo_vehiculo` ASC);
 -- Table `modelo`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `modelo` (
-  `id_modelo` BIGINT NOT NULL AUTO_INCREMENT,
+  `id_modelo` BIGINT NOT NULL,
   `id_marca` SMALLINT NOT NULL,
   `descripcion` VARCHAR(64) NOT NULL,
   `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -163,7 +163,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `combustible` (
   `id_combustible` TINYINT NOT NULL,
-  `descripcion` VARCHAR(32) NOT NULL,
+  `descripcion` VARCHAR(16) NOT NULL,
   `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_combustible`))
 ENGINE = InnoDB;
@@ -270,9 +270,9 @@ CREATE INDEX `fk_autenticacion_red_social1_idx` ON `autenticacion` (`id_red_soci
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mantencion_base` (
   `id_mantencion_base` BIGINT NOT NULL AUTO_INCREMENT,
-  `id_traccion` TINYINT NOT NULL,
-  `id_combustible` TINYINT NOT NULL,
   `nombre` VARCHAR(45) NOT NULL,
+  `traccion` VARCHAR(3) NOT NULL,
+  `combustible` VARCHAR(16) NOT NULL,
   `accion` VARCHAR(64) NULL COMMENT 'Detalla el trabajo a realizar. Es un listado de las tareas a realizar.',
   `beneficios` TEXT NULL COMMENT 'Contiene la descripción de los beneficios de esta mantención.',
   `descripcion_item` TEXT NULL COMMENT 'Describe en qué consiste la mantención y cuáles son los trabajos asociados.',
@@ -281,22 +281,8 @@ CREATE TABLE IF NOT EXISTS `mantencion_base` (
   `km_entre_mantenciones` INT NULL COMMENT 'Indica la periocidad en Km entre las cuales debe volverse a realizarse esta mantención',
   `dias_entre_mantenciones` INT NULL COMMENT 'Indica los días entre los cuales debe realizarse esta mantención',
   `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id_mantencion_base`),
-  CONSTRAINT `fk_mantencion_base_traccion1`
-    FOREIGN KEY (`id_traccion`)
-    REFERENCES `traccion` (`id_traccion`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_mantencion_base_combustible1`
-    FOREIGN KEY (`id_combustible`)
-    REFERENCES `combustible` (`id_combustible`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+  PRIMARY KEY (`id_mantencion_base`))
 ENGINE = InnoDB;
-
-CREATE INDEX `fk_mantencion_base_traccion1_idx` ON `mantencion_base` (`id_traccion` ASC);
-
-CREATE INDEX `fk_mantencion_base_combustible1_idx` ON `mantencion_base` (`id_combustible` ASC);
 
 
 -- -----------------------------------------------------
@@ -380,7 +366,8 @@ CREATE INDEX `fk_recordatorio_vehiculo1_idx` ON `recordatorio` (`id_vehiculo` AS
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `log` (
   `id_log` BIGINT NOT NULL,
-  `id_usuario` BIGINT NOT NULL,
+  `vehiculo_id_usuario` BIGINT NOT NULL,
+  `vehiculo_id_vehiculo` BIGINT NOT NULL,
   `id_tipo_vehiculo` BIGINT NULL,
   `id_marca` BIGINT NULL,
   `id_modelo` BIGINT NULL,
@@ -390,8 +377,15 @@ CREATE TABLE IF NOT EXISTS `log` (
   `accion` VARCHAR(45) NULL,
   `fecha` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   `km` INT NULL,
-  PRIMARY KEY (`id_log`, `id_usuario`))
+  PRIMARY KEY (`id_log`, `vehiculo_id_usuario`),
+  CONSTRAINT `fk_log_vehiculo1`
+    FOREIGN KEY (`vehiculo_id_vehiculo` , `vehiculo_id_usuario`)
+    REFERENCES `vehiculo` (`id_vehiculo` , `id_usuario`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+CREATE INDEX `fk_log_vehiculo1_idx` ON `log` (`vehiculo_id_vehiculo` ASC, `vehiculo_id_usuario` ASC);
 
 
 -- -----------------------------------------------------
@@ -450,15 +444,18 @@ CREATE INDEX `fk_rendimiento_vehiculo1_idx` ON `carga_combustible` (`id_vehiculo
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `info_sincro` (
   `id_info_sincro` INT NOT NULL AUTO_INCREMENT,
+  `usuario_id_usuario` BIGINT NOT NULL,
   `sentido` TINYINT NOT NULL,
-  `archivo_nombre` VARCHAR(256) NOT NULL,
-  `archivo_tamano` BIGINT NOT NULL,
-  `archivo_md5` VARCHAR(32) NOT NULL,
   `fecha` DATETIME NOT NULL,
-  `fecha_lectura` DATETIME NULL,
-  `fecha_fin_procesamiento` DATETIME NULL,
-  PRIMARY KEY (`id_info_sincro`))
+  PRIMARY KEY (`id_info_sincro`),
+  CONSTRAINT `fk_info_sincro_usuario1`
+    FOREIGN KEY (`usuario_id_usuario`)
+    REFERENCES `usuario` (`id_usuario`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+CREATE INDEX `fk_info_sincro_usuario1_idx` ON `info_sincro` (`usuario_id_usuario` ASC);
 
 
 -- -----------------------------------------------------
@@ -467,35 +464,34 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `mantencion_base_hecha` (
   `id_mantencion_base_hecha` INT NOT NULL,
   `id_mantencion_base` BIGINT NOT NULL,
+  `vehiculo_id_vehiculo` BIGINT NOT NULL,
+  `vehiculo_id_usuario` BIGINT NOT NULL,
   `km` INT NULL,
   `fecha` DATE NULL,
   `costo` INT NULL,
-  `fecha_modificacion` TIMESTAMP NOT NULL,
-  `borrado` TINYINT(1) NOT NULL,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `borrado` TINYINT(1) NOT NULL DEFAULT false,
   PRIMARY KEY (`id_mantencion_base_hecha`),
   CONSTRAINT `fk_mantencion_base_hecha_mantencion_base1`
     FOREIGN KEY (`id_mantencion_base`)
     REFERENCES `mantencion_base` (`id_mantencion_base`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_mantencion_base_hecha_vehiculo1`
+    FOREIGN KEY (`vehiculo_id_vehiculo` , `vehiculo_id_usuario`)
+    REFERENCES `vehiculo` (`id_vehiculo` , `id_usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 CREATE INDEX `fk_mantencion_base_hecha_mantencion_base1_idx` ON `mantencion_base_hecha` (`id_mantencion_base` ASC);
 
+CREATE INDEX `fk_mantencion_base_hecha_vehiculo1_idx` ON `mantencion_base_hecha` (`vehiculo_id_vehiculo` ASC, `vehiculo_id_usuario` ASC);
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-
--- -----------------------------------------------------
--- Data for table `tipo_vehiculo`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `car`;
-INSERT INTO `tipo_vehiculo` (`id_tipo_vehiculo`, `descripcion`, `fecha_modificacion`) VALUES (1, 'vehiculo liviano', '2014-01-01 12:00:00');
-
-COMMIT;
-
 
 -- -----------------------------------------------------
 -- Data for table `red_social`
@@ -539,11 +535,10 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `car`;
-INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (1, 'ALL', '2014-01-01 12:00:00');
-INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (2, 'AWD', '2014-01-01 12:00:00');
-INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (3, 'FWD', '2014-01-01 12:00:00');
-INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (4, '4WD', '2014-01-01 12:00:00');
-INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (5, 'RWD', '2014-01-01 12:00:00');
+INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (1, 'AWD', '2014-01-01 12:00:00');
+INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (2, 'FWD', '2014-01-01 12:00:00');
+INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (3, '4WD', '2014-01-01 12:00:00');
+INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (4, 'RWD', '2014-01-01 12:00:00');
 
 COMMIT;
 

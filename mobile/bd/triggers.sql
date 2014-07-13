@@ -53,6 +53,18 @@
     AND id_usuario = NEW.id_usuario;
   END;
 
+  -- actualiza fecha_modificacion al actualizar cualquier columna de 'mantencion_base_hecha'
+  CREATE TRIGGER actualiza_mantencion_base_hecha
+  AFTER UPDATE OF 
+    km,
+    fecha,
+    costo,
+    borrado
+  ON mantencion_base_hecha FOR EACH ROW 
+  BEGIN
+    UPDATE mantencion_base_hecha SET fecha_modificacion = datetime('now', 'localtime') WHERE id_mantencion_base_hecha = NEW.id_mantencion_base_hecha AND id_usuario = NEW.id_usuario;
+  END;
+
   -- actualiza fecha_modificacion al actualizar cualquier columna de 'mantencion_usuario'
   CREATE TRIGGER actualiza_mantencion_usuario
   AFTER UPDATE OF 
