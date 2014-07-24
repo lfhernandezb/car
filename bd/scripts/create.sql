@@ -318,6 +318,7 @@ CREATE INDEX `fk_mantencion_usuario_vehiculo1_idx` ON `mantencion_usuario` (`id_
 CREATE TABLE IF NOT EXISTS `mantencion_usuario_hecha` (
   `id_mantencion_usuario_hecha` BIGINT NOT NULL,
   `id_usuario` BIGINT NOT NULL,
+  `id_vehiculo` BIGINT NOT NULL,
   `id_mantencion_usuario` BIGINT NOT NULL,
   `km` INT NULL,
   `fecha` DATE NULL,
@@ -326,13 +327,20 @@ CREATE TABLE IF NOT EXISTS `mantencion_usuario_hecha` (
   `borrado` TINYINT(1) NOT NULL DEFAULT false,
   PRIMARY KEY (`id_mantencion_usuario_hecha`, `id_usuario`),
   CONSTRAINT `fk_mantencion_usuario_hecha_mantencion_usuario1`
-    FOREIGN KEY (`id_mantencion_usuario` , `id_usuario`)
-    REFERENCES `mantencion_usuario` (`id_mantencion_usuario` , `id_usuario`)
+    FOREIGN KEY (`id_mantencion_usuario`)
+    REFERENCES `mantencion_usuario` (`id_mantencion_usuario`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_mantencion_usuario_hecha_vehiculo1`
+    FOREIGN KEY (`id_vehiculo` , `id_usuario`)
+    REFERENCES `vehiculo` (`id_vehiculo` , `id_usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_mantencion_usuario_hecha_mantencion_usuario1_idx` ON `mantencion_usuario_hecha` (`id_mantencion_usuario` ASC, `id_usuario` ASC);
+CREATE INDEX `fk_mantencion_usuario_hecha_mantencion_usuario1_idx` ON `mantencion_usuario_hecha` (`id_mantencion_usuario` ASC);
+
+CREATE INDEX `fk_mantencion_usuario_hecha_vehiculo1_idx` ON `mantencion_usuario_hecha` (`id_vehiculo` ASC, `id_usuario` ASC);
 
 
 -- -----------------------------------------------------
@@ -463,22 +471,22 @@ CREATE INDEX `fk_info_sincro_usuario1_idx` ON `info_sincro` (`usuario_id_usuario
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mantencion_base_hecha` (
   `id_mantencion_base_hecha` INT NOT NULL,
+  `id_usuario` BIGINT NOT NULL,
+  `id_vehiculo` BIGINT NOT NULL,
   `id_mantencion_base` BIGINT NOT NULL,
-  `vehiculo_id_vehiculo` BIGINT NOT NULL,
-  `vehiculo_id_usuario` BIGINT NOT NULL,
   `km` INT NULL,
   `fecha` DATE NULL,
   `costo` INT NULL,
   `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `borrado` TINYINT(1) NOT NULL DEFAULT false,
-  PRIMARY KEY (`id_mantencion_base_hecha`),
+  PRIMARY KEY (`id_mantencion_base_hecha`, `id_usuario`),
   CONSTRAINT `fk_mantencion_base_hecha_mantencion_base1`
     FOREIGN KEY (`id_mantencion_base`)
     REFERENCES `mantencion_base` (`id_mantencion_base`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_mantencion_base_hecha_vehiculo1`
-    FOREIGN KEY (`vehiculo_id_vehiculo` , `vehiculo_id_usuario`)
+    FOREIGN KEY (`id_vehiculo` , `id_usuario`)
     REFERENCES `vehiculo` (`id_vehiculo` , `id_usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
@@ -486,7 +494,7 @@ ENGINE = InnoDB;
 
 CREATE INDEX `fk_mantencion_base_hecha_mantencion_base1_idx` ON `mantencion_base_hecha` (`id_mantencion_base` ASC);
 
-CREATE INDEX `fk_mantencion_base_hecha_vehiculo1_idx` ON `mantencion_base_hecha` (`vehiculo_id_vehiculo` ASC, `vehiculo_id_usuario` ASC);
+CREATE INDEX `fk_mantencion_base_hecha_vehiculo1_idx` ON `mantencion_base_hecha` (`id_vehiculo` ASC, `id_usuario` ASC);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
