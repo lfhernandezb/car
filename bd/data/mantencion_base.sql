@@ -9,7 +9,7 @@ descripcion_item,
 url,
 depende_km,
 km_entre_mantenciones,
-dias_entre_mantenciones)
+meses_entre_mantenciones)
 VALUES
 (
 'ALL',
@@ -33,7 +33,7 @@ descripcion_item,
 url,
 depende_km,
 km_entre_mantenciones,
-dias_entre_mantenciones)
+meses_entre_mantenciones)
 VALUES
 (
 'ALL',
@@ -57,7 +57,7 @@ descripcion_item,
 url,
 depende_km,
 km_entre_mantenciones,
-dias_entre_mantenciones)
+meses_entre_mantenciones)
 VALUES
 (
 'ALL',
@@ -81,7 +81,7 @@ descripcion_item,
 url,
 depende_km,
 km_entre_mantenciones,
-dias_entre_mantenciones)
+meses_entre_mantenciones)
 VALUES
 (
 'ALL',
@@ -105,7 +105,7 @@ descripcion_item,
 url,
 depende_km,
 km_entre_mantenciones,
-dias_entre_mantenciones)
+meses_entre_mantenciones)
 VALUES
 (
 'ALL',
@@ -129,7 +129,7 @@ descripcion_item,
 url,
 depende_km,
 km_entre_mantenciones,
-dias_entre_mantenciones)
+meses_entre_mantenciones)
 VALUES
 (
 '4WD',

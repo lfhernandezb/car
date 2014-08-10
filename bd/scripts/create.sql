@@ -279,7 +279,7 @@ CREATE TABLE IF NOT EXISTS `mantencion_base` (
   `url` VARCHAR(256) NULL COMMENT 'Contiene la URL a un sitio en el que se encuentra mayor detalle de esta mantención.',
   `depende_km` TINYINT(1) NULL COMMENT 'Indica si esta mantención depende de los Km recorridos o bien del tiempo.',
   `km_entre_mantenciones` INT NULL COMMENT 'Indica la periocidad en Km entre las cuales debe volverse a realizarse esta mantención',
-  `dias_entre_mantenciones` INT NULL COMMENT 'Indica los días entre los cuales debe realizarse esta mantención',
+  `meses_entre_mantenciones` INT NULL COMMENT 'Indica los días entre los cuales debe realizarse esta mantención',
   `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_mantencion_base`))
 ENGINE = InnoDB;
@@ -295,10 +295,10 @@ CREATE TABLE IF NOT EXISTS `mantencion_usuario` (
   `nombre` VARCHAR(30) NULL,
   `descripcion` VARCHAR(1024) NULL,
   `beneficios` TEXT NULL,
-  `URL` VARCHAR(256) NULL,
-  `DependeKm` TINYINT(1) NULL,
-  `KmEntreMantenciones` INT NULL,
-  `DiasEntreMantenciones` INT NULL,
+  `url` VARCHAR(256) NULL,
+  `depende_km` TINYINT(1) NULL,
+  `km_entre_mantenciones` INT NULL,
+  `meses_entre_mantenciones` INT NULL,
   `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `borrado` TINYINT(1) NOT NULL DEFAULT false,
   PRIMARY KEY (`id_mantencion_usuario`, `id_usuario`),
