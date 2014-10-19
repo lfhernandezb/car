@@ -18,24 +18,24 @@ echo "modelo"
 #/usr/bin/mysql -u car -pcar car < ../data/combustible.sql
 #/usr/bin/mysql -u car -pcar car < ../data/traccion.sql
 #/usr/bin/mysql -u car -pcar car < ../data/tipo_transmision.sql
-echo "usuario"
-/usr/bin/mysql -u car -pcar car < ../data/usuario.sql
-echo "autenticacion"
-/usr/bin/mysql -u car -pcar car < ../data/autenticacion.sql
-echo "vehiculo"
-/usr/bin/mysql -u car -pcar car < ../data/vehiculo.sql
-echo "mantencion_usuario"
-/usr/bin/mysql -u car -pcar car < ../data/mantencion_usuario.sql
+#echo "usuario"
+#/usr/bin/mysql -u car -pcar car < ../data/usuario.sql
+#echo "autenticacion"
+#/usr/bin/mysql -u car -pcar car < ../data/autenticacion.sql
+#echo "vehiculo"
+#/usr/bin/mysql -u car -pcar car < ../data/vehiculo.sql
+#echo "mantencion_usuario"
+#/usr/bin/mysql -u car -pcar car < ../data/mantencion_usuario.sql
 echo "mantencion_base"
 /usr/bin/mysql -u car -pcar car < ../data/mantencion_base.sql
-echo "mantencion_usuario_hecha"
-/usr/bin/mysql -u car -pcar car < ../data/mantencion_usuario_hecha.sql
-echo "recordatorio"
-/usr/bin/mysql -u car -pcar car < ../data/recordatorio.sql
-echo "carga_combustible"
-/usr/bin/mysql -u car -pcar car < ../data/carga_combustible.sql
-echo "reparacion"
-/usr/bin/mysql -u car -pcar car < ../data/reparacion.sql
+#echo "mantencion_usuario_hecha"
+#/usr/bin/mysql -u car -pcar car < ../data/mantencion_usuario_hecha.sql
+#echo "recordatorio"
+#/usr/bin/mysql -u car -pcar car < ../data/recordatorio.sql
+#echo "carga_combustible"
+#/usr/bin/mysql -u car -pcar car < ../data/carga_combustible.sql
+#echo "reparacion"
+#/usr/bin/mysql -u car -pcar car < ../data/reparacion.sql
 /usr/bin/mysqldump --opt --skip-extended-insert -u car -pcar car tipo_vehiculo | grep -E "^INSERT" > ../../mobile/bd/tipo_vehiculo.sql
 /usr/bin/mysqldump --opt --skip-extended-insert -u car -pcar car marca | grep -E "^INSERT" > ../../mobile/bd/marca.sql
 /usr/bin/mysqldump --opt --skip-extended-insert -u car -pcar car modelo | grep -E "^INSERT" > ../../mobile/bd/modelo.sql
