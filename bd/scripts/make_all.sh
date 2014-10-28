@@ -28,6 +28,8 @@ echo "modelo"
 #/usr/bin/mysql -u car -pcar car < ../data/mantencion_usuario.sql
 echo "mantencion_base"
 /usr/bin/mysql -u car -pcar car < ../data/mantencion_base.sql
+echo "cambio_revision"
+/usr/bin/mysql -u car -pcar car < ../data/cambio_revision.sql
 #echo "mantencion_usuario_hecha"
 #/usr/bin/mysql -u car -pcar car < ../data/mantencion_usuario_hecha.sql
 #echo "recordatorio"
@@ -40,4 +42,5 @@ echo "mantencion_base"
 /usr/bin/mysqldump --opt --skip-extended-insert -u car -pcar car marca | grep -E "^INSERT" > ../../mobile/bd/marca.sql
 /usr/bin/mysqldump --opt --skip-extended-insert -u car -pcar car modelo | grep -E "^INSERT" > ../../mobile/bd/modelo.sql
 /usr/bin/mysqldump --opt --skip-extended-insert -u car -pcar car mantencion_base | grep -E "^INSERT" > ../../mobile/bd/mantencion_base.sql
+/usr/bin/mysqldump --opt --skip-extended-insert -u car -pcar car cambio_revision | grep -E "^INSERT" > ../../mobile/bd/cambio_revision.sql
 

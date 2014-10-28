@@ -490,6 +490,32 @@ CREATE INDEX `fk_mantencion_base_hecha_mantencion_base1_idx` ON `mantencion_base
 CREATE INDEX `fk_mantencion_base_hecha_vehiculo1_idx` ON `mantencion_base_hecha` (`id_vehiculo` ASC, `id_usuario` ASC);
 
 
+-- -----------------------------------------------------
+-- Table `cambio_revision`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `cambio_revision` (
+  `id_cambio_revision` INT NOT NULL AUTO_INCREMENT,
+  `id_cambio` BIGINT NULL,
+  `id_revision` BIGINT NULL,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_cambio_revision`),
+  CONSTRAINT `fk_cambio_revision_mantencion_base1`
+    FOREIGN KEY (`id_cambio`)
+    REFERENCES `mantencion_base` (`id_mantencion_base`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_cambio_revision_mantencion_base2`
+    FOREIGN KEY (`id_revision`)
+    REFERENCES `mantencion_base` (`id_mantencion_base`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX `fk_cambio_revision_mantencion_base1_idx` ON `cambio_revision` (`id_cambio` ASC);
+
+CREATE INDEX `fk_cambio_revision_mantencion_base2_idx` ON `cambio_revision` (`id_revision` ASC);
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
