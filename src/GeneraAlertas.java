@@ -15,10 +15,10 @@ import org.ini4j.Wini;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import cl.dsoft.carws.server.db.Alerta;
-import cl.dsoft.carws.server.db.MantencionBaseHecha;
-import cl.dsoft.carws.server.db.Usuario;
-import cl.dsoft.carws.server.db.Vehiculo;
+import cl.dsoft.car.server.db.Alerta;
+import cl.dsoft.car.server.db.MantencionBaseHecha;
+import cl.dsoft.car.server.db.Usuario;
+import cl.dsoft.car.server.db.Vehiculo;
 
 /**
  * 
@@ -118,6 +118,25 @@ public class GeneraAlertas {
 						
 						if (listAlerta.size() == 0) {
 							// alertamos
+							System.out.println("Alerta para mbh: " + mbh.toString());
+							
+							// grabamos registro en 'alerta'
+							Alerta alerta = new Alerta();
+							
+							alerta.setIdMantencionBase(mbh.getIdMantencionBase());
+							alerta.setIdUsuario(u.getId());
+							alerta.setIdVehiculo(v.getIdVehiculo());
+							
+							if (mbh.getKm() == 0) {
+								// por fecha
+								alerta.setFecha(mbh.getFecha());
+							}
+							else {
+								// por km
+								alerta.setKm(mbh.getKm());
+							}
+							
+							alerta.save(conn);
 						}
 						else {
 							// ya hay alerta... ignoramos
