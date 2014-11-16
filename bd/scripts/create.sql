@@ -373,26 +373,26 @@ CREATE INDEX `fk_recordatorio_vehiculo1_idx` ON `recordatorio` (`id_vehiculo` AS
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `log` (
   `id_log` BIGINT NOT NULL,
-  `vehiculo_id_usuario` BIGINT NOT NULL,
-  `vehiculo_id_vehiculo` BIGINT NOT NULL,
+  `id_usuario` BIGINT NOT NULL,
+  `id_vehiculo` BIGINT NOT NULL,
   `id_tipo_vehiculo` BIGINT NULL,
   `id_marca` BIGINT NULL,
   `id_modelo` BIGINT NULL,
-  `id_vehiculo` BIGINT NULL,
-  `latitud` DOUBLE NULL,
-  `longitud` DOUBLE NULL,
-  `accion` VARCHAR(45) NULL,
-  `fecha` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `latitud` DOUBLE NOT NULL,
+  `longitud` DOUBLE NOT NULL,
+  `descripcion` VARCHAR(45) NULL,
   `km` INT NULL,
-  PRIMARY KEY (`id_log`, `vehiculo_id_usuario`),
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `borrado` TINYINT(1) NOT NULL DEFAULT false,
+  PRIMARY KEY (`id_log`, `id_usuario`),
   CONSTRAINT `fk_log_vehiculo1`
-    FOREIGN KEY (`vehiculo_id_vehiculo` , `vehiculo_id_usuario`)
+    FOREIGN KEY (`id_vehiculo` , `id_usuario`)
     REFERENCES `vehiculo` (`id_vehiculo` , `id_usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_log_vehiculo1_idx` ON `log` (`vehiculo_id_vehiculo` ASC, `vehiculo_id_usuario` ASC);
+CREATE INDEX `fk_log_vehiculo1_idx` ON `log` (`id_vehiculo` ASC, `id_usuario` ASC);
 
 
 -- -----------------------------------------------------
@@ -431,8 +431,8 @@ CREATE TABLE IF NOT EXISTS `carga_combustible` (
   `fecha` DATE NULL,
   `estanque_lleno` TINYINT(1) NULL,
   `costo` INT NULL,
-  `latitud` INT NULL,
-  `longitud` INT NULL,
+  `latitud` DOUBLE NULL,
+  `longitud` DOUBLE NULL,
   `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `borrado` TINYINT(1) NOT NULL DEFAULT false,
   PRIMARY KEY (`id_carga_combustible`, `id_usuario`),

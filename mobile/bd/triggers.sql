@@ -13,7 +13,11 @@
     WHERE id_vehiculo = NEW.id_vehiculo 
     AND id_usuario = NEW.id_usuario;
 
-    UPDATE mantencion_usuario SET borrado = 'true' 
+    UPDATE mantencion_base_hecha SET borrado = 'true' 
+    WHERE id_vehiculo = NEW.id_vehiculo 
+    AND id_usuario = NEW.id_usuario;
+
+    UPDATE mantencion_usuario_hecha SET borrado = 'true' 
     WHERE id_vehiculo = NEW.id_vehiculo 
     AND id_usuario = NEW.id_usuario;
 
