@@ -11,6 +11,7 @@ sed -f script.sed marca.sql >> car.sql
 sed -f script.sed modelo.sql >> car.sql
 sed -f script.sed mantencion_base.sql >> car.sql
 sed -f script.sed cambio_revision.sql >> car.sql
+sed -f script.sed cia_seguros.sql >> car.sql
 cat post.sql >> car.sql
 echo "PRAGMA foreign_keys = ON;" >> car.sql
 rm car.db3 

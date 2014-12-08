@@ -1,0 +1,23 @@
+INSERT INTO cia_seguros(nombre, datos_anexos) VALUES ('ACE Seguros S.A.', null);
+INSERT INTO cia_seguros(nombre, datos_anexos) VALUES ('Aseguradora Magallanes S.A.', null);
+INSERT INTO cia_seguros(nombre, datos_anexos) VALUES ('BCI Seguros Generales S.A', null);
+INSERT INTO cia_seguros(nombre, datos_anexos) VALUES ('CESCE Chile Aseguradora S.A.', null);
+INSERT INTO cia_seguros(nombre, datos_anexos) VALUES ('Chilena Consolidada Seguros Generales S.A.', null);
+INSERT INTO cia_seguros(nombre, datos_anexos) VALUES ('CHUBB de Chile Compañía de Seguros Generales S.A.', null);
+INSERT INTO cia_seguros(nombre, datos_anexos) VALUES ('Compañía de Seguros Generales Consorcio Nacional de Seguros S.A.', null);
+INSERT INTO cia_seguros(nombre, datos_anexos) VALUES ('Compañía de Seguros de Crédito Continental S.A.', null);
+INSERT INTO cia_seguros(nombre, datos_anexos) VALUES ('Compañía de Seguros de Créditos COFACE S.A.', null);
+INSERT INTO cia_seguros(nombre, datos_anexos) VALUES ('Compañías de Seguros Generales CARDIF S.A.', null);
+INSERT INTO cia_seguros(nombre, datos_anexos) VALUES ('Compañía de Seguros Generales Penta-Security S.A.', null);
+INSERT INTO cia_seguros(nombre, datos_anexos) VALUES ('Santander Seguros Generales S.A 	FAF International Seguros Generales S.A.', null);
+INSERT INTO cia_seguros(nombre, datos_anexos) VALUES ('HDI Seguros S.A.', null);
+INSERT INTO cia_seguros(nombre, datos_anexos) VALUES ('Chartis Chile Compañía de Seguros Generales S.A.', null);
+INSERT INTO cia_seguros(nombre, datos_anexos) VALUES ('LIBERTY SEGUROS Compañía de Seguros Generales S.A. 	Liberty Compañía de Seguros Generales S.A.', null);
+INSERT INTO cia_seguros(nombre, datos_anexos) VALUES ('MAPFRE Compañía de Seguros Generales.S.A.', null);
+INSERT INTO cia_seguros(nombre, datos_anexos) VALUES ('MAPFRE Garantías y Crédito S.A. Cia. de Seguros.', null);
+INSERT INTO cia_seguros(nombre, datos_anexos) VALUES ('Mutualidad de Carabineros.', null);
+INSERT INTO cia_seguros(nombre, datos_anexos) VALUES ('ORION Seguros Generales S.A.', null);
+INSERT INTO cia_seguros(nombre, datos_anexos) VALUES ('Renta Nacional Cia. de Seguros Generales S.A.', null);
+INSERT INTO cia_seguros(nombre, datos_anexos) VALUES ('RSA Seguros ChileS.A.', null);
+INSERT INTO cia_seguros(nombre, datos_anexos) VALUES ('Santander Seguros Generales S.A 	Santander Seguros Generales S.A.', null);
+

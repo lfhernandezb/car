@@ -374,25 +374,20 @@ CREATE INDEX `fk_recordatorio_vehiculo1_idx` ON `recordatorio` (`id_vehiculo` AS
 CREATE TABLE IF NOT EXISTS `log` (
   `id_log` BIGINT NOT NULL,
   `id_usuario` BIGINT NOT NULL,
-  `id_vehiculo` BIGINT NOT NULL,
-  `id_tipo_vehiculo` BIGINT NULL,
-  `id_marca` BIGINT NULL,
-  `id_modelo` BIGINT NULL,
   `latitud` DOUBLE NOT NULL,
   `longitud` DOUBLE NOT NULL,
-  `descripcion` VARCHAR(45) NULL,
-  `km` INT NULL,
+  `data` TEXT NOT NULL,
   `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `borrado` TINYINT(1) NOT NULL DEFAULT false,
   PRIMARY KEY (`id_log`, `id_usuario`),
-  CONSTRAINT `fk_log_vehiculo1`
-    FOREIGN KEY (`id_vehiculo` , `id_usuario`)
-    REFERENCES `vehiculo` (`id_vehiculo` , `id_usuario`)
+  CONSTRAINT `fk_log_usuario1`
+    FOREIGN KEY (`id_usuario`)
+    REFERENCES `usuario` (`id_usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
-CREATE INDEX `fk_log_vehiculo1_idx` ON `log` (`id_vehiculo` ASC, `id_usuario` ASC);
+CREATE INDEX `fk_log_usuario1_idx` ON `log` (`id_usuario` ASC);
 
 
 -- -----------------------------------------------------
@@ -550,6 +545,50 @@ ENGINE = InnoDB;
 CREATE INDEX `fk_alerta_mantencion_base_idx` ON `alerta` (`id_mantencion_base` ASC);
 
 CREATE INDEX `fk_alerta_vehiculo_idx` ON `alerta` (`id_vehiculo` ASC, `id_usuario` ASC);
+
+
+-- -----------------------------------------------------
+-- Table `cia_seguros`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `cia_seguros` (
+  `id_cia_seguros` INT NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(256) NOT NULL,
+  `datos_anexos` TEXT NULL,
+  `fecha_modificacion` TIMESTAMP NOT NULL,
+  PRIMARY KEY (`id_cia_seguros`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `seguro_vehiculo`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `seguro_vehiculo` (
+  `id_seguro_vehiculo` BIGINT NOT NULL,
+  `id_usuario` BIGINT NOT NULL,
+  `id_cia_seguros` INT NOT NULL,
+  `id_vehiculo` BIGINT NOT NULL,
+  `poliza` TEXT NULL,
+  `observaciones` TEXT NULL,
+  `mes_vencimiento` SMALLINT NULL,
+  `dia_vencimiento` SMALLINT NULL,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `borrado` TINYINT(1) NULL DEFAULT false,
+  PRIMARY KEY (`id_seguro_vehiculo`, `id_usuario`),
+  CONSTRAINT `fk_seguro_vehiculo_cia_seguros1`
+    FOREIGN KEY (`id_cia_seguros`)
+    REFERENCES `cia_seguros` (`id_cia_seguros`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_seguro_vehiculo_vehiculo1`
+    FOREIGN KEY (`id_vehiculo` , `id_usuario`)
+    REFERENCES `vehiculo` (`id_vehiculo` , `id_usuario`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+CREATE INDEX `fk_seguro_vehiculo_cia_seguros1_idx` ON `seguro_vehiculo` (`id_cia_seguros` ASC);
+
+CREATE INDEX `fk_seguro_vehiculo_vehiculo1_idx` ON `seguro_vehiculo` (`id_vehiculo` ASC, `id_usuario` ASC);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
