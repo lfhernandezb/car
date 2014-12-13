@@ -560,6 +560,16 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table `tipo_seguro`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `tipo_seguro` (
+  `id_tipo_seguro` INT NOT NULL,
+  `descripcion` VARCHAR(16) NOT NULL,
+  PRIMARY KEY (`id_tipo_seguro`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `seguro_vehiculo`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `seguro_vehiculo` (
@@ -567,12 +577,12 @@ CREATE TABLE IF NOT EXISTS `seguro_vehiculo` (
   `id_usuario` BIGINT NOT NULL,
   `id_cia_seguros` INT NOT NULL,
   `id_vehiculo` BIGINT NOT NULL,
+  `id_tipo_seguro` INT NOT NULL,
   `poliza` TEXT NULL,
   `observaciones` TEXT NULL,
-  `mes_vencimiento` SMALLINT NULL,
-  `dia_vencimiento` SMALLINT NULL,
+  `fecha_vencimiento` DATE NULL,
   `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `borrado` TINYINT(1) NULL DEFAULT false,
+  `borrado` TINYINT(1) NOT NULL DEFAULT false,
   PRIMARY KEY (`id_seguro_vehiculo`, `id_usuario`),
   CONSTRAINT `fk_seguro_vehiculo_cia_seguros1`
     FOREIGN KEY (`id_cia_seguros`)
@@ -583,12 +593,19 @@ CREATE TABLE IF NOT EXISTS `seguro_vehiculo` (
     FOREIGN KEY (`id_vehiculo` , `id_usuario`)
     REFERENCES `vehiculo` (`id_vehiculo` , `id_usuario`)
     ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_seguro_vehiculo_tipo_seguro1`
+    FOREIGN KEY (`id_tipo_seguro`)
+    REFERENCES `tipo_seguro` (`id_tipo_seguro`)
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 CREATE INDEX `fk_seguro_vehiculo_cia_seguros1_idx` ON `seguro_vehiculo` (`id_cia_seguros` ASC);
 
 CREATE INDEX `fk_seguro_vehiculo_vehiculo1_idx` ON `seguro_vehiculo` (`id_vehiculo` ASC, `id_usuario` ASC);
+
+CREATE INDEX `fk_seguro_vehiculo_tipo_seguro1_idx` ON `seguro_vehiculo` (`id_tipo_seguro` ASC);
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
@@ -610,9 +627,9 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `car`;
-INSERT INTO `tipo_transmision` (`id_tipo_transmision`, `descripcion`, `fecha_modificacion`) VALUES (1, 'ALL', '2014-01-01 12:00:00');
-INSERT INTO `tipo_transmision` (`id_tipo_transmision`, `descripcion`, `fecha_modificacion`) VALUES (2, 'AUTOMATIC', '2014-01-01 12:00:00');
-INSERT INTO `tipo_transmision` (`id_tipo_transmision`, `descripcion`, `fecha_modificacion`) VALUES (3, 'MANUAL', '2014-01-01 12:00:00');
+INSERT INTO `tipo_transmision` (`id_tipo_transmision`, `descripcion`, `fecha_modificacion`) VALUES (1, 'MANUAL', '2014-01-01 12:00:00');
+INSERT INTO `tipo_transmision` (`id_tipo_transmision`, `descripcion`, `fecha_modificacion`) VALUES (2, 'AUTOMATICA', '2014-01-01 12:00:00');
+INSERT INTO `tipo_transmision` (`id_tipo_transmision`, `descripcion`, `fecha_modificacion`) VALUES (3, 'SEMI AUTOMATICA', '2014-01-01 12:00:00');
 
 COMMIT;
 
@@ -622,12 +639,11 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `car`;
-INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (1, 'gas', '2014-01-01 12:00:00');
-INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (2, 'diesel', '2014-01-01 12:00:00');
-INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (3, 'hybrid', '2014-01-01 12:00:00');
-INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (4, 'flex-fuel (FFV)', '2014-01-01 12:00:00');
-INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (5, 'natural gas (CNG)', '2014-01-01 12:00:00');
-INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (6, 'electric', '2014-01-01 12:00:00');
+INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (1, 'GASOLINA', '2014-01-01 12:00:00');
+INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (2, 'DIESEL', '2014-01-01 12:00:00');
+INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (3, 'GAS GLP', '2014-01-01 12:00:00');
+INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (4, 'GAS GNC', '2014-01-01 12:00:00');
+INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (5, 'ELECTRICO', '2014-01-01 12:00:00');
 
 COMMIT;
 
@@ -641,6 +657,17 @@ INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALU
 INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (2, 'FWD', '2014-01-01 12:00:00');
 INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (3, '4WD', '2014-01-01 12:00:00');
 INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (4, 'RWD', '2014-01-01 12:00:00');
+
+COMMIT;
+
+
+-- -----------------------------------------------------
+-- Data for table `tipo_seguro`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `car`;
+INSERT INTO `tipo_seguro` (`id_tipo_seguro`, `descripcion`) VALUES (1, 'SOAP');
+INSERT INTO `tipo_seguro` (`id_tipo_seguro`, `descripcion`) VALUES (2, 'GENERAL');
 
 COMMIT;
 
