@@ -136,7 +136,7 @@ CREATE TABLE IF NOT EXISTS usuario (
   telefono VARCHAR(20) NULL,
   fecha_vencimiento_licencia DATE NULL,
   fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
-  borrado BOOLEAN NOT NULL DEFAULT 'false',
+  borrado BOOLEAN NOT NULL DEFAULT '0',
   PRIMARY KEY (id_usuario),
   CONSTRAINT fk_Usuario_Comuna1
     FOREIGN KEY (id_comuna)
@@ -151,12 +151,24 @@ CREATE INDEX fk_Usuario_Comuna1_idx ON usuario (id_comuna ASC);
 
 
 
-CREATE TABLE IF NOT EXISTS tipo_transmision (
-  id_tipo_transmision TINYINT NOT NULL,
-  descripcion VARCHAR(16) NOT NULL,
-  fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
-  PRIMARY KEY (id_tipo_transmision))
+CREATE TABLE IF NOT EXISTS usuario_web (
+  id_usuario_web INT(11) NOT NULL,
+  nombre_usuario VARCHAR(16) NOT NULL,
+  contrasena VARCHAR(32) NOT NULL,
+  nombre VARCHAR(16) NOT NULL,
+  apellidos VARCHAR(32) NOT NULL,
+  email VARCHAR(32) NOT NULL,
+  activo BOOLEAN NOT NULL DEFAULT '0',
+  borrado BOOLEAN NOT NULL DEFAULT '0',
+  PRIMARY KEY (id_usuario_web))
+
+
+
 ;
+
+CREATE UNIQUE INDEX idx_usuario_web_nombre_usuario ON usuario_web (nombre_usuario ASC);
+
+CREATE UNIQUE INDEX idx_usuario_web_email ON usuario_web (email ASC);
 
 
 
@@ -167,6 +179,42 @@ CREATE TABLE IF NOT EXISTS combustible (
   descripcion VARCHAR(16) NOT NULL,
   fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
   PRIMARY KEY (id_combustible))
+;
+
+
+
+
+
+CREATE TABLE IF NOT EXISTS perfil_uso (
+  id_perfil_uso BIGINT(20) NOT NULL,
+  id_usuario BIGINT(20) NOT NULL,
+  km_anuales INT(11) NOT NULL,
+  es_perfil_medio BOOLEAN NOT NULL,
+  nombre TEXT NOT NULL,
+  descripcion TEXT NULL DEFAULT NULL,
+  fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
+  borrado BOOLEAN NOT NULL DEFAULT '0',
+  PRIMARY KEY (id_perfil_uso, id_usuario),
+  CONSTRAINT fk_perfil_uso_usuario1
+    FOREIGN KEY (id_usuario)
+    REFERENCES usuario (id_usuario)
+    
+    )
+
+
+;
+
+CREATE INDEX fk_perfil_uso_usuario1_idx ON perfil_uso (id_usuario ASC);
+
+
+
+
+
+CREATE TABLE IF NOT EXISTS tipo_transmision (
+  id_tipo_transmision TINYINT NOT NULL,
+  descripcion VARCHAR(16) NOT NULL,
+  fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
+  PRIMARY KEY (id_tipo_transmision))
 ;
 
 
@@ -191,6 +239,7 @@ CREATE TABLE IF NOT EXISTS vehiculo (
   id_tipo_transmision TINYINT NOT NULL,
   id_combustible TINYINT NOT NULL,
   id_traccion TINYINT NOT NULL,
+  id_perfil_uso BIGINT(20) NULL DEFAULT NULL,
   alias VARCHAR(20) NOT NULL,
   patente VARCHAR(10) NULL,
   anio INT NULL,
@@ -198,11 +247,14 @@ CREATE TABLE IF NOT EXISTS vehiculo (
   aire_acondicionado BOOLEAN NULL,
   alza_vidrios BOOLEAN NULL,
   fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
-  borrado BOOLEAN NOT NULL DEFAULT 'false',
+  borrado BOOLEAN NOT NULL DEFAULT '0',
+  fecha_ultimo_km DATE NULL DEFAULT NULL,
+  km_calibrados INT(11) NULL DEFAULT NULL,
+  fecha_ultima_calibracion DATE NULL DEFAULT NULL,
   PRIMARY KEY (id_vehiculo, id_usuario),
-  CONSTRAINT fk_Vehiculo_Usuario1
-    FOREIGN KEY (id_usuario)
-    REFERENCES usuario (id_usuario)
+  CONSTRAINT fk_vehiculo_combustible1
+    FOREIGN KEY (id_combustible)
+    REFERENCES combustible (id_combustible)
     
     ,
   CONSTRAINT fk_Vehiculo_Modelo1
@@ -210,19 +262,24 @@ CREATE TABLE IF NOT EXISTS vehiculo (
     REFERENCES modelo (id_modelo)
     
     ,
+  CONSTRAINT fk_vehiculo_perfil_uso1
+    FOREIGN KEY (id_usuario , id_perfil_uso)
+    REFERENCES perfil_uso (id_usuario , id_perfil_uso)
+    
+    ,
   CONSTRAINT fk_vehiculo_tipo_transmision1
     FOREIGN KEY (id_tipo_transmision)
     REFERENCES tipo_transmision (id_tipo_transmision)
     
     ,
-  CONSTRAINT fk_vehiculo_combustible1
-    FOREIGN KEY (id_combustible)
-    REFERENCES combustible (id_combustible)
-    
-    ,
   CONSTRAINT fk_vehiculo_traccion1
     FOREIGN KEY (id_traccion)
     REFERENCES traccion (id_traccion)
+    
+    ,
+  CONSTRAINT fk_Vehiculo_Usuario1
+    FOREIGN KEY (id_usuario)
+    REFERENCES usuario (id_usuario)
     
     )
 ;
@@ -236,6 +293,8 @@ CREATE INDEX fk_vehiculo_tipo_transmision_idx ON vehiculo (id_tipo_transmision A
 CREATE INDEX fk_vehiculo_combustible_idx ON vehiculo (id_combustible ASC);
 
 CREATE INDEX fk_vehiculo_traccion_idx ON vehiculo (id_traccion ASC);
+
+CREATE INDEX fk_vehiculo_perfil_uso1_idx ON vehiculo (id_usuario ASC, id_perfil_uso ASC);
 
 
 
@@ -289,6 +348,38 @@ CREATE TABLE IF NOT EXISTS mantencion_base (
 
 
 
+CREATE TABLE IF NOT EXISTS mantencion_pospuesta (
+  id_mantencion_pospuesta INT(11) NOT NULL,
+  id_usuario BIGINT(20) NOT NULL,
+  id_vehiculo BIGINT(20) NOT NULL,
+  id_mantencion_base BIGINT(20) NOT NULL,
+  km INT(11) NULL DEFAULT NULL,
+  fecha DATE NULL DEFAULT NULL,
+  fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
+  borrado BOOLEAN NOT NULL DEFAULT '0',
+  PRIMARY KEY (id_mantencion_pospuesta, id_usuario),
+  CONSTRAINT fk_mantencion_pospuesta_mantencion_base1
+    FOREIGN KEY (id_mantencion_base)
+    REFERENCES mantencion_base (id_mantencion_base)
+    
+    ,
+  CONSTRAINT fk_mantencion_pospuesta_vehiculo1
+    FOREIGN KEY (id_vehiculo , id_usuario)
+    REFERENCES vehiculo (id_vehiculo , id_usuario)
+    
+    )
+
+
+;
+
+CREATE INDEX fk_mantencion_pospuesta_mantencion_base1 ON mantencion_pospuesta (id_mantencion_base ASC);
+
+CREATE INDEX fk_mantencion_pospuesta_vehiculo1 ON mantencion_pospuesta (id_vehiculo ASC, id_usuario ASC);
+
+
+
+
+
 CREATE TABLE IF NOT EXISTS mantencion_usuario (
   id_mantencion_usuario BIGINT NOT NULL,
   id_usuario BIGINT NOT NULL,
@@ -300,7 +391,7 @@ CREATE TABLE IF NOT EXISTS mantencion_usuario (
   km_entre_mantenciones INT NULL,
   meses_entre_mantenciones INT NULL,
   fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
-  borrado BOOLEAN NOT NULL DEFAULT 'false',
+  borrado BOOLEAN NOT NULL DEFAULT '0',
   PRIMARY KEY (id_mantencion_usuario, id_usuario),
   CONSTRAINT fk_mantencion_usuario_usuario1
     FOREIGN KEY (id_usuario)
@@ -324,7 +415,7 @@ CREATE TABLE IF NOT EXISTS mantencion_usuario_hecha (
   fecha DATE NULL,
   costo INT NULL,
   fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
-  borrado BOOLEAN NOT NULL DEFAULT 'false',
+  borrado BOOLEAN NOT NULL DEFAULT '0',
   PRIMARY KEY (id_mantencion_usuario_hecha, id_usuario),
   CONSTRAINT fk_mantencion_usuario_hecha_mantencion_usuario1
     FOREIGN KEY (id_mantencion_usuario , id_usuario)
@@ -346,6 +437,20 @@ CREATE INDEX fk_mantencion_usuario_hecha_vehiculo1_idx ON mantencion_usuario_hec
 
 
 
+CREATE TABLE IF NOT EXISTS parametro (
+  id_parametro BIGINT(20) NOT NULL,
+  llave VARCHAR(64) NOT NULL,
+  valor VARCHAR(64) NOT NULL,
+  fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
+  PRIMARY KEY (id_parametro))
+
+
+;
+
+
+
+
+
 CREATE TABLE IF NOT EXISTS recordatorio (
   id_recordatorio BIGINT NOT NULL,
   id_usuario BIGINT NOT NULL,
@@ -357,7 +462,7 @@ CREATE TABLE IF NOT EXISTS recordatorio (
   titulo VARCHAR(30) NULL,
   descripcion TEXT NULL,
   fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
-  borrado BOOLEAN NOT NULL DEFAULT 'false',
+  borrado BOOLEAN NOT NULL DEFAULT '0',
   PRIMARY KEY (id_recordatorio, id_usuario),
   CONSTRAINT fk_recordatorio_vehiculo1
     FOREIGN KEY (id_vehiculo , id_usuario)
@@ -374,13 +479,13 @@ CREATE INDEX fk_recordatorio_vehiculo1_idx ON recordatorio (id_vehiculo ASC, id_
 
 CREATE TABLE IF NOT EXISTS log (
   id_log BIGINT NOT NULL,
-  id_usuario BIGINT NOT NULL,
+  id_usuario BIGINT(20) NOT NULL,
   latitud DOUBLE NOT NULL,
   longitud DOUBLE NOT NULL,
   data TEXT NOT NULL,
   fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
-  borrado BOOLEAN NOT NULL DEFAULT 'false',
-  PRIMARY KEY (id_log, id_usuario),
+  borrado BOOLEAN NOT NULL DEFAULT '0',
+  PRIMARY KEY (id_usuario, id_usuario, id_log),
   CONSTRAINT fk_log_usuario1
     FOREIGN KEY (id_usuario)
     REFERENCES usuario (id_usuario)
@@ -403,7 +508,7 @@ CREATE TABLE IF NOT EXISTS reparacion (
   costo INT NULL,
   fecha DATE NULL,
   fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
-  borrado BOOLEAN NOT NULL DEFAULT 'false',
+  borrado BOOLEAN NOT NULL DEFAULT '0',
   PRIMARY KEY (id_reparacion, id_usuario),
   CONSTRAINT fk_reparacion_vehiculo1
     FOREIGN KEY (id_vehiculo , id_usuario)
@@ -413,6 +518,59 @@ CREATE TABLE IF NOT EXISTS reparacion (
 ;
 
 CREATE INDEX fk_reparacion_vehiculo1_idx ON reparacion (id_vehiculo ASC, id_usuario ASC);
+
+
+
+
+
+CREATE TABLE IF NOT EXISTS campania (
+  id_campania INT(11) NOT NULL,
+  descripcion VARCHAR(32) NOT NULL,
+  por_sql BOOLEAN NOT NULL DEFAULT '0',
+  condicion_sql TEXT NULL DEFAULT NULL,
+  texto_correo TEXT NOT NULL,
+  inicio DATETIME NOT NULL,
+  periodicidad_dias SMALLINT(6) NULL DEFAULT NULL,
+  activa BOOLEAN NOT NULL DEFAULT '0',
+  fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
+  borrado BOOLEAN NOT NULL DEFAULT '0',
+  PRIMARY KEY (id_campania))
+
+
+
+;
+
+CREATE UNIQUE INDEX idx_campania_descripcion ON campania (descripcion ASC);
+
+
+
+
+
+CREATE TABLE IF NOT EXISTS campania_usuario (
+  id_campania_usuario INT(11) NOT NULL,
+  id_campania INT(11) NOT NULL,
+  id_usuario BIGINT(20) NOT NULL,
+  fecha_envio DATETIME NOT NULL,
+  fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
+  borrado BOOLEAN NOT NULL DEFAULT '0',
+  PRIMARY KEY (id_campania_usuario),
+  CONSTRAINT fk_campania_usuario_id_campania
+    FOREIGN KEY (id_campania)
+    REFERENCES campania (id_campania)
+    
+    ,
+  CONSTRAINT fk_campania_usuario_id_usuario
+    FOREIGN KEY (id_usuario)
+    REFERENCES usuario (id_usuario)
+    
+    )
+
+
+;
+
+CREATE UNIQUE INDEX idx_campania_usuario ON campania_usuario (id_campania ASC, id_usuario ASC);
+
+CREATE INDEX fk_campania_usuario_id_usuario ON campania_usuario (id_usuario ASC);
 
 
 
@@ -430,7 +588,7 @@ CREATE TABLE IF NOT EXISTS carga_combustible (
   latitud DOUBLE NULL,
   longitud DOUBLE NULL,
   fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
-  borrado BOOLEAN NOT NULL DEFAULT 'false',
+  borrado BOOLEAN NOT NULL DEFAULT '0',
   PRIMARY KEY (id_carga_combustible, id_usuario),
   CONSTRAINT fk_rendimiento_vehiculo1
     FOREIGN KEY (id_vehiculo , id_usuario)
@@ -473,7 +631,7 @@ CREATE TABLE IF NOT EXISTS mantencion_base_hecha (
   fecha DATE NULL,
   costo INT NULL,
   fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
-  borrado BOOLEAN NOT NULL DEFAULT 'false',
+  borrado BOOLEAN NOT NULL DEFAULT '0',
   PRIMARY KEY (id_mantencion_base_hecha, id_usuario),
   CONSTRAINT fk_mantencion_base_hecha_mantencion_base1
     FOREIGN KEY (id_mantencion_base)
@@ -490,6 +648,17 @@ CREATE TABLE IF NOT EXISTS mantencion_base_hecha (
 CREATE INDEX fk_mantencion_base_hecha_mantencion_base1_idx ON mantencion_base_hecha (id_mantencion_base ASC);
 
 CREATE INDEX fk_mantencion_base_hecha_vehiculo1_idx ON mantencion_base_hecha (id_vehiculo ASC, id_usuario ASC);
+
+
+
+
+
+CREATE TABLE IF NOT EXISTS aux_correo (
+  correo VARCHAR(45) NULL DEFAULT NULL,
+  nombre VARCHAR(45) NULL DEFAULT NULL)
+
+
+;
 
 
 
@@ -529,7 +698,7 @@ CREATE TABLE IF NOT EXISTS alerta (
   km INT NULL,
   fecha DATE NULL,
   fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
-  borrado BOOLEAN NOT NULL DEFAULT 'false',
+  borrado BOOLEAN NOT NULL DEFAULT '0',
   PRIMARY KEY (id_alerta),
   CONSTRAINT fk_mantencion_base_hecha_mantencion_base10
     FOREIGN KEY (id_mantencion_base)
@@ -555,7 +724,7 @@ CREATE TABLE IF NOT EXISTS cia_seguros (
   id_cia_seguros INT NOT NULL,
   nombre VARCHAR(256) NOT NULL,
   datos_anexos TEXT NULL,
-  fecha_modificacion TIMESTAMP NOT NULL,
+  fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
   PRIMARY KEY (id_cia_seguros))
 ;
 
@@ -578,26 +747,26 @@ CREATE TABLE IF NOT EXISTS seguro_vehiculo (
   id_usuario BIGINT NOT NULL,
   id_cia_seguros INT NOT NULL,
   id_vehiculo BIGINT NOT NULL,
-  id_tipo_seguro INT NOT NULL,
+  id_tipo_seguro INT(11) NOT NULL,
   poliza TEXT NULL,
   observaciones TEXT NULL,
   fecha_vencimiento DATE NULL,
   fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
-  borrado BOOLEAN NOT NULL DEFAULT 'false',
+  borrado BOOLEAN NOT NULL DEFAULT '0',
   PRIMARY KEY (id_seguro_vehiculo, id_usuario),
   CONSTRAINT fk_seguro_vehiculo_cia_seguros1
     FOREIGN KEY (id_cia_seguros)
     REFERENCES cia_seguros (id_cia_seguros)
     
     ,
-  CONSTRAINT fk_seguro_vehiculo_vehiculo1
-    FOREIGN KEY (id_vehiculo , id_usuario)
-    REFERENCES vehiculo (id_vehiculo , id_usuario)
-    
-    ,
   CONSTRAINT fk_seguro_vehiculo_tipo_seguro1
     FOREIGN KEY (id_tipo_seguro)
     REFERENCES tipo_seguro (id_tipo_seguro)
+    
+    ,
+  CONSTRAINT fk_seguro_vehiculo_vehiculo1
+    FOREIGN KEY (id_vehiculo , id_usuario)
+    REFERENCES vehiculo (id_vehiculo , id_usuario)
     
     )
 ;
@@ -628,23 +797,23 @@ INSERT INTO red_social (id_red_social, red_social, fecha_modificacion) VALUES (1
 
 
 
-INSERT INTO tipo_transmision (id_tipo_transmision, descripcion, fecha_modificacion) VALUES (1, 'MANUAL', '2014-01-01 12:00:00');
-INSERT INTO tipo_transmision (id_tipo_transmision, descripcion, fecha_modificacion) VALUES (2, 'AUTOMATICA', '2014-01-01 12:00:00');
-INSERT INTO tipo_transmision (id_tipo_transmision, descripcion, fecha_modificacion) VALUES (3, 'SEMI AUTOMATICA', '2014-01-01 12:00:00');
-
-
-
-
-
-
-
-
-
 INSERT INTO combustible (id_combustible, descripcion, fecha_modificacion) VALUES (1, 'GASOLINA', '2014-01-01 12:00:00');
 INSERT INTO combustible (id_combustible, descripcion, fecha_modificacion) VALUES (2, 'DIESEL', '2014-01-01 12:00:00');
 INSERT INTO combustible (id_combustible, descripcion, fecha_modificacion) VALUES (3, 'GAS GLP', '2014-01-01 12:00:00');
 INSERT INTO combustible (id_combustible, descripcion, fecha_modificacion) VALUES (4, 'GAS GNC', '2014-01-01 12:00:00');
 INSERT INTO combustible (id_combustible, descripcion, fecha_modificacion) VALUES (5, 'ELECTRICO', '2014-01-01 12:00:00');
+
+
+
+
+
+
+
+
+
+INSERT INTO tipo_transmision (id_tipo_transmision, descripcion, fecha_modificacion) VALUES (1, 'MANUAL', '2014-01-01 12:00:00');
+INSERT INTO tipo_transmision (id_tipo_transmision, descripcion, fecha_modificacion) VALUES (2, 'AUTOMATICA', '2014-01-01 12:00:00');
+INSERT INTO tipo_transmision (id_tipo_transmision, descripcion, fecha_modificacion) VALUES (3, 'SEMI AUTOMATICA', '2014-01-01 12:00:00');
 
 
 
@@ -14958,8 +15127,6 @@ INSERT INTO cia_seguros VALUES (19,'ORION Seguros Generales S.A.',NULL,'2014-12-
 INSERT INTO cia_seguros VALUES (20,'Renta Nacional Cia. de Seguros Generales S.A.',NULL,'2014-12-12 02:13:00');
 INSERT INTO cia_seguros VALUES (21,'RSA Seguros ChileS.A.',NULL,'2014-12-12 02:13:00');
 INSERT INTO cia_seguros VALUES (22,'Santander Seguros Generales S.A 	Santander Seguros Generales S.A.',NULL,'2014-12-12 02:13:00');
-INSERT INTO tipo_seguro VALUES (1,'SOAP');
-INSERT INTO tipo_seguro VALUES (2,'GENERAL');
 -- correcciones
 
 UPDATE mantencion_base

@@ -15,6 +15,7 @@ s/SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;//g
 s/ AUTO_INCREMENT//g
 s/'::character varying/'/g
 s/TINYINT(1)/BOOLEAN/g
+s/BIT(1)/BOOLEAN/g
 s/ DEFAULT CURRENT_TIMESTAMP/ DEFAULT (datetime('now', 'localtime'))/g
 s/ DEFAULT now()/ DEFAULT (datetime('now', 'localtime'))/g
 s/SET client_encoding = 'UTF8';//g
@@ -37,10 +38,15 @@ s/	OIDS = 0//g
 s/^)$//g
 s/ON DELETE NO ACTION//g
 s/ON UPDATE NO ACTION//g
-s/b'0'/0/g
+s/ USING BTREE//g
+s/AUTO_INCREMENT = [0-9]*//g
+s/b'0'/'0'/g
+s/b'1'/'1'/g
 s/START TRANSACTION;//g
 s/COMMIT;//g
 s/COMMENT '.*'//g
 s/true/'true'/g
 s/false/'false'/g
 s/`//g
+s/DEFAULT CHARACTER SET = [a-zA-Z0-9_]*//g
+s/COLLATE = [a-zA-Z0-9_]*//g
