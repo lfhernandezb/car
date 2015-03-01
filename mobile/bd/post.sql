@@ -10,4 +10,8 @@ WHERE depende_km = 0;
 -- se borran las tablas no necesarias en la app movil
 
 DROP TABLE alerta;
+DROP TABLE aux_correo;
+DROP TABLE campania;
+DROP TABLE campania_usuario;
+DROP TABLE usuario_web;
 

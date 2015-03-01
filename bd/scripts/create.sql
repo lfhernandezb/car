@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS `pais` (
   `pais` VARCHAR(20) NOT NULL,
   `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_pais`))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
@@ -30,7 +31,8 @@ CREATE TABLE IF NOT EXISTS `region` (
     REFERENCES `pais` (`id_pais`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 CREATE INDEX `fk_Region_Pais_idx` ON `region` (`id_pais` ASC);
 
@@ -49,7 +51,8 @@ CREATE TABLE IF NOT EXISTS `comuna` (
     REFERENCES `region` (`id_region`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 CREATE INDEX `fk_comuna_region1_idx` ON `comuna` (`id_region` ASC);
 
@@ -62,7 +65,8 @@ CREATE TABLE IF NOT EXISTS `tipo_vehiculo` (
   `descripcion` VARCHAR(20) NOT NULL,
   `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_tipo_vehiculo`))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
@@ -85,7 +89,8 @@ CREATE TABLE IF NOT EXISTS `marca` (
     REFERENCES `tipo_vehiculo` (`id_tipo_vehiculo`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 CREATE INDEX `fk_marca_pais1_idx` ON `marca` (`id_pais` ASC);
 
@@ -106,7 +111,8 @@ CREATE TABLE IF NOT EXISTS `modelo` (
     REFERENCES `marca` (`id_marca`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 CREATE INDEX `fk_Modelo_Marca1_idx` ON `modelo` (`id_marca` ASC);
 
@@ -119,7 +125,8 @@ CREATE TABLE IF NOT EXISTS `red_social` (
   `red_social` VARCHAR(20) NOT NULL,
   `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_red_social`))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
@@ -142,7 +149,8 @@ CREATE TABLE IF NOT EXISTS `usuario` (
     REFERENCES `comuna` (`id_comuna`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 CREATE INDEX `fk_Usuario_Comuna1_idx` ON `usuario` (`id_comuna` ASC);
 
@@ -162,8 +170,7 @@ CREATE TABLE IF NOT EXISTS `usuario_web` (
   PRIMARY KEY (`id_usuario_web`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 33
-DEFAULT CHARACTER SET = latin1
-COLLATE = latin1_swedish_ci;
+DEFAULT CHARACTER SET = latin1;
 
 CREATE UNIQUE INDEX `idx_usuario_web_nombre_usuario` USING BTREE ON `usuario_web` (`nombre_usuario` ASC);
 
@@ -178,32 +185,24 @@ CREATE TABLE IF NOT EXISTS `combustible` (
   `descripcion` VARCHAR(16) NOT NULL,
   `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_combustible`))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
 -- Table `perfil_uso`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `perfil_uso` (
-  `id_perfil_uso` BIGINT(20) NOT NULL,
-  `id_usuario` BIGINT(20) NOT NULL,
+  `id_perfil_uso` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `km_anuales` INT(11) NOT NULL,
   `es_perfil_medio` TINYINT(1) NOT NULL,
   `nombre` TEXT NOT NULL,
   `descripcion` TEXT NULL DEFAULT NULL,
   `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `borrado` TINYINT(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_perfil_uso`, `id_usuario`),
-  CONSTRAINT `fk_perfil_uso_usuario1`
-    FOREIGN KEY (`id_usuario`)
-    REFERENCES `usuario` (`id_usuario`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+  PRIMARY KEY (`id_perfil_uso`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1
-COLLATE = latin1_swedish_ci;
-
-CREATE INDEX `fk_perfil_uso_usuario1_idx` ON `perfil_uso` (`id_usuario` ASC);
+DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
@@ -214,7 +213,8 @@ CREATE TABLE IF NOT EXISTS `tipo_transmision` (
   `descripcion` VARCHAR(16) NOT NULL,
   `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_tipo_transmision`))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
@@ -225,7 +225,8 @@ CREATE TABLE IF NOT EXISTS `traccion` (
   `descripcion` VARCHAR(16) NOT NULL,
   `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_traccion`))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
@@ -262,8 +263,8 @@ CREATE TABLE IF NOT EXISTS `vehiculo` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_vehiculo_perfil_uso1`
-    FOREIGN KEY (`id_usuario` , `id_perfil_uso`)
-    REFERENCES `perfil_uso` (`id_usuario` , `id_perfil_uso`)
+    FOREIGN KEY (`id_perfil_uso`)
+    REFERENCES `perfil_uso` (`id_perfil_uso`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_vehiculo_tipo_transmision1`
@@ -281,7 +282,8 @@ CREATE TABLE IF NOT EXISTS `vehiculo` (
     REFERENCES `usuario` (`id_usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 CREATE INDEX `fk_Vehiculo_Usuario1_idx` ON `vehiculo` (`id_usuario` ASC);
 
@@ -317,7 +319,8 @@ CREATE TABLE IF NOT EXISTS `autenticacion` (
     REFERENCES `red_social` (`id_red_social`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 CREATE INDEX `fk_Autenticacion_Usuario1_idx` ON `autenticacion` (`id_usuario` ASC);
 
@@ -341,7 +344,8 @@ CREATE TABLE IF NOT EXISTS `mantencion_base` (
   `meses_entre_mantenciones` INT NULL COMMENT 'Indica los dÃ­as entre los cuales debe realizarse esta mantenciÃ³n',
   `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_mantencion_base`))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
@@ -368,8 +372,7 @@ CREATE TABLE IF NOT EXISTS `mantencion_pospuesta` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1
-COLLATE = latin1_swedish_ci;
+DEFAULT CHARACTER SET = latin1;
 
 CREATE INDEX `fk_mantencion_pospuesta_mantencion_base1` ON `mantencion_pospuesta` (`id_mantencion_base` ASC);
 
@@ -397,7 +400,8 @@ CREATE TABLE IF NOT EXISTS `mantencion_usuario` (
     REFERENCES `usuario` (`id_usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 CREATE INDEX `fk_mantencion_usuario_usuario1_idx` ON `mantencion_usuario` (`id_usuario` ASC);
 
@@ -426,7 +430,8 @@ CREATE TABLE IF NOT EXISTS `mantencion_usuario_hecha` (
     REFERENCES `vehiculo` (`id_vehiculo` , `id_usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 CREATE INDEX `fk_mantencion_usuario_hecha_mantencion_usuario1_idx` ON `mantencion_usuario_hecha` (`id_mantencion_usuario` ASC, `id_usuario` ASC);
 
@@ -443,8 +448,7 @@ CREATE TABLE IF NOT EXISTS `parametro` (
   `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_parametro`))
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1
-COLLATE = latin1_swedish_ci;
+DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
@@ -468,7 +472,8 @@ CREATE TABLE IF NOT EXISTS `recordatorio` (
     REFERENCES `vehiculo` (`id_vehiculo` , `id_usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 CREATE INDEX `fk_recordatorio_vehiculo1_idx` ON `recordatorio` (`id_vehiculo` ASC, `id_usuario` ASC);
 
@@ -484,13 +489,14 @@ CREATE TABLE IF NOT EXISTS `log` (
   `data` TEXT NOT NULL,
   `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `borrado` TINYINT(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_usuario`, `id_usuario`, `id_log`),
+  PRIMARY KEY (`id_usuario`, `id_log`),
   CONSTRAINT `fk_log_usuario1`
     FOREIGN KEY (`id_usuario`)
     REFERENCES `usuario` (`id_usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 CREATE INDEX `fk_log_usuario1_idx` ON `log` (`id_usuario` ASC);
 
@@ -514,7 +520,8 @@ CREATE TABLE IF NOT EXISTS `reparacion` (
     REFERENCES `vehiculo` (`id_vehiculo` , `id_usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 CREATE INDEX `fk_reparacion_vehiculo1_idx` ON `reparacion` (`id_vehiculo` ASC, `id_usuario` ASC);
 
@@ -536,8 +543,7 @@ CREATE TABLE IF NOT EXISTS `campania` (
   PRIMARY KEY (`id_campania`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 33
-DEFAULT CHARACTER SET = latin1
-COLLATE = latin1_swedish_ci;
+DEFAULT CHARACTER SET = latin1;
 
 CREATE UNIQUE INDEX `idx_campania_descripcion` USING BTREE ON `campania` (`descripcion` ASC);
 
@@ -564,8 +570,7 @@ CREATE TABLE IF NOT EXISTS `campania_usuario` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1
-COLLATE = latin1_swedish_ci;
+DEFAULT CHARACTER SET = latin1;
 
 CREATE UNIQUE INDEX `idx_campania_usuario` USING BTREE ON `campania_usuario` (`id_campania` ASC, `id_usuario` ASC);
 
@@ -594,7 +599,8 @@ CREATE TABLE IF NOT EXISTS `carga_combustible` (
     REFERENCES `vehiculo` (`id_vehiculo` , `id_usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 CREATE INDEX `fk_rendimiento_vehiculo1_idx` ON `carga_combustible` (`id_vehiculo` ASC, `id_usuario` ASC);
 
@@ -613,7 +619,8 @@ CREATE TABLE IF NOT EXISTS `info_sincro` (
     REFERENCES `usuario` (`id_usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 CREATE INDEX `fk_info_sincro_usuario1_idx` ON `info_sincro` (`usuario_id_usuario` ASC);
 
@@ -642,7 +649,8 @@ CREATE TABLE IF NOT EXISTS `mantencion_base_hecha` (
     REFERENCES `vehiculo` (`id_vehiculo` , `id_usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 CREATE INDEX `fk_mantencion_base_hecha_mantencion_base1_idx` ON `mantencion_base_hecha` (`id_mantencion_base` ASC);
 
@@ -656,8 +664,7 @@ CREATE TABLE IF NOT EXISTS `aux_correo` (
   `correo` VARCHAR(45) NULL DEFAULT NULL,
   `nombre` VARCHAR(45) NULL DEFAULT NULL)
 ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1
-COLLATE = latin1_swedish_ci;
+DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
@@ -679,7 +686,8 @@ CREATE TABLE IF NOT EXISTS `cambio_revision` (
     REFERENCES `mantencion_base` (`id_mantencion_base`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 CREATE INDEX `fk_cambio_revision_mantencion_base1_idx` ON `cambio_revision` (`id_cambio` ASC);
 
@@ -709,7 +717,8 @@ CREATE TABLE IF NOT EXISTS `alerta` (
     REFERENCES `vehiculo` (`id_vehiculo` , `id_usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 CREATE INDEX `fk_alerta_mantencion_base_idx` ON `alerta` (`id_mantencion_base` ASC);
 
@@ -725,7 +734,8 @@ CREATE TABLE IF NOT EXISTS `cia_seguros` (
   `datos_anexos` TEXT NULL,
   `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_cia_seguros`))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
@@ -735,7 +745,8 @@ CREATE TABLE IF NOT EXISTS `tipo_seguro` (
   `id_tipo_seguro` INT NOT NULL,
   `descripcion` VARCHAR(16) NOT NULL,
   PRIMARY KEY (`id_tipo_seguro`))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
@@ -768,7 +779,8 @@ CREATE TABLE IF NOT EXISTS `seguro_vehiculo` (
     REFERENCES `vehiculo` (`id_vehiculo` , `id_usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 CREATE INDEX `fk_seguro_vehiculo_cia_seguros1_idx` ON `seguro_vehiculo` (`id_cia_seguros` ASC);
 
@@ -787,6 +799,7 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 START TRANSACTION;
 USE `car`;
 INSERT INTO `red_social` (`id_red_social`, `red_social`, `fecha_modificacion`) VALUES (1, 'facebook', '2014-01-01 12:00:00');
+INSERT INTO `red_social` (`id_red_social`, `red_social`, `fecha_modificacion`) VALUES (0, 'default', '2015-03-01 12:00:00');
 
 COMMIT;
 
@@ -801,6 +814,19 @@ INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`
 INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (3, 'GAS GLP', '2014-01-01 12:00:00');
 INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (4, 'GAS GNC', '2014-01-01 12:00:00');
 INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (5, 'ELECTRICO', '2014-01-01 12:00:00');
+
+COMMIT;
+
+
+-- -----------------------------------------------------
+-- Data for table `perfil_uso`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `car`;
+INSERT INTO `perfil_uso` (`id_perfil_uso`, `km_anuales`, `es_perfil_medio`, `nombre`, `descripcion`, `fecha_modificacion`, `borrado`) VALUES (1, 12000, 0, 'Lo uso sólo los fines de semana', '12.000 mil Km anuales', '2015-03-01 00:00:00', 0);
+INSERT INTO `perfil_uso` (`id_perfil_uso`, `km_anuales`, `es_perfil_medio`, `nombre`, `descripcion`, `fecha_modificacion`, `borrado`) VALUES (2, 20000, 1, 'Voy al trabajo en auto', '20.000 mil Km anuales', '2015-03-01 00:00:00', 0);
+INSERT INTO `perfil_uso` (`id_perfil_uso`, `km_anuales`, `es_perfil_medio`, `nombre`, `descripcion`, `fecha_modificacion`, `borrado`) VALUES (3, 30000, 0, 'Hago viajes largos', '30.000 mil Km anuales', '2015-03-01 00:00:00', 0);
+INSERT INTO `perfil_uso` (`id_perfil_uso`, `km_anuales`, `es_perfil_medio`, `nombre`, `descripcion`, `fecha_modificacion`, `borrado`) VALUES (4, 60000, 0, 'Trabajo con el auto', '60.000 mil Km anuales', '2015-03-01 00:00:00', 0);
 
 COMMIT;
 
@@ -822,10 +848,10 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `car`;
-INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (1, 'AWD', '2014-01-01 12:00:00');
-INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (2, 'FWD', '2014-01-01 12:00:00');
-INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (3, '4WD', '2014-01-01 12:00:00');
-INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (4, 'RWD', '2014-01-01 12:00:00');
+INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (1, 'DOBLE TRACCION PERMAMENTE (AWD)', '2014-01-01 12:00:00');
+INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (2, 'TRACCION DELANTERA', '2014-01-01 12:00:00');
+INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (3, 'DOBLE TRACCION NO PERMAMENTE (4WD)', '2014-01-01 12:00:00');
+INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (4, 'TRACCION TRASERA', '2014-01-01 12:00:00');
 
 COMMIT;
 
