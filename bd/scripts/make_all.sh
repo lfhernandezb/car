@@ -50,6 +50,6 @@ echo "cia_seguros"
 /usr/bin/mysqldump --opt --skip-extended-insert -u car -pcar car cambio_revision | grep -E "^INSERT" > ../../mobile/bd/cambio_revision.sql
 /usr/bin/mysqldump --opt --skip-extended-insert -u car -pcar car cambio_revision | grep -E "^INSERT" > ../../mobile/bd/cambio_revision.sql
 /usr/bin/mysqldump --opt --skip-extended-insert -u car -pcar car cia_seguros | grep -E "^INSERT" > ../../mobile/bd/cia_seguros.sql
-/usr/bin/mysqldump --opt --skip-extended-insert -u car -pcar car perfil_uso | grep -E "^INSERT" > ../../mobile/bd/perfil_uso.sql
+#/usr/bin/mysqldump --opt --skip-extended-insert -u car -pcar car perfil_uso | grep -E "^INSERT" > ../../mobile/bd/perfil_uso.sql
 #/usr/bin/mysqldump --opt --skip-extended-insert -u car -pcar car tipo_seguro | grep -E "^INSERT" > ../../mobile/bd/tipo_seguro.sql
 
