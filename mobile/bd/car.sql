@@ -686,6 +686,7 @@ CREATE INDEX fk_seguro_vehiculo_tipo_seguro1_idx ON seguro_vehiculo (id_tipo_seg
 
 CREATE TABLE IF NOT EXISTS notificacion (
   id_notificacion INT NOT NULL,
+  id_usuario BIGINT NOT NULL,
   fecha_inicio DATE NULL,
   fecha_fin DATE NULL,
   periodicidad SMALLINT NULL,
@@ -693,9 +694,132 @@ CREATE TABLE IF NOT EXISTS notificacion (
   detalle TEXT NULL,
   fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
   borrado BOOLEAN NOT NULL DEFAULT '0',
-  PRIMARY KEY (id_notificacion))
+  PRIMARY KEY (id_notificacion),
+  CONSTRAINT fk_notificacion_usuario1
+    FOREIGN KEY (id_usuario)
+    REFERENCES usuario (id_usuario)
+    
+    )
 
 ;
+
+CREATE INDEX fk_notificacion_usuario1_idx ON notificacion (id_usuario ASC);
+
+
+
+
+
+CREATE TABLE IF NOT EXISTS proveedor (
+  id_proveedor INT NOT NULL,
+  nombre VARCHAR(256) NULL,
+  direccion VARCHAR(512) NULL,
+  correo VARCHAR(128) NULL,
+  telefono VARCHAR(128) NULL,
+  latitud DOUBLE NULL,
+  longitud DOUBLE NULL,
+  existen_valores BOOLEAN NULL,
+  valor_minimo FLOAT NULL,
+  valor_maximo FLOAT NULL,
+  detalle_html TEXT NULL,
+  calificacion TINYINT NULL,
+  url VARCHAR(256) NULL,
+  fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
+  PRIMARY KEY (id_proveedor))
+
+;
+
+
+
+
+
+CREATE TABLE IF NOT EXISTS proveedor_mantencion_base (
+  id_proveedor_mantencion_base INT NOT NULL,
+  id_proveedor INT NOT NULL,
+  id_mantencion_base BIGINT NOT NULL,
+  fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
+  PRIMARY KEY (id_proveedor_mantencion_base),
+  CONSTRAINT fk_proveedor_mantencion_base_proveedor1
+    FOREIGN KEY (id_proveedor)
+    REFERENCES proveedor (id_proveedor)
+    
+    ,
+  CONSTRAINT fk_proveedor_mantencion_base_mantencion_base1
+    FOREIGN KEY (id_mantencion_base)
+    REFERENCES mantencion_base (id_mantencion_base)
+    
+    )
+
+;
+
+CREATE INDEX fk_proveedor_mantencion_base_proveedor1_idx ON proveedor_mantencion_base (id_proveedor ASC);
+
+CREATE INDEX fk_proveedor_mantencion_base_mantencion_base1_idx ON proveedor_mantencion_base (id_mantencion_base ASC);
+
+
+
+
+
+CREATE TABLE IF NOT EXISTS consulta_proveedor (
+  id_consulta_proveedor INT NOT NULL,
+  id_vehiculo BIGINT NOT NULL,
+  id_usuario BIGINT NOT NULL,
+  id_mantencion_base BIGINT NOT NULL,
+  latitud DOUBLE NULL,
+  longitud DOUBLE NULL,
+  fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
+  PRIMARY KEY (id_consulta_proveedor),
+  CONSTRAINT fk_consulta_proveedor_vehiculo1
+    FOREIGN KEY (id_vehiculo , id_usuario)
+    REFERENCES vehiculo (id_vehiculo , id_usuario)
+    
+    ,
+  CONSTRAINT fk_consulta_proveedor_mantencion_base1
+    FOREIGN KEY (id_mantencion_base)
+    REFERENCES mantencion_base (id_mantencion_base)
+    
+    )
+
+;
+
+CREATE INDEX fk_consulta_proveedor_vehiculo1_idx ON consulta_proveedor (id_vehiculo ASC, id_usuario ASC);
+
+CREATE INDEX fk_consulta_proveedor_mantencion_base1_idx ON consulta_proveedor (id_mantencion_base ASC);
+
+
+
+
+
+CREATE TABLE IF NOT EXISTS respuesta_proveedor (
+  id_respuesta_proveedor INT NOT NULL,
+  id_vehiculo BIGINT NOT NULL,
+  id_usuario BIGINT NOT NULL,
+  id_proveedor INT NOT NULL,
+  id_consulta_proveedor INT NOT NULL,
+  fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
+  PRIMARY KEY (id_respuesta_proveedor),
+  CONSTRAINT fk_respuesta_proveedor_vehiculo1
+    FOREIGN KEY (id_vehiculo , id_usuario)
+    REFERENCES vehiculo (id_vehiculo , id_usuario)
+    
+    ,
+  CONSTRAINT fk_respuesta_proveedor_proveedor1
+    FOREIGN KEY (id_proveedor)
+    REFERENCES proveedor (id_proveedor)
+    
+    ,
+  CONSTRAINT fk_respuesta_proveedor_consulta_proveedor1
+    FOREIGN KEY (id_consulta_proveedor)
+    REFERENCES consulta_proveedor (id_consulta_proveedor)
+    
+    )
+
+;
+
+CREATE INDEX fk_respuesta_proveedor_vehiculo1_idx ON respuesta_proveedor (id_vehiculo ASC, id_usuario ASC);
+
+CREATE INDEX fk_respuesta_proveedor_proveedor1_idx ON respuesta_proveedor (id_proveedor ASC);
+
+CREATE INDEX fk_respuesta_proveedor_consulta_proveedor1_idx ON respuesta_proveedor (id_consulta_proveedor ASC);
 
 
 
