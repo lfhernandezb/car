@@ -14,4 +14,8 @@ DROP TABLE aux_correo;
 DROP TABLE campania;
 DROP TABLE campania_usuario;
 DROP TABLE usuario_web;
+DROP TABLE proveedor;
+DROP TABLE proveedor_mantencion_base;
+DROP TABLE consulta_proveedor;
+DROP TABLE respuesta_proveedor;
 

@@ -2,12 +2,12 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
-CREATE SCHEMA IF NOT EXISTS `car` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
-USE `car` ;
 
 -- -----------------------------------------------------
 -- Table `pais`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `pais` ;
+
 CREATE TABLE IF NOT EXISTS `pais` (
   `id_pais` BIGINT NOT NULL,
   `pais` VARCHAR(20) NOT NULL,
@@ -20,6 +20,8 @@ DEFAULT CHARACTER SET = latin1;
 -- -----------------------------------------------------
 -- Table `region`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `region` ;
+
 CREATE TABLE IF NOT EXISTS `region` (
   `id_region` BIGINT NOT NULL,
   `id_pais` BIGINT NOT NULL,
@@ -40,6 +42,8 @@ CREATE INDEX `fk_Region_Pais_idx` ON `region` (`id_pais` ASC);
 -- -----------------------------------------------------
 -- Table `comuna`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `comuna` ;
+
 CREATE TABLE IF NOT EXISTS `comuna` (
   `id_comuna` BIGINT NOT NULL,
   `id_region` BIGINT NOT NULL,
@@ -60,6 +64,8 @@ CREATE INDEX `fk_comuna_region1_idx` ON `comuna` (`id_region` ASC);
 -- -----------------------------------------------------
 -- Table `tipo_vehiculo`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `tipo_vehiculo` ;
+
 CREATE TABLE IF NOT EXISTS `tipo_vehiculo` (
   `id_tipo_vehiculo` TINYINT NOT NULL,
   `descripcion` VARCHAR(20) NOT NULL,
@@ -72,6 +78,8 @@ DEFAULT CHARACTER SET = latin1;
 -- -----------------------------------------------------
 -- Table `marca`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `marca` ;
+
 CREATE TABLE IF NOT EXISTS `marca` (
   `id_marca` SMALLINT NOT NULL,
   `id_tipo_vehiculo` TINYINT NOT NULL,
@@ -100,6 +108,8 @@ CREATE INDEX `fk_marca_tipo_vehiculo1_idx` ON `marca` (`id_tipo_vehiculo` ASC);
 -- -----------------------------------------------------
 -- Table `modelo`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `modelo` ;
+
 CREATE TABLE IF NOT EXISTS `modelo` (
   `id_modelo` BIGINT NOT NULL,
   `id_marca` SMALLINT NOT NULL,
@@ -120,6 +130,8 @@ CREATE INDEX `fk_Modelo_Marca1_idx` ON `modelo` (`id_marca` ASC);
 -- -----------------------------------------------------
 -- Table `red_social`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `red_social` ;
+
 CREATE TABLE IF NOT EXISTS `red_social` (
   `id_red_social` BIGINT NOT NULL,
   `red_social` VARCHAR(20) NOT NULL,
@@ -132,6 +144,8 @@ DEFAULT CHARACTER SET = latin1;
 -- -----------------------------------------------------
 -- Table `usuario`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `usuario` ;
+
 CREATE TABLE IF NOT EXISTS `usuario` (
   `id_usuario` BIGINT NOT NULL AUTO_INCREMENT,
   `id_comuna` BIGINT NOT NULL,
@@ -158,6 +172,8 @@ CREATE INDEX `fk_Usuario_Comuna1_idx` ON `usuario` (`id_comuna` ASC);
 -- -----------------------------------------------------
 -- Table `usuario_web`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `usuario_web` ;
+
 CREATE TABLE IF NOT EXISTS `usuario_web` (
   `id_usuario_web` INT(11) NOT NULL AUTO_INCREMENT,
   `nombre_usuario` VARCHAR(16) NOT NULL,
@@ -180,6 +196,8 @@ CREATE UNIQUE INDEX `idx_usuario_web_email` USING BTREE ON `usuario_web` (`email
 -- -----------------------------------------------------
 -- Table `combustible`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `combustible` ;
+
 CREATE TABLE IF NOT EXISTS `combustible` (
   `id_combustible` TINYINT NOT NULL,
   `descripcion` VARCHAR(16) NOT NULL,
@@ -192,6 +210,8 @@ DEFAULT CHARACTER SET = latin1;
 -- -----------------------------------------------------
 -- Table `tipo_transmision`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `tipo_transmision` ;
+
 CREATE TABLE IF NOT EXISTS `tipo_transmision` (
   `id_tipo_transmision` TINYINT NOT NULL,
   `descripcion` VARCHAR(16) NOT NULL,
@@ -204,6 +224,8 @@ DEFAULT CHARACTER SET = latin1;
 -- -----------------------------------------------------
 -- Table `traccion`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `traccion` ;
+
 CREATE TABLE IF NOT EXISTS `traccion` (
   `id_traccion` TINYINT NOT NULL,
   `descripcion` VARCHAR(40) NOT NULL,
@@ -216,6 +238,8 @@ DEFAULT CHARACTER SET = utf8;
 -- -----------------------------------------------------
 -- Table `vehiculo`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `vehiculo` ;
+
 CREATE TABLE IF NOT EXISTS `vehiculo` (
   `id_vehiculo` BIGINT NOT NULL,
   `id_usuario` BIGINT NOT NULL,
@@ -273,6 +297,8 @@ CREATE INDEX `fk_vehiculo_traccion_idx` ON `vehiculo` (`id_traccion` ASC);
 -- -----------------------------------------------------
 -- Table `autenticacion`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `autenticacion` ;
+
 CREATE TABLE IF NOT EXISTS `autenticacion` (
   `id_autenticacion` BIGINT NOT NULL AUTO_INCREMENT,
   `id_usuario` BIGINT NOT NULL,
@@ -297,6 +323,8 @@ CREATE INDEX `fk_autenticacion_red_social1_idx` ON `autenticacion` (`id_red_soci
 -- -----------------------------------------------------
 -- Table `mantencion_base`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `mantencion_base` ;
+
 CREATE TABLE IF NOT EXISTS `mantencion_base` (
   `id_mantencion_base` BIGINT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
@@ -318,6 +346,8 @@ DEFAULT CHARACTER SET = latin1;
 -- -----------------------------------------------------
 -- Table `mantencion_pospuesta`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `mantencion_pospuesta` ;
+
 CREATE TABLE IF NOT EXISTS `mantencion_pospuesta` (
   `id_mantencion_pospuesta` INT(11) NOT NULL,
   `id_usuario` BIGINT(20) NOT NULL,
@@ -349,6 +379,8 @@ CREATE INDEX `fk_mantencion_pospuesta_vehiculo1_idx` ON `mantencion_pospuesta` (
 -- -----------------------------------------------------
 -- Table `mantencion_usuario`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `mantencion_usuario` ;
+
 CREATE TABLE IF NOT EXISTS `mantencion_usuario` (
   `id_mantencion_usuario` BIGINT NOT NULL,
   `id_usuario` BIGINT NOT NULL,
@@ -371,6 +403,8 @@ CREATE INDEX `fk_mantencion_usuario_usuario1_idx` ON `mantencion_usuario` (`id_u
 -- -----------------------------------------------------
 -- Table `mantencion_usuario_hecha`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `mantencion_usuario_hecha` ;
+
 CREATE TABLE IF NOT EXISTS `mantencion_usuario_hecha` (
   `id_mantencion_usuario_hecha` BIGINT NOT NULL,
   `id_usuario` BIGINT NOT NULL,
@@ -403,19 +437,25 @@ CREATE INDEX `fk_mantencion_usuario_hecha_vehiculo1_idx` ON `mantencion_usuario_
 -- -----------------------------------------------------
 -- Table `parametro`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `parametro` ;
+
 CREATE TABLE IF NOT EXISTS `parametro` (
   `id_parametro` BIGINT(20) NOT NULL,
   `llave` VARCHAR(64) NOT NULL,
-  `valor` VARCHAR(64) NOT NULL,
+  `valor` TEXT NOT NULL,
   `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_parametro`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 
+CREATE UNIQUE INDEX `index2` USING BTREE ON `parametro` (`llave` ASC);
+
 
 -- -----------------------------------------------------
 -- Table `recordatorio`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `recordatorio` ;
+
 CREATE TABLE IF NOT EXISTS `recordatorio` (
   `id_recordatorio` BIGINT NOT NULL,
   `id_usuario` BIGINT NOT NULL,
@@ -443,6 +483,8 @@ CREATE INDEX `fk_recordatorio_vehiculo1_idx` ON `recordatorio` (`id_vehiculo` AS
 -- -----------------------------------------------------
 -- Table `log`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `log` ;
+
 CREATE TABLE IF NOT EXISTS `log` (
   `id_log` BIGINT NOT NULL,
   `id_usuario` BIGINT(20) NOT NULL,
@@ -461,6 +503,8 @@ CREATE INDEX `fk_log_usuario1_idx` ON `log` (`id_usuario` ASC);
 -- -----------------------------------------------------
 -- Table `reparacion`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `reparacion` ;
+
 CREATE TABLE IF NOT EXISTS `reparacion` (
   `id_reparacion` BIGINT NOT NULL,
   `id_usuario` BIGINT NOT NULL,
@@ -486,6 +530,8 @@ CREATE INDEX `fk_reparacion_vehiculo1_idx` ON `reparacion` (`id_vehiculo` ASC, `
 -- -----------------------------------------------------
 -- Table `carga_combustible`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `carga_combustible` ;
+
 CREATE TABLE IF NOT EXISTS `carga_combustible` (
   `id_carga_combustible` BIGINT NOT NULL,
   `id_usuario` BIGINT NOT NULL,
@@ -514,6 +560,8 @@ CREATE INDEX `fk_rendimiento_vehiculo1_idx` ON `carga_combustible` (`id_vehiculo
 -- -----------------------------------------------------
 -- Table `info_sincro`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `info_sincro` ;
+
 CREATE TABLE IF NOT EXISTS `info_sincro` (
   `id_info_sincro` INT NOT NULL AUTO_INCREMENT,
   `usuario_id_usuario` BIGINT NOT NULL,
@@ -529,6 +577,8 @@ CREATE INDEX `fk_info_sincro_usuario1_idx` ON `info_sincro` (`usuario_id_usuario
 -- -----------------------------------------------------
 -- Table `mantencion_base_hecha`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `mantencion_base_hecha` ;
+
 CREATE TABLE IF NOT EXISTS `mantencion_base_hecha` (
   `id_mantencion_base_hecha` INT NOT NULL,
   `id_usuario` BIGINT NOT NULL,
@@ -561,6 +611,8 @@ CREATE INDEX `fk_mantencion_base_hecha_vehiculo1_idx` ON `mantencion_base_hecha`
 -- -----------------------------------------------------
 -- Table `cambio_revision`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `cambio_revision` ;
+
 CREATE TABLE IF NOT EXISTS `cambio_revision` (
   `id_cambio_revision` INT NOT NULL AUTO_INCREMENT,
   `id_cambio` BIGINT NULL,
@@ -588,6 +640,8 @@ CREATE INDEX `fk_cambio_revision_mantencion_base2_idx` ON `cambio_revision` (`id
 -- -----------------------------------------------------
 -- Table `alerta`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `alerta` ;
+
 CREATE TABLE IF NOT EXISTS `alerta` (
   `id_alerta` INT NOT NULL AUTO_INCREMENT,
   `id_usuario` BIGINT NOT NULL,
@@ -619,6 +673,8 @@ CREATE INDEX `fk_alerta_vehiculo_idx` ON `alerta` (`id_vehiculo` ASC, `id_usuari
 -- -----------------------------------------------------
 -- Table `cia_seguros`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `cia_seguros` ;
+
 CREATE TABLE IF NOT EXISTS `cia_seguros` (
   `id_cia_seguros` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(256) NOT NULL,
@@ -632,6 +688,8 @@ DEFAULT CHARACTER SET = latin1;
 -- -----------------------------------------------------
 -- Table `tipo_seguro`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `tipo_seguro` ;
+
 CREATE TABLE IF NOT EXISTS `tipo_seguro` (
   `id_tipo_seguro` INT NOT NULL,
   `descripcion` VARCHAR(16) NOT NULL,
@@ -643,6 +701,8 @@ DEFAULT CHARACTER SET = latin1;
 -- -----------------------------------------------------
 -- Table `seguro_vehiculo`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `seguro_vehiculo` ;
+
 CREATE TABLE IF NOT EXISTS `seguro_vehiculo` (
   `id_seguro_vehiculo` BIGINT NOT NULL,
   `id_usuario` BIGINT NOT NULL,
@@ -681,35 +741,12 @@ CREATE INDEX `fk_seguro_vehiculo_tipo_seguro1_idx` ON `seguro_vehiculo` (`id_tip
 
 
 -- -----------------------------------------------------
--- Table `notificacion`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `notificacion` (
-  `id_notificacion` INT NOT NULL AUTO_INCREMENT,
-  `id_usuario` BIGINT NOT NULL,
-  `fecha_inicio` DATE NULL,
-  `fecha_fin` DATE NULL,
-  `periodicidad` SMALLINT NULL,
-  `numero_impresiones` SMALLINT NULL,
-  `detalle` TEXT NULL,
-  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `borrado` TINYINT(1) NOT NULL DEFAULT b'0',
-  PRIMARY KEY (`id_notificacion`),
-  CONSTRAINT `fk_notificacion_usuario1`
-    FOREIGN KEY (`id_usuario`)
-    REFERENCES `usuario` (`id_usuario`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = latin1;
-
-CREATE INDEX `fk_notificacion_usuario1_idx` ON `notificacion` (`id_usuario` ASC);
-
-
--- -----------------------------------------------------
 -- Table `proveedor`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `proveedor` ;
+
 CREATE TABLE IF NOT EXISTS `proveedor` (
-  `id_proveedor` INT NOT NULL AUTO_INCREMENT,
+  `id_proveedor` INT NOT NULL,
   `nombre` VARCHAR(256) NULL,
   `direccion` VARCHAR(512) NULL,
   `correo` VARCHAR(128) NULL,
@@ -731,6 +768,8 @@ DEFAULT CHARACTER SET = latin1;
 -- -----------------------------------------------------
 -- Table `proveedor_mantencion_base`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `proveedor_mantencion_base` ;
+
 CREATE TABLE IF NOT EXISTS `proveedor_mantencion_base` (
   `id_proveedor_mantencion_base` INT NOT NULL AUTO_INCREMENT,
   `id_proveedor` INT NOT NULL,
@@ -758,6 +797,8 @@ CREATE INDEX `fk_proveedor_mantencion_base_mantencion_base1_idx` ON `proveedor_m
 -- -----------------------------------------------------
 -- Table `consulta_proveedor`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `consulta_proveedor` ;
+
 CREATE TABLE IF NOT EXISTS `consulta_proveedor` (
   `id_consulta_proveedor` INT NOT NULL AUTO_INCREMENT,
   `id_vehiculo` BIGINT NOT NULL,
@@ -788,6 +829,8 @@ CREATE INDEX `fk_consulta_proveedor_mantencion_base1_idx` ON `consulta_proveedor
 -- -----------------------------------------------------
 -- Table `respuesta_proveedor`
 -- -----------------------------------------------------
+DROP TABLE IF EXISTS `respuesta_proveedor` ;
+
 CREATE TABLE IF NOT EXISTS `respuesta_proveedor` (
   `id_respuesta_proveedor` INT NOT NULL AUTO_INCREMENT,
   `id_vehiculo` BIGINT NOT NULL,
@@ -821,6 +864,76 @@ CREATE INDEX `fk_respuesta_proveedor_proveedor1_idx` ON `respuesta_proveedor` (`
 CREATE INDEX `fk_respuesta_proveedor_consulta_proveedor1_idx` ON `respuesta_proveedor` (`id_consulta_proveedor` ASC);
 
 
+-- -----------------------------------------------------
+-- Table `campania`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `campania` ;
+
+CREATE TABLE IF NOT EXISTS `campania` (
+  `id_campania` INT NOT NULL AUTO_INCREMENT,
+  `descripcion` VARCHAR(64) NOT NULL,
+  `activa` TINYINT(1) NOT NULL DEFAULT '0',
+  `condicion` TEXT NULL,
+  `detalle` TEXT NOT NULL,
+  `fecha_inicio` DATE NULL,
+  `fecha_fin` DATE NULL,
+  `periodicidad` SMALLINT NULL,
+  `numero_impresiones` VARCHAR(45) NULL,
+  PRIMARY KEY (`id_campania`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `campania_usuario`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `campania_usuario` ;
+
+CREATE TABLE IF NOT EXISTS `campania_usuario` (
+  `id_campania_usuario` BIGINT NOT NULL AUTO_INCREMENT,
+  `id_campania` INT NOT NULL,
+  `id_usuario` BIGINT NOT NULL,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_campania_usuario`),
+  CONSTRAINT `fk_campania_usuario_campania1`
+    FOREIGN KEY (`id_campania`)
+    REFERENCES `campania` (`id_campania`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_campania_usuario_usuario1`
+    FOREIGN KEY (`id_usuario`)
+    REFERENCES `usuario` (`id_usuario`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+CREATE INDEX `fk_campania_usuario_campania1_idx` ON `campania_usuario` (`id_campania` ASC);
+
+CREATE INDEX `fk_campania_usuario_usuario1_idx` ON `campania_usuario` (`id_usuario` ASC);
+
+
+-- -----------------------------------------------------
+-- View `v_campania_usuario`
+-- -----------------------------------------------------
+DROP VIEW IF EXISTS `v_campania_usuario` ;
+DROP TABLE IF EXISTS `v_campania_usuario`;
+CREATE  OR REPLACE VIEW `v_campania_usuario` AS
+    SELECT 
+        cu.id_campania_usuario AS id,
+        cu.id_usuario AS id_usuario,
+        c.fecha_inicio AS fecha_inicio,
+        c.fecha_fin AS fecha_fin,
+        c.periodicidad AS periodicidad,
+        c.numero_impresiones AS numero_impresiones,
+        c.detalle AS detalle,
+        cu.fecha_modificacion AS fecha_modificacion
+    FROM
+        campania c
+            JOIN
+        campania_usuario cu ON cu.id_campania = c.id_campania;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
@@ -829,7 +942,6 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 -- Data for table `red_social`
 -- -----------------------------------------------------
 START TRANSACTION;
-USE `car`;
 INSERT INTO `red_social` (`id_red_social`, `red_social`, `fecha_modificacion`) VALUES (1, 'facebook', '2014-01-01 12:00:00');
 INSERT INTO `red_social` (`id_red_social`, `red_social`, `fecha_modificacion`) VALUES (0, 'default', '2015-03-01 12:00:00');
 
@@ -840,7 +952,6 @@ COMMIT;
 -- Data for table `combustible`
 -- -----------------------------------------------------
 START TRANSACTION;
-USE `car`;
 INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (1, 'GASOLINA', '2014-01-01 12:00:00');
 INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (2, 'DIESEL', '2014-01-01 12:00:00');
 INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (3, 'GAS GLP', '2014-01-01 12:00:00');
@@ -854,7 +965,6 @@ COMMIT;
 -- Data for table `tipo_transmision`
 -- -----------------------------------------------------
 START TRANSACTION;
-USE `car`;
 INSERT INTO `tipo_transmision` (`id_tipo_transmision`, `descripcion`, `fecha_modificacion`) VALUES (1, 'MANUAL', '2014-01-01 12:00:00');
 INSERT INTO `tipo_transmision` (`id_tipo_transmision`, `descripcion`, `fecha_modificacion`) VALUES (2, 'AUTOMATICA', '2014-01-01 12:00:00');
 INSERT INTO `tipo_transmision` (`id_tipo_transmision`, `descripcion`, `fecha_modificacion`) VALUES (3, 'SEMI AUTOMATICA', '2014-01-01 12:00:00');
@@ -866,7 +976,6 @@ COMMIT;
 -- Data for table `traccion`
 -- -----------------------------------------------------
 START TRANSACTION;
-USE `car`;
 INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (1, 'DOBLE TRACCION PERMAMENTE (AWD)', '2014-01-01 12:00:00');
 INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (2, 'TRACCION DELANTERA', '2014-01-01 12:00:00');
 INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (3, 'DOBLE TRACCION NO PERMAMENTE (4WD)', '2014-01-01 12:00:00');
@@ -879,7 +988,6 @@ COMMIT;
 -- Data for table `tipo_seguro`
 -- -----------------------------------------------------
 START TRANSACTION;
-USE `car`;
 INSERT INTO `tipo_seguro` (`id_tipo_seguro`, `descripcion`) VALUES (1, 'SOAP');
 INSERT INTO `tipo_seguro` (`id_tipo_seguro`, `descripcion`) VALUES (2, 'GENERAL');
 

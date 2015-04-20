@@ -21,6 +21,8 @@ CREATE TABLE IF NOT EXISTS pais (
 
 
 
+
+
 CREATE TABLE IF NOT EXISTS region (
   id_region BIGINT NOT NULL,
   id_pais BIGINT NOT NULL,
@@ -36,6 +38,8 @@ CREATE TABLE IF NOT EXISTS region (
 ;
 
 CREATE INDEX fk_Region_Pais_idx ON region (id_pais ASC);
+
+
 
 
 
@@ -61,6 +65,8 @@ CREATE INDEX fk_comuna_region1_idx ON comuna (id_region ASC);
 
 
 
+
+
 CREATE TABLE IF NOT EXISTS tipo_vehiculo (
   id_tipo_vehiculo TINYINT NOT NULL,
   descripcion VARCHAR(20) NOT NULL,
@@ -68,6 +74,8 @@ CREATE TABLE IF NOT EXISTS tipo_vehiculo (
   PRIMARY KEY (id_tipo_vehiculo))
 
 ;
+
+
 
 
 
@@ -101,6 +109,8 @@ CREATE INDEX fk_marca_tipo_vehiculo1_idx ON marca (id_tipo_vehiculo ASC);
 
 
 
+
+
 CREATE TABLE IF NOT EXISTS modelo (
   id_modelo BIGINT NOT NULL,
   id_marca SMALLINT NOT NULL,
@@ -121,6 +131,8 @@ CREATE INDEX fk_Modelo_Marca1_idx ON modelo (id_marca ASC);
 
 
 
+
+
 CREATE TABLE IF NOT EXISTS red_social (
   id_red_social BIGINT NOT NULL,
   red_social VARCHAR(20) NOT NULL,
@@ -128,6 +140,8 @@ CREATE TABLE IF NOT EXISTS red_social (
   PRIMARY KEY (id_red_social))
 
 ;
+
+
 
 
 
@@ -159,6 +173,8 @@ CREATE INDEX fk_Usuario_Comuna1_idx ON usuario (id_comuna ASC);
 
 
 
+
+
 CREATE TABLE IF NOT EXISTS usuario_web (
   id_usuario_web INT(11) NOT NULL,
   nombre_usuario VARCHAR(16) NOT NULL,
@@ -181,6 +197,8 @@ CREATE UNIQUE INDEX idx_usuario_web_email ON usuario_web (email ASC);
 
 
 
+
+
 CREATE TABLE IF NOT EXISTS combustible (
   id_combustible TINYINT NOT NULL,
   descripcion VARCHAR(16) NOT NULL,
@@ -188,6 +206,8 @@ CREATE TABLE IF NOT EXISTS combustible (
   PRIMARY KEY (id_combustible))
 
 ;
+
+
 
 
 
@@ -205,6 +225,8 @@ CREATE TABLE IF NOT EXISTS tipo_transmision (
 
 
 
+
+
 CREATE TABLE IF NOT EXISTS traccion (
   id_traccion TINYINT NOT NULL,
   descripcion VARCHAR(40) NOT NULL,
@@ -212,6 +234,8 @@ CREATE TABLE IF NOT EXISTS traccion (
   PRIMARY KEY (id_traccion))
 
 ;
+
+
 
 
 
@@ -274,6 +298,8 @@ CREATE INDEX fk_vehiculo_traccion_idx ON vehiculo (id_traccion ASC);
 
 
 
+
+
 CREATE TABLE IF NOT EXISTS autenticacion (
   id_autenticacion BIGINT NOT NULL,
   id_usuario BIGINT NOT NULL,
@@ -298,6 +324,8 @@ CREATE INDEX fk_autenticacion_red_social1_idx ON autenticacion (id_red_social AS
 
 
 
+
+
 CREATE TABLE IF NOT EXISTS mantencion_base (
   id_mantencion_base BIGINT NOT NULL,
   nombre VARCHAR(45) NOT NULL,
@@ -314,6 +342,8 @@ CREATE TABLE IF NOT EXISTS mantencion_base (
   PRIMARY KEY (id_mantencion_base))
 
 ;
+
+
 
 
 
@@ -350,6 +380,8 @@ CREATE INDEX fk_mantencion_pospuesta_vehiculo1_idx ON mantencion_pospuesta (id_v
 
 
 
+
+
 CREATE TABLE IF NOT EXISTS mantencion_usuario (
   id_mantencion_usuario BIGINT NOT NULL,
   id_usuario BIGINT NOT NULL,
@@ -367,6 +399,8 @@ CREATE TABLE IF NOT EXISTS mantencion_usuario (
 ;
 
 CREATE INDEX fk_mantencion_usuario_usuario1_idx ON mantencion_usuario (id_usuario ASC);
+
+
 
 
 
@@ -404,14 +438,20 @@ CREATE INDEX fk_mantencion_usuario_hecha_vehiculo1_idx ON mantencion_usuario_hec
 
 
 
+
+
 CREATE TABLE IF NOT EXISTS parametro (
   id_parametro BIGINT(20) NOT NULL,
   llave VARCHAR(64) NOT NULL,
-  valor VARCHAR(64) NOT NULL,
+  valor TEXT NOT NULL,
   fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
   PRIMARY KEY (id_parametro))
 
 ;
+
+CREATE UNIQUE INDEX index2 ON parametro (llave ASC);
+
+
 
 
 
@@ -444,6 +484,8 @@ CREATE INDEX fk_recordatorio_vehiculo1_idx ON recordatorio (id_vehiculo ASC, id_
 
 
 
+
+
 CREATE TABLE IF NOT EXISTS log (
   id_log BIGINT NOT NULL,
   id_usuario BIGINT(20) NOT NULL,
@@ -457,6 +499,8 @@ CREATE TABLE IF NOT EXISTS log (
 ;
 
 CREATE INDEX fk_log_usuario1_idx ON log (id_usuario ASC);
+
+
 
 
 
@@ -482,6 +526,8 @@ CREATE TABLE IF NOT EXISTS reparacion (
 ;
 
 CREATE INDEX fk_reparacion_vehiculo1_idx ON reparacion (id_vehiculo ASC, id_usuario ASC);
+
+
 
 
 
@@ -515,6 +561,8 @@ CREATE INDEX fk_rendimiento_vehiculo1_idx ON carga_combustible (id_vehiculo ASC,
 
 
 
+
+
 CREATE TABLE IF NOT EXISTS info_sincro (
   id_info_sincro INT NOT NULL,
   usuario_id_usuario BIGINT NOT NULL,
@@ -525,6 +573,8 @@ CREATE TABLE IF NOT EXISTS info_sincro (
 ;
 
 CREATE INDEX fk_info_sincro_usuario1_idx ON info_sincro (usuario_id_usuario ASC);
+
+
 
 
 
@@ -562,6 +612,8 @@ CREATE INDEX fk_mantencion_base_hecha_vehiculo1_idx ON mantencion_base_hecha (id
 
 
 
+
+
 CREATE TABLE IF NOT EXISTS cambio_revision (
   id_cambio_revision INT NOT NULL,
   id_cambio BIGINT NULL,
@@ -584,6 +636,8 @@ CREATE TABLE IF NOT EXISTS cambio_revision (
 CREATE INDEX fk_cambio_revision_mantencion_base1_idx ON cambio_revision (id_cambio ASC);
 
 CREATE INDEX fk_cambio_revision_mantencion_base2_idx ON cambio_revision (id_revision ASC);
+
+
 
 
 
@@ -620,6 +674,8 @@ CREATE INDEX fk_alerta_vehiculo_idx ON alerta (id_vehiculo ASC, id_usuario ASC);
 
 
 
+
+
 CREATE TABLE IF NOT EXISTS cia_seguros (
   id_cia_seguros INT NOT NULL,
   nombre VARCHAR(256) NOT NULL,
@@ -633,12 +689,16 @@ CREATE TABLE IF NOT EXISTS cia_seguros (
 
 
 
+
+
 CREATE TABLE IF NOT EXISTS tipo_seguro (
   id_tipo_seguro INT NOT NULL,
   descripcion VARCHAR(16) NOT NULL,
   PRIMARY KEY (id_tipo_seguro))
 
 ;
+
+
 
 
 
@@ -684,29 +744,6 @@ CREATE INDEX fk_seguro_vehiculo_tipo_seguro1_idx ON seguro_vehiculo (id_tipo_seg
 
 
 
-CREATE TABLE IF NOT EXISTS notificacion (
-  id_notificacion INT NOT NULL,
-  id_usuario BIGINT NOT NULL,
-  fecha_inicio DATE NULL,
-  fecha_fin DATE NULL,
-  periodicidad SMALLINT NULL,
-  numero_impresiones SMALLINT NULL,
-  detalle TEXT NULL,
-  fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
-  borrado BOOLEAN NOT NULL DEFAULT '0',
-  PRIMARY KEY (id_notificacion),
-  CONSTRAINT fk_notificacion_usuario1
-    FOREIGN KEY (id_usuario)
-    REFERENCES usuario (id_usuario)
-    
-    )
-
-;
-
-CREATE INDEX fk_notificacion_usuario1_idx ON notificacion (id_usuario ASC);
-
-
-
 
 
 CREATE TABLE IF NOT EXISTS proveedor (
@@ -727,6 +764,8 @@ CREATE TABLE IF NOT EXISTS proveedor (
   PRIMARY KEY (id_proveedor))
 
 ;
+
+
 
 
 
@@ -759,6 +798,8 @@ CREATE INDEX fk_proveedor_mantencion_base_mantencion_base1_idx ON proveedor_mant
 
 
 
+
+
 CREATE TABLE IF NOT EXISTS consulta_proveedor (
   id_consulta_proveedor INT NOT NULL,
   id_vehiculo BIGINT NOT NULL,
@@ -784,6 +825,8 @@ CREATE TABLE IF NOT EXISTS consulta_proveedor (
 CREATE INDEX fk_consulta_proveedor_vehiculo1_idx ON consulta_proveedor (id_vehiculo ASC, id_usuario ASC);
 
 CREATE INDEX fk_consulta_proveedor_mantencion_base1_idx ON consulta_proveedor (id_mantencion_base ASC);
+
+
 
 
 
@@ -827,13 +870,81 @@ CREATE INDEX fk_respuesta_proveedor_consulta_proveedor1_idx ON respuesta_proveed
 
 
 
+CREATE TABLE IF NOT EXISTS campania (
+  id_campania INT NOT NULL,
+  descripcion VARCHAR(64) NOT NULL,
+  activa BOOLEAN NOT NULL DEFAULT '0',
+  condicion TEXT NULL,
+  detalle TEXT NOT NULL,
+  fecha_inicio DATE NULL,
+  fecha_fin DATE NULL,
+  periodicidad SMALLINT NULL,
+  numero_impresiones VARCHAR(45) NULL,
+  PRIMARY KEY (id_campania))
+
+;
+
+
+
+
+
+
+
+CREATE TABLE IF NOT EXISTS campania_usuario (
+  id_campania_usuario BIGINT NOT NULL,
+  id_campania INT NOT NULL,
+  id_usuario BIGINT NOT NULL,
+  fecha_modificacion TIMESTAMP NOT NULL DEFAULT (datetime('now', 'localtime')),
+  PRIMARY KEY (id_campania_usuario),
+  CONSTRAINT fk_campania_usuario_campania1
+    FOREIGN KEY (id_campania)
+    REFERENCES campania (id_campania)
+    
+    ,
+  CONSTRAINT fk_campania_usuario_usuario1
+    FOREIGN KEY (id_usuario)
+    REFERENCES usuario (id_usuario)
+    
+    )
+
+;
+
+CREATE INDEX fk_campania_usuario_campania1_idx ON campania_usuario (id_campania ASC);
+
+CREATE INDEX fk_campania_usuario_usuario1_idx ON campania_usuario (id_usuario ASC);
+
+
+
+
+
+
+
+CREATE  OR REPLACE VIEW v_campania_usuario AS
+    SELECT 
+        cu.id_campania_usuario AS id,
+        cu.id_usuario AS id_usuario,
+        c.fecha_inicio AS fecha_inicio,
+        c.fecha_fin AS fecha_fin,
+        c.periodicidad AS periodicidad,
+        c.numero_impresiones AS numero_impresiones,
+        c.detalle AS detalle,
+        cu.fecha_modificacion AS fecha_modificacion
+    FROM
+        campania c
+            JOIN
+        campania_usuario cu ON cu.id_campania = c.id_campania;
+
+
+
+
+
+
 
 
 
 
 INSERT INTO red_social (id_red_social, red_social, fecha_modificacion) VALUES (1, 'facebook', '2014-01-01 12:00:00');
 INSERT INTO red_social (id_red_social, red_social, fecha_modificacion) VALUES (0, 'default', '2015-03-01 12:00:00');
-
 
 
 
@@ -855,11 +966,9 @@ INSERT INTO combustible (id_combustible, descripcion, fecha_modificacion) VALUES
 
 
 
-
 INSERT INTO tipo_transmision (id_tipo_transmision, descripcion, fecha_modificacion) VALUES (1, 'MANUAL', '2014-01-01 12:00:00');
 INSERT INTO tipo_transmision (id_tipo_transmision, descripcion, fecha_modificacion) VALUES (2, 'AUTOMATICA', '2014-01-01 12:00:00');
 INSERT INTO tipo_transmision (id_tipo_transmision, descripcion, fecha_modificacion) VALUES (3, 'SEMI AUTOMATICA', '2014-01-01 12:00:00');
-
 
 
 
@@ -872,7 +981,6 @@ INSERT INTO traccion (id_traccion, descripcion, fecha_modificacion) VALUES (1, '
 INSERT INTO traccion (id_traccion, descripcion, fecha_modificacion) VALUES (2, 'TRACCION DELANTERA', '2014-01-01 12:00:00');
 INSERT INTO traccion (id_traccion, descripcion, fecha_modificacion) VALUES (3, 'DOBLE TRACCION NO PERMAMENTE (4WD)', '2014-01-01 12:00:00');
 INSERT INTO traccion (id_traccion, descripcion, fecha_modificacion) VALUES (4, 'TRACCION TRASERA', '2014-01-01 12:00:00');
-
 
 
 
@@ -1051,6 +1159,19 @@ INSERT INTO tipo_seguro (id_tipo_seguro, descripcion) VALUES (2, 'GENERAL');
     UPDATE usuario SET fecha_modificacion = datetime('now', 'localtime') WHERE id_usuario = NEW.id_usuario;
   END;
 
+
+CREATE TABLE v_campania_usuario
+(
+  id BIGINT, 
+  id_usuario BIGINT, 
+  fecha_inicio DATE, 
+  fecha_fin DATE, 
+  periodicidad SMALLINT, 
+  numero_impresiones SMALLINT, 
+  detalle TEXT, 
+  fecha_modificacion DATETIME,
+  PRIMARY KEY(id)
+);
 INSERT INTO pais (id_pais, pais) VALUES 
 (56, 'Chile');
 
@@ -15188,5 +15309,9 @@ DROP TABLE aux_correo;
 DROP TABLE campania;
 DROP TABLE campania_usuario;
 DROP TABLE usuario_web;
+DROP TABLE proveedor;
+DROP TABLE proveedor_mantencion_base;
+DROP TABLE consulta_proveedor;
+DROP TABLE respuesta_proveedor;
 
 PRAGMA foreign_keys = ON;
