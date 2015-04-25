@@ -13,6 +13,7 @@ sed -f script.sed modelo.sql >> car.sql
 sed -f script.sed mantencion_base.sql >> car.sql
 sed -f script.sed cambio_revision.sql >> car.sql
 sed -f script.sed cia_seguros.sql >> car.sql
+sed -f script.sed parametro.sql >> car.sql
 #sed -f script.sed tipo_seguro.sql >> car.sql
 #sed -f script.sed perfil_uso.sql >> car.sql
 cat post.sql >> car.sql

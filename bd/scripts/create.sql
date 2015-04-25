@@ -2,6 +2,8 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
+CREATE SCHEMA IF NOT EXISTS `car2` DEFAULT CHARACTER SET latin1 ;
+USE `car2` ;
 
 -- -----------------------------------------------------
 -- Table `pais`
@@ -440,7 +442,7 @@ CREATE INDEX `fk_mantencion_usuario_hecha_vehiculo1_idx` ON `mantencion_usuario_
 DROP TABLE IF EXISTS `parametro` ;
 
 CREATE TABLE IF NOT EXISTS `parametro` (
-  `id_parametro` BIGINT(20) NOT NULL,
+  `id_parametro` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `llave` VARCHAR(64) NOT NULL,
   `valor` TEXT NOT NULL,
   `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -878,7 +880,8 @@ CREATE TABLE IF NOT EXISTS `campania` (
   `fecha_inicio` DATE NULL,
   `fecha_fin` DATE NULL,
   `periodicidad` SMALLINT NULL,
-  `numero_impresiones` VARCHAR(45) NULL,
+  `numero_impresiones` SMALLINT NULL,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_campania`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
@@ -912,12 +915,19 @@ CREATE INDEX `fk_campania_usuario_campania1_idx` ON `campania_usuario` (`id_camp
 
 CREATE INDEX `fk_campania_usuario_usuario1_idx` ON `campania_usuario` (`id_usuario` ASC);
 
+USE `car2` ;
+
+-- -----------------------------------------------------
+-- Placeholder table for view `v_campania_usuario`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `v_campania_usuario` (`id` INT, `id_usuario` INT, `fecha_inicio` INT, `fecha_fin` INT, `periodicidad` INT, `numero_impresiones` INT, `detalle` INT, `fecha_modificacion` INT);
 
 -- -----------------------------------------------------
 -- View `v_campania_usuario`
 -- -----------------------------------------------------
 DROP VIEW IF EXISTS `v_campania_usuario` ;
 DROP TABLE IF EXISTS `v_campania_usuario`;
+USE `car2`;
 CREATE  OR REPLACE VIEW `v_campania_usuario` AS
     SELECT 
         cu.id_campania_usuario AS id,
@@ -942,6 +952,7 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 -- Data for table `red_social`
 -- -----------------------------------------------------
 START TRANSACTION;
+USE `car2`;
 INSERT INTO `red_social` (`id_red_social`, `red_social`, `fecha_modificacion`) VALUES (1, 'facebook', '2014-01-01 12:00:00');
 INSERT INTO `red_social` (`id_red_social`, `red_social`, `fecha_modificacion`) VALUES (0, 'default', '2015-03-01 12:00:00');
 
@@ -952,6 +963,7 @@ COMMIT;
 -- Data for table `combustible`
 -- -----------------------------------------------------
 START TRANSACTION;
+USE `car2`;
 INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (1, 'GASOLINA', '2014-01-01 12:00:00');
 INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (2, 'DIESEL', '2014-01-01 12:00:00');
 INSERT INTO `combustible` (`id_combustible`, `descripcion`, `fecha_modificacion`) VALUES (3, 'GAS GLP', '2014-01-01 12:00:00');
@@ -965,6 +977,7 @@ COMMIT;
 -- Data for table `tipo_transmision`
 -- -----------------------------------------------------
 START TRANSACTION;
+USE `car2`;
 INSERT INTO `tipo_transmision` (`id_tipo_transmision`, `descripcion`, `fecha_modificacion`) VALUES (1, 'MANUAL', '2014-01-01 12:00:00');
 INSERT INTO `tipo_transmision` (`id_tipo_transmision`, `descripcion`, `fecha_modificacion`) VALUES (2, 'AUTOMATICA', '2014-01-01 12:00:00');
 INSERT INTO `tipo_transmision` (`id_tipo_transmision`, `descripcion`, `fecha_modificacion`) VALUES (3, 'SEMI AUTOMATICA', '2014-01-01 12:00:00');
@@ -976,6 +989,7 @@ COMMIT;
 -- Data for table `traccion`
 -- -----------------------------------------------------
 START TRANSACTION;
+USE `car2`;
 INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (1, 'DOBLE TRACCION PERMAMENTE (AWD)', '2014-01-01 12:00:00');
 INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (2, 'TRACCION DELANTERA', '2014-01-01 12:00:00');
 INSERT INTO `traccion` (`id_traccion`, `descripcion`, `fecha_modificacion`) VALUES (3, 'DOBLE TRACCION NO PERMAMENTE (4WD)', '2014-01-01 12:00:00');
@@ -988,6 +1002,7 @@ COMMIT;
 -- Data for table `tipo_seguro`
 -- -----------------------------------------------------
 START TRANSACTION;
+USE `car2`;
 INSERT INTO `tipo_seguro` (`id_tipo_seguro`, `descripcion`) VALUES (1, 'SOAP');
 INSERT INTO `tipo_seguro` (`id_tipo_seguro`, `descripcion`) VALUES (2, 'GENERAL');
 

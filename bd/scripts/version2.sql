@@ -40,7 +40,7 @@ CREATE INDEX `fk_mantencion_pospuesta_vehiculo1_idx` ON `mantencion_pospuesta` (
 DROP TABLE IF EXISTS `parametro` ;
 
 CREATE TABLE IF NOT EXISTS `parametro` (
-  `id_parametro` BIGINT(20) NOT NULL,
+  `id_parametro` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `llave` VARCHAR(64) NOT NULL,
   `valor` TEXT NOT NULL,
   `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

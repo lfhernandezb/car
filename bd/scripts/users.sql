@@ -1,10 +1,10 @@
--- CREATE USER 'car'@'localhost' IDENTIFIED BY 'car';
+-- CREATE USER 'car2'@'localhost' IDENTIFIED BY 'car2';
 
-GRANT ALL ON car.* TO 'car'@'localhost' IDENTIFIED BY 'car';
+GRANT ALL ON car2.* TO 'car2'@'localhost' IDENTIFIED BY 'car2';
 
-GRANT ALL ON car.* TO 'car'@'186.64.120.139' IDENTIFIED BY 'car';
+GRANT ALL ON car2.* TO 'car2'@'186.64.120.139' IDENTIFIED BY 'car2';
 
-GRANT ALL ON car.* TO 'car'@'192.168.1.115' IDENTIFIED BY 'car';
+GRANT ALL ON car2.* TO 'car2'@'192.168.1.115' IDENTIFIED BY 'car2';
 
 -- GRANT SELECT, INSERT, UPDATE, DELETE ON car.* TO 'car'@'localhost' IDENTIFIED BY 'car';
 
