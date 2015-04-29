@@ -918,17 +918,12 @@ CREATE INDEX `fk_campania_usuario_usuario1_idx` ON `campania_usuario` (`id_usuar
 USE `car2` ;
 
 -- -----------------------------------------------------
--- Placeholder table for view `v_campania_usuario`
+-- View `vw_campania_usuario`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `v_campania_usuario` (`id` INT, `id_usuario` INT, `fecha_inicio` INT, `fecha_fin` INT, `periodicidad` INT, `numero_impresiones` INT, `detalle` INT, `fecha_modificacion` INT);
-
--- -----------------------------------------------------
--- View `v_campania_usuario`
--- -----------------------------------------------------
-DROP VIEW IF EXISTS `v_campania_usuario` ;
-DROP TABLE IF EXISTS `v_campania_usuario`;
+DROP VIEW IF EXISTS `vw_campania_usuario` ;
+DROP TABLE IF EXISTS `vw_campania_usuario`;
 USE `car2`;
-CREATE  OR REPLACE VIEW `v_campania_usuario` AS
+CREATE  OR REPLACE VIEW `vw_campania_usuario` AS
     SELECT 
         cu.id_campania_usuario AS id,
         cu.id_usuario AS id_usuario,

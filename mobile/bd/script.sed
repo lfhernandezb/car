@@ -45,8 +45,8 @@ s/b'1'/'1'/g
 s/START TRANSACTION;//g
 s/COMMIT;//g
 s/COMMENT '.*'//g
-s/true/'true'/g
-s/false/'false'/g
+#s/true/'true'/g
+#s/false/'false'/g
 s/`//g
 s/DEFAULT CHARACTER SET = [a-zA-Z0-9_]*//g
 s/COLLATE = [a-zA-Z0-9_]*//g

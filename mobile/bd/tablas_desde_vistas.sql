@@ -1,5 +1,5 @@
 
-CREATE TABLE v_campania_usuario
+CREATE TABLE vw_campania_usuario
 (
   id BIGINT, 
   id_usuario BIGINT, 
