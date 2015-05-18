@@ -40,8 +40,10 @@ s/ON DELETE NO ACTION//g
 s/ON UPDATE NO ACTION//g
 s/ USING BTREE//g
 s/AUTO_INCREMENT = [0-9]*//g
-s/b'0'/'0'/g
-s/b'1'/'1'/g
+s/b'0'/'false'/g
+s/b'1'/'true'/g
+s/'0'/'false'/g
+s/'1'/'true'/g
 s/START TRANSACTION;//g
 s/COMMIT;//g
 s/COMMENT '.*'//g

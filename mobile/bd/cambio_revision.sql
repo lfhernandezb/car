@@ -1,5 +1,12 @@
-INSERT INTO `cambio_revision` VALUES (1,2,1,'2015-04-23 00:39:47');
-INSERT INTO `cambio_revision` VALUES (2,4,3,'2015-04-23 00:40:29');
-INSERT INTO `cambio_revision` VALUES (3,8,7,'2015-04-23 00:41:25');
-INSERT INTO `cambio_revision` VALUES (4,10,9,'2015-04-23 00:41:48');
-INSERT INTO `cambio_revision` VALUES (5,15,14,'2015-04-23 00:43:01');
+INSERT INTO `cambio_revision` VALUES (1,2,1,'2015-04-30 04:28:22');
+INSERT INTO `cambio_revision` VALUES (2,4,3,'2015-04-30 04:28:22');
+INSERT INTO `cambio_revision` VALUES (3,8,7,'2015-04-30 04:28:22');
+INSERT INTO `cambio_revision` VALUES (4,10,9,'2015-04-30 04:28:22');
+INSERT INTO `cambio_revision` VALUES (5,15,14,'2015-04-30 04:28:23');
+INSERT INTO `cambio_revision` VALUES (6,13,NULL,'2015-04-30 04:28:23');
+INSERT INTO `cambio_revision` VALUES (7,NULL,5,'2015-04-30 04:28:23');
+INSERT INTO `cambio_revision` VALUES (8,6,NULL,'2015-04-30 04:28:23');
+INSERT INTO `cambio_revision` VALUES (9,11,NULL,'2015-04-30 04:28:23');
+INSERT INTO `cambio_revision` VALUES (10,NULL,12,'2015-04-30 04:28:23');
+INSERT INTO `cambio_revision` VALUES (11,NULL,16,'2015-04-30 04:28:23');
+INSERT INTO `cambio_revision` VALUES (12,17,NULL,'2015-05-08 19:41:48');

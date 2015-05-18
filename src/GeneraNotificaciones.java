@@ -37,7 +37,7 @@ public class GeneraNotificaciones {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-		Logger logger = Logger.getLogger(DataLoader.class.getName());
+		Logger logger = Logger.getLogger(GeneraNotificaciones.class.getName());
 
 		String config_file_name;
 		java.sql.Connection conn;
@@ -79,7 +79,7 @@ public class GeneraNotificaciones {
 			
 			listParameters = new ArrayList<AbstractMap.SimpleEntry<String, String>>();
 			
-			listParameters.add(new SimpleEntry<String, String>("no borrado", null));
+			//listParameters.add(new SimpleEntry<String, String>("no borrado", null));
 			
 			listCampania = Campania.seek(conn, listParameters, null, null, 0, 10000);
 			
@@ -97,7 +97,7 @@ public class GeneraNotificaciones {
 						"  WHERE id_usuario NOT IN (SELECT id_usuario FROM campania_usuario WHERE id_campania = " + String.valueOf(campania.getId()) + ")";
 					
 					if (!campania.getCondicion().isEmpty()) {
-						strSQL += campania.getCondicion();
+						strSQL += " AND " + campania.getCondicion();
 					}
 					
 		            stmt = conn.createStatement();
