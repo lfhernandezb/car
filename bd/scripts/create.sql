@@ -281,6 +281,11 @@ CREATE TABLE IF NOT EXISTS `vehiculo` (
     FOREIGN KEY (`id_traccion`)
     REFERENCES `traccion` (`id_traccion`)
     ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_vehiculo_usuario1`
+    FOREIGN KEY (`id_usuario`)
+    REFERENCES `usuario` (`id_usuario`)
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
@@ -395,7 +400,12 @@ CREATE TABLE IF NOT EXISTS `mantencion_usuario` (
   `meses_entre_mantenciones` INT NULL,
   `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `borrado` TINYINT(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_mantencion_usuario`, `id_usuario`))
+  PRIMARY KEY (`id_mantencion_usuario`, `id_usuario`),
+  CONSTRAINT `fk_mantencion_usuario_usuario1`
+    FOREIGN KEY (`id_usuario`)
+    REFERENCES `usuario` (`id_usuario`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = latin1;
 

@@ -48,6 +48,10 @@ echo "parametro"
 /usr/bin/mysql -u car2 -pcar2 car2 < ../data/parametro.sql
 echo "usuario_web"
 /usr/bin/mysql -u car2 -pcar2 car2 < ../data/usuario_web.sql
+echo "triggers"
+/usr/bin/mysql -u car2 -pcar2 car2 < triggers.sql
+echo "triggers suplementarios"
+/usr/bin/mysql -u car2 -pcar2 car2 < triggers_suppl.sql
 #
 # respaldos utiles para generar la bd sqlite
 #
