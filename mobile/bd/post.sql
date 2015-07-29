@@ -18,4 +18,5 @@ DROP TABLE proveedor;
 DROP TABLE proveedor_mantencion_base;
 DROP TABLE consulta_proveedor;
 DROP TABLE respuesta_proveedor;
+DROP TABLE usuario_info;
 

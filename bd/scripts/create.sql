@@ -758,7 +758,7 @@ CREATE INDEX `fk_seguro_vehiculo_tipo_seguro1_idx` ON `seguro_vehiculo` (`id_tip
 DROP TABLE IF EXISTS `proveedor` ;
 
 CREATE TABLE IF NOT EXISTS `proveedor` (
-  `id_proveedor` INT NOT NULL,
+  `id_proveedor` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(256) NULL,
   `direccion` VARCHAR(512) NULL,
   `correo` VARCHAR(128) NULL,
@@ -924,6 +924,39 @@ DEFAULT CHARACTER SET = latin1;
 CREATE INDEX `fk_campania_usuario_campania1_idx` ON `campania_usuario` (`id_campania` ASC);
 
 CREATE INDEX `fk_campania_usuario_usuario1_idx` ON `campania_usuario` (`id_usuario` ASC);
+
+
+-- -----------------------------------------------------
+-- Table `usuario_info`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `usuario_info` ;
+
+CREATE TABLE IF NOT EXISTS `usuario_info` (
+  `id_usuario_info` BIGINT NOT NULL AUTO_INCREMENT,
+  `id_usuario` BIGINT NOT NULL,
+  `latitud` DOUBLE NULL,
+  `longitud` DOUBLE NULL,
+  `house_number` VARCHAR(16) NULL,
+  `road` VARCHAR(256) NULL,
+  `neighbourhood` VARCHAR(256) NULL,
+  `suburb` VARCHAR(256) NULL,
+  `city` VARCHAR(256) NULL,
+  `county` VARCHAR(256) NULL,
+  `state` VARCHAR(256) NULL,
+  `country` VARCHAR(256) NULL,
+  `country_code` VARCHAR(8) NULL,
+  `android` VARCHAR(16) NULL,
+  `app_version` VARCHAR(16) NULL,
+  PRIMARY KEY (`id_usuario_info`),
+  CONSTRAINT `fk_usuario_posicion_usuario1`
+    FOREIGN KEY (`id_usuario`)
+    REFERENCES `usuario` (`id_usuario`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+CREATE INDEX `fk_usuario_posicion_usuario1_idx` ON `usuario_info` (`id_usuario` ASC);
 
 USE `car2` ;
 

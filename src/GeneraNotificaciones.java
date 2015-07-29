@@ -93,14 +93,18 @@ public class GeneraNotificaciones {
 					// obtengo los usuarios a notificar
 					
 					String strSQL = 
-						"  SELECT id_usuario FROM usuario" +
-						"  WHERE id_usuario NOT IN (SELECT id_usuario FROM campania_usuario WHERE id_campania = " + String.valueOf(campania.getId()) + ")";
+						"  SELECT DISTINCT(u.id_usuario)" +
+						"  FROM usuario u" +
+						"  JOIN vehiculo v ON v.id_usuario = u.id_usuario" +
+						"  WHERE u.id_usuario NOT IN (SELECT cu.id_usuario FROM campania_usuario cu WHERE cu.id_campania = " + String.valueOf(campania.getId()) + ")";
 					
 					if (!campania.getCondicion().isEmpty()) {
-						strSQL += " AND " + campania.getCondicion();
+						strSQL += " AND (" + campania.getCondicion() + ")";
 					}
 					
 		            stmt = conn.createStatement();
+		            
+		            System.out.println(strSQL);
 		            
 		            rs = stmt.executeQuery(strSQL);
 		            

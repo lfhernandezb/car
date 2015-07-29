@@ -6,6 +6,8 @@ GRANT ALL ON car2.* TO 'car2'@'186.64.120.139' IDENTIFIED BY 'car2';
 
 GRANT ALL ON car2.* TO 'car2'@'192.168.1.115' IDENTIFIED BY 'car2';
 
+-- GRANT ALL ON car2.* TO 'car2'@'pc-206-225-161-190.cm.vtr.net' IDENTIFIED BY 'car2';
+
 -- GRANT SELECT, INSERT, UPDATE, DELETE ON car.* TO 'car'@'localhost' IDENTIFIED BY 'car';
 
 -- GRANT CREATE, DROP ON car.* TO 'car'@'localhost';
