@@ -1,0 +1,15 @@
+generar carws2 apuntando a www.dsoft.cl ok
+detener carws2 ok
+respaldar base de datos car2_20150816.sql en miauto@www.dsoft.cl:backup ok
+detener crontab campania_usuario en lfhernandez@www.dsoft.cl:develop/car ok
+actualizar crontab campania_usuario; no activarlo ok
+cargar cambios en bd desde modelo_triggers ok
+respaldar base de datos car2_20150816.2.sql en miauto@www.dsoft.cl:backup ok
+cargar datos en usuario_creacion INSERT INTO usuario_creacion (id_usuario, fecha_creacion) SELECT id_usuario, fecha_modificacion FROM campania_usuario where id_campania = 9; ok
+actualizar usuario_campania.fecha_sincro UPDATE campania_usuario SET fecha_sincro = fecha_modificacion; ok
+respaldar base de datos car2_20150816.3.sql en miauto@www.dsoft.cl:backup ok
+desactivar campanias ok
+correr crontab; visualizar nuevos registros en vw_campania_usuario, no debe de haberlos ok
+actualizar miauto.dsoft.cl en webmaster@www.dsoft.cl ok
+redeploy carws2 ok
+iniciar crontab ok

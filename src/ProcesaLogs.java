@@ -26,7 +26,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import cl.dsoft.car.misc.MyCarException;
+import cl.dsoft.car.server.db.Comuna;
 import cl.dsoft.car.server.db.Log;
+import cl.dsoft.car.server.db.Pais;
+import cl.dsoft.car.server.db.Provincia;
+import cl.dsoft.car.server.db.ProvinciaComuna;
+import cl.dsoft.car.server.db.Region;
 import cl.dsoft.car.server.db.Usuario;
 import cl.dsoft.car.server.db.UsuarioInfo;
 import cl.dsoft.car.server.model.Proveedores;
@@ -78,6 +83,12 @@ public class ProcesaLogs {
 		ArrayList<Log> listLog;
 		//ArrayList<Usuario> listUsuario;
 		InputStream input;
+		
+		Comuna comuna;
+		Region region;
+		Pais pais;
+		Provincia provincia;
+		ProvinciaComuna provinciaComuna;
 
 		conn = null;
 
@@ -107,7 +118,8 @@ public class ProcesaLogs {
 			
 			listParameters = new ArrayList<AbstractMap.SimpleEntry<String, String>>();
 			
-			//listParameters.add(new SimpleEntry<String, String>("no borrado", null));
+			listParameters.add(new SimpleEntry<String, String>("no borrado", ""));
+			listParameters.add(new SimpleEntry<String, String>("sin posicion", ""));
 			
 			listUsuario = Usuario.seek(conn, listParameters, null, null, 0, 10000);
 			
@@ -140,44 +152,133 @@ public class ProcesaLogs {
 									
 									UsuarioInfo ui = UsuarioInfo.getByParameter(conn, "id_usuario", String.valueOf(usuario.getId()));
 									
-							        NominatimReverseGeocodingJAPI nominatim1 = new NominatimReverseGeocodingJAPI(); //create instance with default zoom level (18)
+							        JSONObject joAddress = ReverseGeo.getReverseGeo(lph.getLatitud(), lph.getLongitud());
 							        
-							        Address address = nominatim1.getAdress(lph.getLatitud(), lph.getLongitud()); //returns Address object for the given position
+							        if (joAddress != null) {
+							        	
+							        	ReverseGeoData rgd = new ReverseGeoData(joAddress);
+									
+										if (ui == null) {		
+											ui = new UsuarioInfo();
+										}
 
-									
-									if (ui == null) {		
-										ui = new UsuarioInfo();
-									}
-									
-									ui.setIdUsuario(usuario.getId());
-									ui.setLatitud(lph.getLatitud());
-									ui.setLongitud(lph.getLongitud());
-									ui.setCity(StringEscapeUtils.escapeSql(address.getCity()));
-									ui.setCountry(StringEscapeUtils.escapeSql(address.getCounty()));
-									ui.setCountry(StringEscapeUtils.escapeSql(address.getCountry()));
-									ui.setCountryCode(address.getCountryCode());
-									//ui.setHouseNumber(address.)
-									//ui.setNeighbourhood(address.ge)
-									ui.setRoad(StringEscapeUtils.escapeSql(address.getRoad()));
-									ui.setState(StringEscapeUtils.escapeSql(address.getState()));
-									ui.setSuburb(StringEscapeUtils.escapeSql(address.getSuburb()));
+										ui.setIdUsuario(usuario.getId());
+										ui.setLatitud(lph.getLatitud());
+										ui.setLongitud(lph.getLongitud());
+										ui.setCity(StringEscapeUtils.escapeSql(rgd.getCity()));
+										ui.setCountry(StringEscapeUtils.escapeSql(rgd.getCountry()));
+										ui.setCountryCode(StringEscapeUtils.escapeSql(rgd.getCountryCode()));
+										ui.setHouseNumber(rgd.getHouseNumber());
+										ui.setNeighbourhood(StringEscapeUtils.escapeSql(rgd.getNeighbourhood()));
+										ui.setRoad(StringEscapeUtils.escapeSql(rgd.getRoad()));
+										ui.setState(StringEscapeUtils.escapeSql(rgd.getState()));
+										ui.setSuburb(StringEscapeUtils.escapeSql(rgd.getSuburb()));
+										ui.setCounty(StringEscapeUtils.escapeSql(rgd.getCounty()));
 										
-									if (ui.getId() == null) {
-										ui.insert(conn);
-									}
-									else {
-										ui.update(conn);
-									}
-									
-									if (bFound) {
-										break;
-									}
+										if (ui.getCity() == null) {
+											ui.setCity(StringEscapeUtils.escapeSql(rgd.getTown()));
+										}
+										
+										// existe pais?
+										pais = Pais.getByParameter(conn, "pais", "'" + ui.getCountry() + "'");
+										
+										if (pais == null) {
+											pais = new Pais();
+											
+											pais.setPais(ui.getCountry());
+											
+											pais.insert(conn);
+										}
+										
+										// existe region?
+										region = Region.getByParameter(conn, "region", "'" + ui.getState() + "'");
+										
+										if (region == null) {
+											region = new Region();
+											
+											region.setIdPais(pais.getId());
+											region.setRegion(ui.getState());
+											
+											region.insert(conn);
+										}
+
+										// existe comuna?
+										comuna = null;
+										
+										if (ui.getCity() != null) {
+											comuna = Comuna.getByParameter(conn, "comuna", "'" + ui.getCity() + "'");
+											
+											if (comuna == null) {
+												// inserto comuna
+												
+												comuna = new Comuna();
+												
+												comuna.setIdRegion(region.getId());
+												comuna.setComuna(ui.getCity());
+												
+												comuna.insert(conn);
+												
+											}
+										}
+										
+										provincia = null;
+										
+										if (ui.getCounty() != null) {
+											// existe provincia?
+											provincia = Provincia.getByParameter(conn, "provincia", "'" + ui.getCounty() + "'");
+											
+											if (provincia == null) {
+												provincia = new Provincia();
+												
+												provincia.setIdRegion(region.getId());
+												provincia.setProvincia(ui.getCounty());
+												
+												provincia.insert(conn);
+											}
+										}	
+
+										if (provincia != null && comuna != null) {
+											// existe provincia_comuna?
+											provinciaComuna = ProvinciaComuna.getByParameter(conn, "id_comuna", String.valueOf(comuna.getId()));
+											
+											if (provinciaComuna == null) {
+												provinciaComuna = new ProvinciaComuna();
+												
+												provinciaComuna.setIdProvincia(provincia.getId());
+												provinciaComuna.setIdComuna(comuna.getId());
+												
+												provinciaComuna.insert(conn);
+											}
+										}
+										/*
+										if (comuna != null) {
+											usuario.setIdComuna(comuna.getId());
+											
+											usuario.update(conn);
+										}
+										*/
+										System.out.println(ui.toString());
+										
+										if (ui.getId() == null) {
+											ui.insert(conn);
+										}
+										else {
+											ui.update(conn);
+										}
+										
+										if (bFound) {
+											break;
+										}
+							        }
+							        else {
+							        	System.out.println("address es null");
+							        }
 								}
 							}
 						}
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
-						//e.printStackTrace();
+						e.printStackTrace();
 					}
 
 					if (bFound) {
