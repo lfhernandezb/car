@@ -81,6 +81,7 @@ public class GeneraNotificaciones {
 			
 			listParameters.add(new SimpleEntry<String, String>("activa", null));
 			listParameters.add(new SimpleEntry<String, String>("vigente", null));
+			listParameters.add(new SimpleEntry<String, String>("manual", null));
 			
 			listCampania = Campania.seek(conn, listParameters, null, null, 0, 10000);
 			

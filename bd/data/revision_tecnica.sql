@@ -1,0 +1,10 @@
+INSERT INTO revision_tecnica (digito, mes) VALUES (9, 1);
+INSERT INTO revision_tecnica (digito, mes) VALUES (0, 2);
+INSERT INTO revision_tecnica (digito, mes) VALUES (1, 4);
+INSERT INTO revision_tecnica (digito, mes) VALUES (2, 5);
+INSERT INTO revision_tecnica (digito, mes) VALUES (3, 6);
+INSERT INTO revision_tecnica (digito, mes) VALUES (4, 7);
+INSERT INTO revision_tecnica (digito, mes) VALUES (5, 8);
+INSERT INTO revision_tecnica (digito, mes) VALUES (6, 9);
+INSERT INTO revision_tecnica (digito, mes) VALUES (7, 10);
+INSERT INTO revision_tecnica (digito, mes) VALUES (8, 11);

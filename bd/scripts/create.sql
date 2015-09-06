@@ -410,6 +410,7 @@ CREATE TABLE IF NOT EXISTS `campania` (
   `fecha_fin` DATE NULL DEFAULT NULL,
   `periodicidad` SMALLINT(6) NULL DEFAULT NULL,
   `numero_impresiones` SMALLINT(6) NULL DEFAULT NULL,
+  `manual` BIT(1) NOT NULL,
   `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_campania`))
 ENGINE = InnoDB
@@ -1043,6 +1044,118 @@ DEFAULT CHARACTER SET = latin1;
 CREATE INDEX `fk_provincia_comuna_provincia1_idx` ON `provincia_comuna` (`id_provincia` ASC);
 
 CREATE INDEX `fk_provincia_comuna_comuna1_idx` ON `provincia_comuna` (`id_comuna` ASC);
+
+
+-- -----------------------------------------------------
+-- Table `contingencia`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `contingencia` ;
+
+CREATE TABLE IF NOT EXISTS `contingencia` (
+  `id_contingencia` BIGINT NOT NULL AUTO_INCREMENT,
+  `fecha_inicio` DATETIME NOT NULL,
+  `fecha_fin` DATETIME NOT NULL,
+  `detalle_html` TEXT NOT NULL,
+  `regiones` VARCHAR(64) NOT NULL,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_contingencia`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `permiso_circulacion`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `permiso_circulacion` ;
+
+CREATE TABLE IF NOT EXISTS `permiso_circulacion` (
+  `id_permiso_circulacion` BIGINT NOT NULL AUTO_INCREMENT,
+  `mes` TINYINT NOT NULL,
+  `alerta_html` TEXT NOT NULL,
+  `tip_html` TEXT NOT NULL,
+  `regiones` VARCHAR(64) NOT NULL,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_permiso_circulacion`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `evento_mensual`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `evento_mensual` ;
+
+CREATE TABLE IF NOT EXISTS `evento_mensual` (
+  `id_evento_mensual` BIGINT NOT NULL AUTO_INCREMENT,
+  `digito` TINYINT NOT NULL,
+  `mes` TINYINT NOT NULL,
+  `alerta_html` TEXT NOT NULL,
+  `tip_html` TEXT NOT NULL,
+  `regiones` VARCHAR(64) NOT NULL,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_evento_mensual`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `tip_seguro`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `tip_seguro` ;
+
+CREATE TABLE IF NOT EXISTS `tip_seguro` (
+  `id_tip_seguro` BIGINT NOT NULL AUTO_INCREMENT,
+  `por_vencer` BIT(1) NOT NULL,
+  `alerta_html` TEXT NOT NULL,
+  `tip_html` TEXT NOT NULL,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_tip_seguro`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `tip_general`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `tip_general` ;
+
+CREATE TABLE IF NOT EXISTS `tip_general` (
+  `id_tip_general` BIGINT NOT NULL AUTO_INCREMENT,
+  `tip_html` TEXT NOT NULL,
+  `regiones` VARCHAR(64) NOT NULL,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_tip_general`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `revision_tecnica`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `revision_tecnica` ;
+
+CREATE TABLE IF NOT EXISTS `revision_tecnica` (
+  `id_revision_tecnica` BIGINT NOT NULL AUTO_INCREMENT,
+  `digito` TINYINT NOT NULL,
+  `mes` TINYINT NOT NULL,
+  PRIMARY KEY (`id_revision_tecnica`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
+-- Table `restriccion_vehicular`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `restriccion_vehicular` ;
+
+CREATE TABLE IF NOT EXISTS `restriccion_vehicular` (
+  `id_restriccion_vehicular` BIGINT NOT NULL AUTO_INCREMENT,
+  `digitos` VARCHAR(10) NOT NULL,
+  `fecha` DATE NOT NULL,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_restriccion_vehicular`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
