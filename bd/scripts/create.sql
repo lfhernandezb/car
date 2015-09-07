@@ -403,7 +403,7 @@ DROP TABLE IF EXISTS `campania` ;
 CREATE TABLE IF NOT EXISTS `campania` (
   `id_campania` INT(11) NOT NULL AUTO_INCREMENT,
   `descripcion` VARCHAR(64) NOT NULL,
-  `activa` TINYINT(1) NOT NULL DEFAULT '0',
+  `activa` TINYINT(1) NOT NULL,
   `condicion` TEXT NULL DEFAULT NULL,
   `detalle` TEXT NOT NULL,
   `fecha_inicio` DATE NULL DEFAULT NULL,

@@ -146,7 +146,7 @@ public class GeneraInformeMensual {
 				listParameters = new ArrayList<AbstractMap.SimpleEntry<String, String>>();
 				
 				listParameters.add(new SimpleEntry<String, String>("no borrado", ""));
-				//listParameters.add(new SimpleEntry<String, String>("sin posicion", ""));
+				listParameters.add(new SimpleEntry<String, String>("id_usuario", "102"));
 				
 				listUsuario = Usuario.seek(conn, listParameters, null, null, 0, 10000);
 				
@@ -172,6 +172,10 @@ public class GeneraInformeMensual {
 					
 					// revision tecnica alerta (proximo mes)
 					for (Vehiculo v : listV) {
+						if (v.getBorrado()) {
+							continue;
+						}
+						
 						System.out.println(String.format("revision tecnica alerta (proximo mes) id_usuario %d id_vehiculo %d", usuario.getId(), v.getIdVehiculo()));
 						if (v.getPatente() != null) {
 							if (v.getPatente().trim().length() > 0) {
@@ -206,6 +210,10 @@ public class GeneraInformeMensual {
 					
 					// revision tecnica alarma (este mes)
 					for (Vehiculo v : listV) {
+						if (v.getBorrado()) {
+							continue;
+						}
+
 						System.out.println(String.format("revision tecnica alarma (este mes) id_usuario %d id_vehiculo %d", usuario.getId(), v.getIdVehiculo()));
 						Marca marca = v.getMarca(conn);
 						Modelo modelo = v.getModelo(conn); 
@@ -241,7 +249,7 @@ public class GeneraInformeMensual {
 						
 						if (!flag) {
 							strOutput += String.format(
-									"<p>Te invitamos a ingresar o corregir en la aplicaci&oacute; la patente de tu veh&iacute;culo %s %s a&ntilde;o %d para que podamos avisarte en qu&eacute; mes tienes que llevarlo a la Revisi&oacute;n T&eacute;cnica.", 
+									"<p>Te invitamos a ingresar o corregir en la aplicaci&oacute;n la patente de tu veh&iacute;culo %s %s a&ntilde;o %d para que podamos avisarte en qu&eacute; mes tienes que llevarlo a la Revisi&oacute;n T&eacute;cnica.", 
 									marca.getDescripcion(),
 									modelo.getDescripcion(),
 									v.getAnio());
@@ -260,6 +268,10 @@ public class GeneraInformeMensual {
 					
 					// seguro 
 					for (Vehiculo v : listV) {
+						if (v.getBorrado()) {
+							continue;
+						}
+
 						System.out.println(String.format("seguro id_usuario %d id_vehiculo %d", usuario.getId(), v.getIdVehiculo()));
 						Marca marca = v.getMarca(conn);
 						Modelo modelo = v.getModelo(conn); 
@@ -330,6 +342,7 @@ public class GeneraInformeMensual {
 						c.setDetalle("foo");
 						c.setDescripcion(String.format("InformeMensual id_usuario %d %s", usuario.getId(), strDate));
 						c.setManual(false);
+						c.setActiva(true);
 						c.setNumeroImpresiones((short) 1);
 						c.setPeriodicidad((short) 1);
 						
