@@ -1413,7 +1413,8 @@ CREATE TRIGGER `campania_AUPD` AFTER UPDATE ON `campania` FOR EACH ROW
 BEGIN
     IF NEW.activa THEN
       UPDATE campania_usuario
-      SET fecha_modificacion = NEW.fecha_modificacion
+      SET fecha_modificacion = NEW.fecha_modificacion,
+      fecha_sincro = null
       WHERE id_campania = NEW.id_campania;
     END IF;  
 END$$
