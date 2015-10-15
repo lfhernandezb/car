@@ -1159,6 +1159,22 @@ DEFAULT CHARACTER SET = latin1;
 
 
 -- -----------------------------------------------------
+-- Table `linea_de_tiempo`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `linea_de_tiempo` ;
+
+CREATE TABLE IF NOT EXISTS `linea_de_tiempo` (
+  `id_linea_de_tiempo` BIGINT NOT NULL AUTO_INCREMENT,
+  `cantidad` INT NOT NULL,
+  `unidad` CHAR(1) NOT NULL,
+  `detalle` TEXT NOT NULL,
+  `fecha_modificacion` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_linea_de_tiempo`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = latin1;
+
+
+-- -----------------------------------------------------
 -- View `vw_campania_usuario`
 -- -----------------------------------------------------
 DROP VIEW IF EXISTS `vw_campania_usuario` ;

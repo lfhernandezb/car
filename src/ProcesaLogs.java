@@ -152,7 +152,11 @@ public class ProcesaLogs {
 									
 									UsuarioInfo ui = UsuarioInfo.getByParameter(conn, "id_usuario", String.valueOf(usuario.getId()));
 									
-							        JSONObject joAddress = ReverseGeo.getReverseGeo(lph.getLatitud(), lph.getLongitud());
+									Thread.sleep(2000);
+									
+							        JSONObject joAddress;
+							        
+									joAddress = ReverseGeo.getReverseGeo(lph.getLatitud(), lph.getLongitud());
 							        
 							        if (joAddress != null) {
 							        	
@@ -293,9 +297,6 @@ public class ProcesaLogs {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InvalidFileFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {

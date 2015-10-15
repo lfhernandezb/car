@@ -26,6 +26,7 @@ import org.joda.time.Months;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cl.dsoft.car.misc.InvalidFormatException;
 import cl.dsoft.car.misc.Point;
 import cl.dsoft.car.misc.UnsupportedParameterException;
 import cl.dsoft.car.server.db.Campania;
@@ -42,6 +43,7 @@ import cl.dsoft.car.server.db.Proveedor;
 import cl.dsoft.car.server.db.Provincia;
 import cl.dsoft.car.server.db.ProvinciaComuna;
 import cl.dsoft.car.server.db.Region;
+import cl.dsoft.car.server.db.Reparacion;
 import cl.dsoft.car.server.db.RevisionTecnica;
 import cl.dsoft.car.server.db.SeguroVehiculo;
 import cl.dsoft.car.server.db.Usuario;
@@ -183,7 +185,8 @@ public class GeneraInformeMensual {
 				listParameters = new ArrayList<AbstractMap.SimpleEntry<String, String>>();
 				
 				listParameters.add(new SimpleEntry<String, String>("no borrado", ""));
-				listParameters.add(new SimpleEntry<String, String>("id_usuario_in", "1,3,4,5,11,86,102,1634"));
+				//listParameters.add(new SimpleEntry<String, String>("id_usuario_in", "1,3,4,5,11,86,102,1634"));
+				//listParameters.add(new SimpleEntry<String, String>("id_usuario_in", "2306,2273,1952,1802,1693,2232"));
 				//listParameters.add(new SimpleEntry<String, String>("id_usuario", "102"));
 				
 				listUsuario = Usuario.seek(conn, listParameters, null, null, 0, 10000);
@@ -194,11 +197,11 @@ public class GeneraInformeMensual {
 				for (Usuario usuario : listUsuario) {
 					
 					countUsuario++;
-					
+					/*
 					if (countUsuario == 100) {
 						break;
 					}
-					
+					*/
 					boolean flag;
 					ArrayList<Vehiculo> listV;
 					
@@ -470,8 +473,9 @@ public class GeneraInformeMensual {
 							continue;
 						}
 						
-						int gasto_mantencion = 0;
-						int gasto_combustible = 0;
+						int gastoMantencion = 0;
+						int gastoCombustible = 0;
+						int gastoReparacion = 0;
 						
 						// obtengo principio de mes anterior
 						String comienzoMesAnterior = String.format("%04d-%02d-01", anioActual, mesAnterior);
@@ -484,7 +488,7 @@ public class GeneraInformeMensual {
 						for (MantencionBaseHecha mbh : listMBH) {
 							
 							if (mbh.getFecha().compareTo(comienzoMesAnterior) >= 0 && mbh.getFecha().compareTo(comienzoMesActual) < 0) {
-								gasto_mantencion += mbh.getCosto();
+								gastoMantencion += mbh.getCosto();
 							}
 						}
 
@@ -495,15 +499,24 @@ public class GeneraInformeMensual {
 							// ******** EXISTE BUG EN APP MOVIL, fecha queda en NULL cuando estanque_lleno = true
 							if (cc.getFecha() != null) {
 								if (cc.getFecha().compareTo(comienzoMesAnterior) >= 0 && cc.getFecha().compareTo(comienzoMesActual) < 0) {
-									gasto_combustible += cc.getCosto();
+									gastoCombustible += cc.getCosto();
 								}
+							}
+						}
+
+						ArrayList<Reparacion> listRep = v.getReparaciones(conn);
+						
+						for (Reparacion rep : listRep) {
+							
+							if (rep.getFecha().compareTo(comienzoMesAnterior) >= 0 && rep.getFecha().compareTo(comienzoMesActual) < 0) {
+								gastoReparacion += rep.getCosto();
 							}
 						}
 
 						Marca marca = v.getMarca(conn);
 						Modelo modelo = v.getModelo(conn);
 						
-						if (gasto_combustible > 0 || gasto_mantencion > 0) {
+						if (gastoCombustible > 0 || gastoMantencion > 0 || gastoReparacion > 0) {
 
 							strOutput += String.format(
 								"<H2>Gastos de %s de %d de tu veh&iacute;culo %s %s a&ntilde;o %d.</H2>",
@@ -513,25 +526,31 @@ public class GeneraInformeMensual {
 								modelo.getDescripcion(),
 								v.getAnio());
 							
-							if (gasto_mantencion > 0) {
+							if (gastoMantencion > 0) {
 								
 								strOutput += String.format(
 										"<p>En mantenciones: $%d.</p>",
-										gasto_mantencion);
+										gastoMantencion);
 							}
 							// ************* EXISTE BUG EN APP MOVIL, fecha queda en NULL cuando estanque_lleno = true
-							if (gasto_combustible > 0) {
+							if (gastoCombustible > 0) {
 								
 								strOutput += String.format(
 										"<p>En combustible: $%d.</p>",
-										gasto_combustible);
+										gastoCombustible);
+							}
+							if (gastoReparacion > 0) {
+								
+								strOutput += String.format(
+										"<p>En reparaciones: $%d.</p>",
+										gastoReparacion);
 							}
 							
 						}
 					
 					}
 					
-					System.out.println(strOutput);
+					//System.out.println(strOutput);
 					
 					// grabo notificacion
 					if (strOutput.length() > 0) {
@@ -560,7 +579,7 @@ public class GeneraInformeMensual {
 						c.setNumeroImpresiones((short) 1);
 						c.setPeriodicidad((short) 1);
 						
-						System.out.println(c.toString());
+						//System.out.println(c.toString());
 						
 						c.insert(conn);
 						
@@ -570,7 +589,7 @@ public class GeneraInformeMensual {
 							c.getDescripcion(),
 							c.getId(),
 							c.getId(),
-							"Informe Mensual MiAuto" + nombreMesActual + " " + String.valueOf(anioActual),
+							"Informe Mensual MiAuto " + nombreMesActual + " " + String.valueOf(anioActual),
 							strOutput
 							);
 						
@@ -610,6 +629,9 @@ public class GeneraInformeMensual {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

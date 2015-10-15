@@ -100,6 +100,7 @@ public class GeneraNotificaciones {
 						"  LEFT JOIN vehiculo v ON v.id_usuario = u.id_usuario" +
 						"  LEFT JOIN usuario_info ui ON ui.id_usuario = u.id_usuario" +
 						"  LEFT JOIN region r ON r.region = ui.state" +
+						"  LEFT JOIN usuario_creacion uc ON uc.id_usuario = u.id_usuario" +
 						"  WHERE u.id_usuario NOT IN (SELECT cu.id_usuario FROM campania_usuario cu WHERE cu.id_campania = " + String.valueOf(campania.getId()) + ")";
 					
 					if (!campania.getCondicion().isEmpty()) {

@@ -63,7 +63,8 @@ public class ReverseGeo {
         //getRequest = new HttpGet(serverURL + serverText.getText());
         getRequest = new HttpGet(String.format(serverURL, lat, lon));
         
-        getRequest.addHeader("accept", "application/xml");      	
+        getRequest.addHeader("accept", "application/xml");
+        getRequest.addHeader("User-Agent", "MiAuto");
     	
     	response = httpClient.execute(getRequest);
         statusLine = response.getStatusLine();
